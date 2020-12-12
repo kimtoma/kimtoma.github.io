@@ -13,12 +13,12 @@ title: About
 
 아래 링크에서도 저의 흔적을 찾을 수 있습니다.
 
-- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma) – 전문적인 느낌의 UX 디자이너
-- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma) – 디자인 커뮤니티 활동 또는 광고
-- [Github](https://github.com/kimtoma﻿?ref=kimtoma) – 아주 가끔 코딩도 함
-- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma) – 라이프로그 + 먹찾하
-- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma) – 나이키 러닝 또는 광고
-- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma) – 잡다구리하고 편집 안 한 동영상
+- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma)
+- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma)
+- [Github](https://github.com/kimtoma﻿?ref=kimtoma)
+- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma)
+- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma)
+- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma)
 
 
 
@@ -33,9 +33,10 @@ In my spare time I enjoy side-projects that far from the money making, likes [Mo
 
 Also, you can find me here on…
 
-- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma) – Professional as a UX designer
-- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma) – Usually design community activity or ads
-- [Github](https://github.com/kimtoma﻿?ref=kimtoma) – Sometimes, I coding
-- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma) – Life log & Foodie
-- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma) – Nike running data or ads
-- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma) – My video clips with loooong playback time
+- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma)
+- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma)
+- [Github](https://github.com/kimtoma﻿?ref=kimtoma)
+- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma)
+- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma)
+- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma)
+
