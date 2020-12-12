@@ -3,27 +3,39 @@ layout: page
 title: About
 ---
 
-<p class="message">
-  Hey there! This page is included as an example. Feel free to customize it for your own use upon downloading. Carry on!
-</p>
+안녕하세요! 저는 김경수입니다. 
 
-In the novel, *The Strange Case of Dr. Jekyll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
+현재 [NC 소프트](http://kr.ncsoft.com/korean/?ref=kimtoma) AI 서비스 디자인 팀에서 UX디자이너로 일하고 있습니다.
+그전에는 10년동안 [HNINE](https://www.hnine.com/?ref=kimtoma)에 창업 초기부터 합류해서 UX 디자인 리드로 일했었습니다.
 
-There are currently two themes built on Poole:
+개인적인 여가시간에는 돈이 안되는 사이드 프로젝트를 만드는 걸 즐깁니다. 
+([모맛 라인 스티커](https://store.line.me/stickershop/product/4102511/ko), [플레이리스팀](https://playlisteem.web.app/) 등…)
 
-- [Hyde](https://hyde.getpoole.com)
-- [Lanyon](https://lanyon.getpoole.com)
+아래 링크에서도 저의 흔적을 찾을 수 있습니다.
 
-Learn more and contribute on [GitHub](https://github.com/poole).
+- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma) – 전문적인 느낌의 UX 디자이너
+- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma) – 디자인 커뮤니티 활동 또는 광고
+- [Github](https://github.com/kimtoma﻿?ref=kimtoma) – 아주 가끔 코딩도 함
+- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma) – 라이프로그 + 먹찾하
+- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma) – 나이키 러닝 또는 광고
+- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma) – 잡다구리하고 편집 안 한 동영상
 
-## Setup
 
-Some fun facts about the setup of this project include:
 
-- Built for [Jekyll](https://jekyllrb.com)
-- Developed on GitHub and hosted for free on [GitHub Pages](https://pages.github.com)
-- Coded with [Atom](https://atom.io), an amazing open source code editor
+<hr/>
 
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/poole/poole/issues/new) or [ask me on Twitter](https://twitter.com/mdo).
+Hello. My name is Kyungsoo Kim. 
 
-Thanks for reading!
+I’m currently working as a UX designer on the [NC Soft](http://kr.ncsoft.com/korean/?ref=kimtoma) AI Service Design Team.
+During the past 10 years I’ve worked as a UX designer at [HNINE](https://www.hnine.com/?ref=kimtoma). 
+
+In my spare time I enjoy side-projects that far from the money making, likes [Momat Line Stickers](https://store.line.me/stickershop/author/525306/en), [Playlisteem.](https://playlisteem.web.app/)
+
+Also, you can find me here on…
+
+- [Linkedin](http://www.linkedin.com/in/kimkyungsoo﻿?ref=kimtoma) – Professional as a UX designer
+- [Facebook](https://www.facebook.com/hello.kyungsoo?ref=kimtoma) – Usually design community activity or ads
+- [Github](https://github.com/kimtoma﻿?ref=kimtoma) – Sometimes, I coding
+- [Instagram](https://www.instagram.com/kimtoma/﻿?ref=kimtoma) – Life log & Foodie
+- [Twitter](https://twitter.com/kimtoma﻿?ref=kimtoma) – Nike running data or ads
+- [Youtube](https://www.youtube.com/user/kimtoma/﻿?ref=kimtoma) – My video clips with loooong playback time
