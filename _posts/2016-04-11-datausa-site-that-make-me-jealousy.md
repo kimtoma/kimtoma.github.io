@@ -4,7 +4,7 @@ title: 짜증나는 사이트를 소개합니다
 
 ---
 
-미국의 공공데이터를 시각화한 DATA USA 사이트와 암울한 대한민국 정부 3.0 사이트 비교 및 공공데이터 디자인 사례
+### 미국의 공공데이터를 시각화한 DATA USA 사이트와 암울한 대한민국 정부 3.0 사이트 비교 및 공공데이터 디자인 사례
 
 
 
@@ -14,7 +14,9 @@ title: 짜증나는 사이트를 소개합니다
 
 최근에도 한 번 짜증(?)이 났는데 [datausa.io](http://datausa.io/) 사이트를 보면서 그런 감정이 들었다.
 
-[![img](https://kimtoma.github.io/_posts/2016/04/dc25e-1eggeu7vuegtr7oy0cdlj3q.png)](https://kimtoma.com/2016/04/11/datausa-site-that-make-me-jealousy/datausa.io)미국 공공 데이터 시각화 사이트(datausa.io)
+![미국 공공 데이터 시각화 사이트]('/media/2016/04/dc25e-1eggeu7vuegtr7oy0cdlj3q.png')
+
+[![img](https://kimtoma.github.io/_posts/2016/04/dc25e-1eggeu7vuegtr7oy0cdlj3q.png)](https://kimtoma.github.io/_posts/2016/04/dc25e-1eggeu7vuegtr7oy0cdlj3q.png)미국 공공 데이터 시각화 사이트(datausa.io)
 
 ![img](https://kimtoma.github.io/_posts/2016/04/78173-1djzzshsikzwk1s8v65lrla.png)
 물론 모든 페이지와 내용을 모바일에서도 최적화되어 제공된다.
