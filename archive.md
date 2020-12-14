@@ -3,7 +3,7 @@ layout: default
 title: Archive
 ---
 
-# Archive
+# Archives
 
 Browse all posts by recent.
 
@@ -12,8 +12,14 @@ Browse all posts by recent.
 
   <ul>
     {% for post in yearMonth.items %}
-      <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+      <li>
+        <a href="{{ post.url }}">
+					{{ post.title }}
+					<small><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time></small>
+				</a>
+    	</li>
     {% endfor %}
   </ul>
+
 {% endfor %}
 
