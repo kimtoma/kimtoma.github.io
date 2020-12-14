@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 30초만에 모바일 앱 사용성 높이기 (1) – Color Contrast 체크하기 🚥
+title: Color Contrast 체크하기 🚥
 
 ---
 
