@@ -5,8 +5,8 @@
 layout: home
 ---
 
+**Hi, I’m Kyungsoo** (a.k.a. kimtoma)
 
-hello world. :-) 
-
-
+I’m a product designer at [NC](https://kr.ncsoft.com/en/index.do) and living in Seoul. 
+Love to share thoughts, designs, and knowledge through various digital medium.
 
