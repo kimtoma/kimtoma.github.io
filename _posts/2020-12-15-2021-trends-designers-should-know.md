@@ -8,9 +8,9 @@ title: 2021 디자이너가 알아야 할 주요 트렌드
 
 
 
-## **[팬톤 올해의 컬러](http://www.pantone.kr/ColoroftheYear2021.html)**
+![img](https://kimtoma.com/media/2020/12/pantone-color-of-the-year-2021.png)
 
-![img](https://kimtoma.github.io/media/2020/12/pantone-color-of-the-year-2021.png)
+### **[팬톤 올해의 컬러](http://www.pantone.kr/ColoroftheYear2021.html)**
 
 재설정, 갱신, 재창조 등 우리에게 필요한 복원력, 낙관, 희망, 긍정을 말해주는 조합의 컬러
 
@@ -21,9 +21,9 @@ title: 2021 디자이너가 알아야 할 주요 트렌드
 
 
 
-## **[가트너 2021 전략기술](https://www.gartner.com/smarterwithgartner/gartner-top-strategic-technology-trends-for-2021/)**
+![img](https://kimtoma.com/media/2020/12/gartner-top-strategic-technology-trends-2021.png)
 
-![img](https://kimtoma.github.io/media/2020/12/gartner-top-strategic-technology-trends-2021.png)
+### **[가트너 2021 전략기술](https://www.gartner.com/smarterwithgartner/gartner-top-strategic-technology-trends-for-2021/)**
 
 사람 중심성, 위치 독립성 및 탄력적인 전달의 3가지 주제로 분류
 
@@ -41,7 +41,7 @@ title: 2021 디자이너가 알아야 할 주요 트렌드
 
 
 
-## **[트렌드코리아 2021 트렌드](http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9788959896837&orderClick=LEa&Kc=)**
+### **[트렌드코리아 2021 트렌드](http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9788959896837&orderClick=LEa&Kc=)**
 
 'COWBOY HERO' 날뛰는 소를 길들여내는 능숙한 카우보이처럼
 
