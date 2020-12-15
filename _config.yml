@@ -28,7 +28,7 @@ sass:
 # Options
 
 # Replace this value and uncomment to enable Google Analytics tracking
-ga_analytics: G-KZ9EF05RNJ
+google_analytics: G-R6R5H5K2KN
 
 # Specify the author for blog posts
 author:
@@ -49,3 +49,4 @@ nav:
 
   - title: About
     url: /about
+    
