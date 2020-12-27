@@ -59,7 +59,7 @@ title: 2020년 개인회고
 ## 🗒 **홈페이지에 가끔 글을 씀**
 
 - 직접 만들기가 갑자기 귀찮아져서 워드프레스 유료 구독을 1년 더 갱신함 ([kimtoma.com](https://kimtoma.com))  
-- 12월에 워드프레스 유료 구독을 취소하고 평생 무료로 쓸 수 있는 gihub pages와 jekyll 을 이용해서 홈페이지 새로 만들었음
+- 12월에 워드프레스 유료 구독을 취소하고 평생 무료로 쓸 수 있는 [gihub pages](https://pages.github.com/)와 [jekyll](https://jekyllrb-ko.github.io/)을 이용해서 홈페이지 새로 만들었음
 - 1년에 글 5개... 처참하지만 내년에는 더 활성화해보는걸로! 
 
 
