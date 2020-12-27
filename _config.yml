@@ -1,6 +1,6 @@
 # Setup
 title: kimtoma
-url: https://kimtoma.github.io
+url: https://kimtoma.com
 paginate: 1
 baseurl: ""
 permalink: pretty
@@ -28,7 +28,7 @@ sass:
 # Options
 
 # Replace this value and uncomment to enable Google Analytics tracking
-google_analytics: G-R6R5H5K2KN
+ga_analytics: UA-163781427-1
 
 # Specify the author for blog posts
 author:
@@ -45,7 +45,7 @@ nav:
     url: /projects
 
   - title: Blog
-    url: /archive
+    url: /blog
 
   - title: About
     url: /about
