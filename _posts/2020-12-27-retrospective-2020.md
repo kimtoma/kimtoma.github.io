@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 2020년 개인회고
+title: 2020년 회고
 ---
 
 ### 2020년이 끝날 무렵, 올 한해 있었던 다양한 일들을 짧게 회고해봅니다. :-)
@@ -23,11 +23,13 @@ title: 2020년 개인회고
 ## 🤓 새로운 조직에 적응 중
 
 - NC소프트 NLP센터 AI 서비스실의 서비스디자인팀으로 입사함 (팀원 6명 / 실원 약 40여명)
-- MS 오피스계열과 Jira / Confluence를 업무용 S/W로 사용함
-- 전체적으로 업무량이 아직 많지 않은 시기라서 빠르게 적응하기 위해 노력중
-- UI 디자인 툴은 최근에 Sketch에서 Figma로 전환 중
-- 프로토타입 툴은 Figma나 Protopie, Principle을 사용함
+- MS 오피스계열과 [Jira](https://www.atlassian.com/ko/software/jira) / [Confluence](https://www.atlassian.com/ko/software/confluence)를 업무용 S/W로 사용함
+- UI 디자인 툴은 최근에 [Sketch](https://www.sketch.com/)에서 [Figma](https://www.figma.com/)로 전환 중
+- 프로토타입 툴은 [Figma](https://www.figma.com/)나 [Protopie](https://www.protopie.io/), [Principle](https://principleformac.com/)을 사용함
 - AI 기술을 활용해서 컨텐츠를 생성하는 [페이지(PAIGE)](https://paige.kr.nc.com/)라는 모바일 야구 앱 서비스를 운영중임
+- 업무량은 예전에 비해 1/2 정도로 느껴지고 워라벨과 복지가 좋은편임
+- 점심 뭐 먹을지 고민안해서 좋음 (하지만 요즘엔 코로나때문에 재택근무 중...)
+- 실내 다양한 부서 사람들과 친해지고 빠르게 적응하기 위해 노력중임
 
 
 
@@ -42,8 +44,8 @@ title: 2020년 개인회고
 
 ## 🏆 iF 디자인어워드 수상함
 
-- 작년에 [리얼리티 리플렉션](https://www.realityreflection.com/)과 함께 진행했던 암호화폐 리워드 앱인 [The Hunters](https://hnine.com/project/the-hunters-app.html)로 [iF 디자인 어워드를 수상](https://ifworlddesignguide.com/entry/274510-mossland-the-hunters)함
-- iF 디자인어워드 제출과 F/U 을 해주신 모든 참여자 분들에게 감사!
+- 작년에 [리얼리티 리플렉션](https://www.realityreflection.com/)과 함께 진행했던 암호화폐 리워드 앱인 [더 헌터스 (The Hunters)](https://hnine.com/project/the-hunters-app.html)로 [iF 디자인 어워드를 수상](https://ifworlddesignguide.com/entry/274510-mossland-the-hunters)함
+- iF 디자인어워드 제출과 F/U 을 해주신 모든 참여자 분들과 HNINE에게 감사를!
 
 
 
@@ -56,9 +58,9 @@ title: 2020년 개인회고
 
 
 
-## 🗒 **홈페이지에 가끔 글을 씀**
+## 🗒 **홈페이지에도 가끔 글을 씀**
 
-- 직접 만들기가 갑자기 귀찮아져서 워드프레스 유료 구독을 1년 더 갱신함 ([kimtoma.com](https://kimtoma.com))  
+- 년초에 워드프레스 유료 구독을 1년 더 갱신했었음
 - 12월에 워드프레스 유료 구독을 취소하고 평생 무료로 쓸 수 있는 [gihub pages](https://pages.github.com/)와 [jekyll](https://jekyllrb-ko.github.io/)을 이용해서 홈페이지 새로 만들었음
 - 1년에 글 5개... 처참하지만 내년에는 더 활성화해보는걸로! 
 
@@ -67,9 +69,9 @@ title: 2020년 개인회고
 ## 👨🏻‍💻 온/오프라인 스터디 및 컨퍼런스
 
 - 사내 교육프로그램으로 [엘리스](https://ncsoft.elice.io/learn)에서 비전공자를 위한 머신러닝 온라인 수강 시작
-- UX Days Seoul 2020 신청완료 : 2020-09-16 (수) 롯데월드 타워 Sky31 Convention → 코로나로 일정 연기됨
-- SpectrumCon 2020: 올해 봤던 컨퍼런스 중 제일 내용이 알차고 와닿았음
-- 앨리스 아카데미와 Udemy로 파이썬과 SQL 스터디 진행함
+- [UX Days Seoul 2020](http://2020.uxdaysseoul.com/) 신청완료 : 2020-09-16 (수) 롯데월드 타워 Sky31 Convention → 코로나로 내년 3월로 일정 연기됨
+- [SpectrumCon 2020](https://event.designspectrum.org/#/): 올해 봤던 컨퍼런스 중 제일 내용이 알차고 와닿았음
+- [엘리스 아카데미](https://ncsoft.elice.io/)와 [유데미](https://ncsoft.udemy.com/)로 파이썬과 SQL 스터디 진행함
 
 
 
@@ -100,4 +102,4 @@ title: 2020년 개인회고
 
 ## 😍 올해도 안동휘랑 행복하게 잘 지내고 있음
 
-- 내년에는 꼭 좋은 소식 들려드릴께요. ☺️
+- 내년에는 더 좋은 소식 들려드릴께요! :-)
