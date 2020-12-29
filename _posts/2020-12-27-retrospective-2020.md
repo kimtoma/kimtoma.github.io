@@ -22,12 +22,12 @@ title: 2020년 회고
 
 ## 🤓 새로운 조직에 적응 중
 
-- NC소프트 NLP센터 AI 서비스실의 서비스디자인팀으로 입사함 (팀원 6명 / 실원 약 40여명)
+- NC소프트 NLP센터 AI 서비스실의 서비스디자인팀으로 입사함 
 - MS 오피스계열과 [Jira](https://www.atlassian.com/ko/software/jira) / [Confluence](https://www.atlassian.com/ko/software/confluence)를 업무용 S/W로 사용함
 - UI 디자인 툴은 최근에 [Sketch](https://www.sketch.com/)에서 [Figma](https://www.figma.com/)로 전환 중
 - 프로토타입 툴은 [Figma](https://www.figma.com/)나 [Protopie](https://www.protopie.io/), [Principle](https://principleformac.com/)을 사용함
 - AI 기술을 활용해서 컨텐츠를 생성하는 [페이지(PAIGE)](https://paige.kr.nc.com/)라는 모바일 야구 앱 서비스를 운영중임
-- 업무량은 예전에 비해 1/2 정도로 느껴지고 워라벨과 복지가 좋은편임
+- 업무량은 예전에 비해 절반 정도로 느껴지고 워라벨과 복지가 좋은편임
 - 점심 뭐 먹을지 고민안해서 좋음 (하지만 요즘엔 코로나때문에 재택근무 중...)
 - 실내 다양한 부서 사람들과 친해지고 빠르게 적응하기 위해 노력중임
 
