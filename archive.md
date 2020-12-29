@@ -3,7 +3,7 @@ layout: default
 title: Archive
 ---
 
-# Blog
+# Archive
 
 Browse all posts by recent.
 
