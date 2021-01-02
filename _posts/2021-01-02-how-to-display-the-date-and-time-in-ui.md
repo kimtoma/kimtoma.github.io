@@ -4,29 +4,29 @@ title: UI에서 날짜, 시간 표기는 어떻게 하는게 좋을까?
 
 ---
 
-### 국제 표준(ISO 8601)을 지켜서 표기하는 것이 가장 좋으나,  서비스 기획 의도와 최종 디자인에 따라 가변적으로 구성할 수 있음
+> 국제 표준(ISO 8601)을 지켜서 표기하는 것이 가장 좋으나,  서비스 기획 의도와 최종 디자인에 따라 가변적으로 구성할 수 있음
 
 ## **1. 상대시간 (Relative Time)**
 
-![date-and-time](https://kimtoma.com/media/2021/01/date-and-time.png)
+![date-and-time](https://kimtoma.github.io/media/2021/01/date-and-time.png)
 
 - 주로 사용자가 작성하거나 참여한 콘텐츠에 사용
 - 콘텐츠를 최신 순으로 보여주는 타임라인이나 피드에 적용하면 좋음
 
-| 업데이트 기간               | 표기 방식 | 적용 예시            |
-| --------------------------- | --------- | -------------------- |
-| 1초 이내                    | 방금      | 방금                 |
-| 1초 부터 60초 전            | n초 전    | 1초 전 ~ 59초 전     |
-| 1분 부터 60분 전            | n분 전    | 1분 전 ~ 59분 전     |
-| 1시간 부터 24시간 전        | n시간 전  | 1시간 전 ~ 23시간 전 |
-| 24시간 부터 7일(168시간) 전 | n일 전    | 1일 전 ~ 6일 전      |
-| 7일 부터 30일 전            | n주 전    | 1주 전 ~ 4주 전      |
-| 30일 부터 365일 전          | n달 전    | 1달 전 ~ 11달 전     |
-| 365일 이후                  | n년 전    | 1년 전 ~ 999년 전    |
+| **업데이트 기간**           | **표기 방식** | **적용 예시**        |
+| --------------------------- | ------------- | -------------------- |
+| 1초 이내                    | 방금          | 방금                 |
+| 1초 부터 60초 전            | n초 전        | 1초 전 ~ 59초 전     |
+| 1분 부터 60분 전            | n분 전        | 1분 전 ~ 59분 전     |
+| 1시간 부터 24시간 전        | n시간 전      | 1시간 전 ~ 23시간 전 |
+| 24시간 부터 7일(168시간) 전 | n일 전        | 1일 전 ~ 6일 전      |
+| 7일 부터 30일 전            | n주 전        | 1주 전 ~ 4주 전      |
+| 30일 부터 365일 전          | n달 전        | 1달 전 ~ 11달 전     |
+| 365일 이후                  | n년 전        | 1년 전 ~ 999년 전    |
 
+   
 
-
-
+   
 
 ## 2**. 절대시간 (Absolute Time)**
 
@@ -86,13 +86,14 @@ title: UI에서 날짜, 시간 표기는 어떻게 하는게 좋을까?
 
 ------
 
-- 참고 링크
-  - https://www.iso.org/standard/70907.html
-  - https://www.iso.org/standard/70908.html
-  - https://www.w3.org/TR/NOTE-datetime
-  - https://material.io/design/communication/data-formats.html#date-time
-  - https://ko.wikipedia.org/wiki/ISO_8601
-  - https://www.ibm.com/support/knowledgecenter/SSLVMB_24.0.0/spss/base/syn_date_and_time_date_time_formats.html
-  - https://docs.microsoft.com/ko-kr/dotnet/standard/base-types/standard-date-and-time-format-strings
-  - https://devhints.io/moment#formatting
-  - https://momentjs.com/
+**참고 링크**
+
+- [https://www.iso.org/standard/70907.html](https://www.iso.org/standard/70907.html)
+- [https://www.iso.org/standard/70908.html](https://www.iso.org/standard/70908.html)
+- [https://www.w3.org/TR/NOTE-datetime](https://www.w3.org/TR/NOTE-datetime)
+- [https://material.io/design/communication/data-formats.html#date-time](https://material.io/design/communication/data-formats.html#date-time)
+- [https://ko.wikipedia.org/wiki/ISO_8601](https://ko.wikipedia.org/wiki/ISO_8601)
+- [https://www.ibm.com/support/knowledgecenter/SSLVMB_24.0.0/spss/base/syn_date_and_time_date_time_formats.html](https://www.ibm.com/support/knowledgecenter/SSLVMB_24.0.0/spss/base/syn_date_and_time_date_time_formats.html)
+- [https://docs.microsoft.com/ko-kr/dotnet/standard/base-types/standard-date-and-time-format-strings](https://docs.microsoft.com/ko-kr/dotnet/standard/base-types/standard-date-and-time-format-strings)
+- [https://devhints.io/moment#formatting](https://devhints.io/moment#formatting)
+- [https://momentjs.com/](https://momentjs.com/)
