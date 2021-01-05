@@ -8,7 +8,7 @@ title: 곤도 마리에의 시대 – 소비시대의 종말
 
 
 
-![img](https://kimtoma.github.io/media/2020/02/6cdfb-kondo.jpg)
+![img](https://kimtoma.github.io/media/2019/11/kondo-marie.jpg)
 
 2019년, 나는 버리기에 푹 빠져있다. 
 

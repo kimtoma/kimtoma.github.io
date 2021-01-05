@@ -8,7 +8,7 @@ title: Abstract 간단 사용법
 
 <hr/>
 
-![img](https://kimtoma.github.io/media/2020/03/image-1.png)
+![img](https://kimtoma.github.io/media/2019/10/icon-abstact.png)
 
 [Abstract](https://www.abstract.com/)는 스케치 파일로 작업할 경우 버전 관리 및 협업을 하기 위해 사용하는 유료 서비스입니다. (월 결제시 1인당 10$)
 

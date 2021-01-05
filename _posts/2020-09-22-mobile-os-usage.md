@@ -9,7 +9,7 @@ title: 모바일 O/S 별 버전 점유율 확인하기
 
 ### iOS 버전 점유율
 
-![img](https://kimtoma.github.io/media/2020/09/e18489e185b3e1848fe185b3e18485e185b5e186abe18489e185a3e186ba-2020-09-22-e1848be185a9e1848ce185a5e186ab-11.08.12.png?w=358)
+![img](https://kimtoma.github.io/media/2020/09/ios-and-ipados-usage.png)
 
 iOS 버전별 점유율 (2020/9/22 기준)
 
@@ -24,7 +24,7 @@ iOS 버전별 점유율 (2020/9/22 기준)
 
 ### android 버전 점유율
 
-![img](https://kimtoma.github.io/media/2020/09/e18489e185b3e1848fe185b3e18485e185b5e186abe18489e185a3e186ba-2020-09-22-e1848be185a9e1848ce185a5e186ab-11.03.35.png?w=1024)안드로이드 버전별 점유율 (2020/9/22 기준)
+![img](https://kimtoma.github.io/media/2020/09/android-platform-version.png)안드로이드 버전별 점유율 (2020/9/22 기준)
 
 - 안드로이드가 예전처럼 개발자 사이트에서 버전 점유율을 보여주지 않고 있음
 - [안드로이드 스튜디오](https://developer.android.com/studio/install?hl=ko)를 설치하고 새로운 프로젝트를 생성하면 버전 점유율 정보를 볼 수 있음

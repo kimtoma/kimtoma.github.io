@@ -7,7 +7,7 @@ title: 프랜시스 베이컨 왈
 
 항상 허기진 주말, 점심을 먹기 위해 주차를 하려는데 주차장소가 마땅하지 않아서, 교보문고 건물에 주차하고 점심을 먹었다. 점심을 먹고 나서 주차비 내기 아까워진 마음에 차라리 책을 사고 무료주차를 하자고 교보문고에 들어가서 산 책이 바로 “**철학의 이단자들**”이었다. PPL 아님… ([교보문고 구매](http://www.kyobobook.co.kr/product/detailViewKor.laf?ejkGb=KOR&mallGb=KOR&barcode=9788936476854&orderClick=LEA&Kc=))
 
-![img](https://kimtoma.github.io/media/2019/03/43de9-0b-vqyc_xgv7uokwq.jpg)
+![img](https://kimtoma.github.io/media/2019/03/bookcover.jpg)
 
 아버지인 스티븐 내들러가 글을 쓰고, 아들인 벤 내들러가 그림을 그린 책으로 1700년대의 서양 근대철학에 대해서 간단하게 개념을 설명해주는 만화책이다. 오랜만에 철학을 어렵지 않은 설명과 만화로 재밌게 읽고 있었는데, 영국 경험론의 아버지라는 [**프랜시스 베이컨**](https://ko.wikipedia.org/wiki/프랜시스_베이컨)이 나오는 부분을 보고 충격을 받았다.
 
@@ -47,7 +47,7 @@ title: 프랜시스 베이컨 왈
 
 더 소름끼치고 잘 들어맞는 대목은 우상들을 피하고 진리에 쫓기 위해서 거쳐야 할 아래 3단계의 과정에서 드러난다.
 
-![img](https://kimtoma.github.io/media/2019/03/fba92-0j0l1k4rt7hoizjme.jpg)
+![img](https://kimtoma.github.io/media/2019/03/inductive-research.jpg)
 
 https://www.slideshare.net/mariambedraoui/inductive-research
 
@@ -57,7 +57,7 @@ https://www.slideshare.net/mariambedraoui/inductive-research
 
 어디서 많이 본 프로세스 같지 않나? 극장의 우상을 범하는 느낌이긴 하지만 Data-driven UX 또는 Lean UX 라고 들어보신 분?
 
-![img](https://kimtoma.github.io/media/2019/03/8529e-0pyluosxgnum5z_jn.jpg)
+![img](https://kimtoma.github.io/media/2019/03/lean-ux-process.jpg)
 
 [Lean UX Process](https://www.oreilly.com/library/view/ux-for-lean/9781449335007/pr05.html)
 

@@ -17,7 +17,7 @@ title: Thumbzone 체크하기 🤳
 
 **🤔How to…?!**
 
-[![img](https://kimtoma.github.io/media/2020/04/image-3.png?w=1024)](https://www.sketch.com/s/13Ke5/p/01thumbzone)[엄지영역 체크용 심볼](https://www.sketch.com/s/13Ke5/p/01thumbzone)
+[![img](https://kimtoma.github.io/media/2020/05/image-3.png)](https://www.sketch.com/s/13Ke5/p/01thumbzone)[엄지영역 체크용 심볼](https://www.sketch.com/s/13Ke5/p/01thumbzone)
 
 1️⃣ 디자인 한 아트보드에 엄지영역 체크용 심볼레이어를 겹쳐본다.
 
@@ -27,7 +27,7 @@ title: Thumbzone 체크하기 🤳
 
 
 
-![img](https://kimtoma.github.io/media/2020/04/image-1.png?w=842)PAIGE 경기 플레이어 화면 체크
+![img](https://kimtoma.github.io/media/2020/05/image-1.png)PAIGE 경기 플레이어 화면 체크
 
 2️⃣ UI 컴포넌트의 위치와 크기를 보정한다.
 
@@ -36,7 +36,7 @@ title: Thumbzone 체크하기 🤳
 간단하게 체크해본 화면은 동영상 플레이어 화면이라 상단에 영상을 배치하고 하단에 관련 영상의 목록을 제공하는 전형적인 UI 레이아웃 배치라서 다른 영상 서비스들의 레이아웃도 크게 다르진 않았다… 😇 
 (각 화면별로 제공하는 컨텐츠의 특성에 따라서도 엄지영역의 중요도가 달라짐…)
 
-![img](https://kimtoma.github.io/media/2020/04/image-2.png?w=1024)유튜브, 트위치, 네이버 스포츠 중계
+![img](https://kimtoma.github.io/media/2020/05/image-2.png)유튜브, 트위치, 네이버 스포츠 중계
 
 모바일 기기가 커지면서 iOS에서 [화면 상단 간편 접근](https://support.apple.com/ko-kr/guide/iphone/iph77bcdd132/ios) 등의 기능을 내놨지만 나같은 앱등이가 아니면 이게 있는지도 모르는 아이폰 사용자가 대부분이니 서비스나 앱의 주요 키스크린 작업이 끝나면 한 번 씩 체크해보시길!
 

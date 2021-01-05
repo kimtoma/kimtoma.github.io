@@ -6,7 +6,7 @@ title: 짜증나는 사이트를 소개합니다
 
 ### 미국의 공공데이터를 시각화한 DATA USA 사이트와 암울한 대한민국 정부 3.0 사이트 비교 및 공공데이터 디자인 사례
 
-![미국 공공 데이터 시각화 사이트 썸네일](https://kimtoma.github.io/media/2016/04/dc25e-1eggeu7vuegtr7oy0cdlj3q.png)
+![미국 공공 데이터 시각화 사이트 썸네일](https://kimtoma.github.io/media/2016/04/datausa_io.png)
 
 ###### 미국 공공 데이터 시각화 사이트 DATA USA
 
@@ -19,7 +19,7 @@ title: 짜증나는 사이트를 소개합니다
 
 
 
-![모바일 최적화](https://kimtoma.github.io/media/2016/04/78173-1djzzshsikzwk1s8v65lrla.png)
+![모바일 최적화](https://kimtoma.github.io/media/2016/04/datausa_io_mobile.png)
 
 ###### 물론 모든 페이지와 내용을 모바일에서도 최적화되어 제공된다.
 
@@ -27,7 +27,7 @@ title: 짜증나는 사이트를 소개합니다
 
 미국의 공공데이터를 시각화 한 사이트인데 미 정부가 딜로이트와 MIT 미디어랩, 데이터휠과 함께 만들어서 최근 배포했다.
 
-![img](https://kimtoma.github.io/media/2016/04/edc61-1q0i40qpduguc72yikj2a0q.gif)
+![img](https://kimtoma.github.io/media/2016/04/datausa_io.gif)
 
 ###### 데이터 비쥬얼라이제이션의 끝을 보는 듯함
 
@@ -35,7 +35,7 @@ title: 짜증나는 사이트를 소개합니다
 
 각 지역 별 공공 데이터를 단순히 통계만 내서 게시판이나 엑셀파일로 다운받게 해주는 게 아니라 사람들이 쉽게 이해할 수 있게 시각화해서 보여주고 이를 다시 공유하거나 Embed하고 실제 API로도 활용할 수 있게 만든 것이다.
 
-![img](https://kimtoma.github.io/media/2016/04/92a87-1o-omqnqloik4vm2cwdipba.gif)
+![img](https://kimtoma.github.io/media/2016/04/datausa_io_export.gif)
 
 ###### 개인적으로 시각화보다 더 소름돋았던 옵션메뉴
 
@@ -49,7 +49,7 @@ MIT 미디어랩의 디렉터인 Cesar Hidalgo는 다른 빅데이터 사이트�
 
 
 
-![img](https://kimtoma.github.io/media/2016/04/5a42f-1oyjrm0q4rpeu_gh_yg9ekg.png)
+![img](https://kimtoma.github.io/media/2016/04/datausa_io_mobile_error.png)
 
 ###### 햄버거 메뉴와 겹쳐진 타이틀
 
@@ -60,13 +60,13 @@ MIT 미디어랩의 디렉터인 Cesar Hidalgo는 다른 빅데이터 사이트�
 
 그럼 전국민이 LTE를 쓰고 기가바이트급 초고속 인터넷이 깔려있는 대한민국의 정부 사이트들은 어떤지 한 번 볼까?
 
-![img](https://kimtoma.github.io/media/2016/04/3a74f-1ldqbplzkhmwqdbatjkaoig.png)대한민국 공공데이터 포털 (www.data.go.kr) 
+![img](https://kimtoma.github.io/media/2016/04/data_go_kr.png)대한민국 공공데이터 포털 (www.data.go.kr) 
 
 
 
 정부3.0을 외치는 대한민국의 공공데이터 포털([www.data.go.kr](http://www.data.go.kr/))을 잠깐만 봐도 내가 왜 이렇게 답답해하는지 감이 올 거다. 모바일로 접속해보면 답답함을 느끼기에 더없이 좋다. ^^
 
-![img](https://kimtoma.github.io/media/2016/04/5c775-1ldmv-sa5ev6_p-f7p5jphg.png)
+![img](https://kimtoma.github.io/media/2016/04/data_go_kr_mobile.png)
 
 ###### 물론 첫 페이지만 모바일에 대응했다. ^^ 첫 페이지의 “교육”을 눌러서 들어간 우측 페이지를 보면 말이 안 나온다…
 
@@ -74,7 +74,7 @@ MIT 미디어랩의 디렉터인 Cesar Hidalgo는 다른 빅데이터 사이트�
 
 이세돌과 알파고의 대국이 끝나기 무섭게 K-알파고(칼파고?)를 만든다고 하면서 민간기업들을 소집하신 박대통령님과 좌측 상단에 뜬금없이 “애국가 듣기” 버튼을 보여주는 미래창조과학부 홈페이지를 보면 더 답이 없다…
 
-![img](https://kimtoma.github.io/media/2016/04/be0a7-1kbzyot-mssponzi2c1gnha.png)
+![img](https://kimtoma.github.io/media/2016/04/this_is_future.png)
 
 ###### 대한민국의 미래를 창조하기 전에 애국가 한 소절 쯤은 괜찮잖아?!
 

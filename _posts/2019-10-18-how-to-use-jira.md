@@ -8,7 +8,7 @@ title: Jira 간단 사용법
 
 <hr/>
 
-![img](https://kimtoma.github.io/media/2020/03/image.png)
+![img](https://kimtoma.github.io/media/2019/10/icon-jira.png)
 
 [Jira](https://www.atlassian.com/software/jira)는 Atlassiand에서 만든 일정과 Issue를 관리하는 협업용 S/W입니다. 정석은 아니고 속성으로 배운 Jira 사용법을 정리하기 위해 작성한 내용입니다.
 
