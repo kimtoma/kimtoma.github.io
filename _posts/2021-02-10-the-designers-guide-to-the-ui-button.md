@@ -4,7 +4,7 @@ title: UI를 여행하는 디자이너를 위한 안내서 - 버튼 (Button)
 
 ---
 
-> UI를 여행하는 디자이너를 위한 안내서 - 버튼 (Button)
+> 디지털 세계에서 사용되는 사용자 인터페이스 중 버튼에 대한 모든 것을 알아봅시다.
 
 ## 버튼 UI의 역사
 
@@ -74,17 +74,18 @@ title: UI를 여행하는 디자이너를 위한 안내서 - 버튼 (Button)
 
 참고자료
 
-- https://ko.dict.naver.com/#/entry/koko/158420280d694d088a2fcf3cda975b87
-- https://en.wikipedia.org/wiki/Push-button
-- https://www.toptal.com/designers/ui/button-design
-- https://www.toptal.com/designers/ui/button-design-dribbble-timeline
-- https://theblog.adobe.com/the-evolution-of-buttons-in-ux-design/
-- https://uxplanet.org/buttons-in-ui-design-the-evolution-of-style-and-best-practices-56536dc5386e
-- https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6
-- https://uxdesign.cc/button-design-user-interface-components-series-85243b6736c7
-- https://developer.apple.com/design/human-interface-guidelines/ios/controls/buttons/
-- https://developer.android.com/guide/topics/ui/controls/button
-- https://material.io/components/buttons
-- https://material.io/components/buttons-floating-action-button
-- [https://developer.mozilla.org/ko/docs/Web/HTML/Element/button](https://developer.mozilla.org/ko/docs/Web/HTML/Element/button)
-- https://www.w3schools.com/tags/tag_button.asp
+- [https://ko.dict.naver.com/#/entry/koko/158420280d694d088a2fcf3cda975b87](https://ko.dict.naver.com/#/entry/koko/158420280d694d088a2fcf3cda975b87)
+- [https://en.wikipedia.org/wiki/Push-button](https://en.wikipedia.org/wiki/Push-button)
+- [https://www.toptal.com/designers/ui/button-design](https://www.toptal.com/designers/ui/button-design)
+- [https://www.toptal.com/designers/ui/button-design-dribbble-timeline](https://www.toptal.com/designers/ui/button-design-dribbble-timeline)
+- [https://theblog.adobe.com/the-evolution-of-buttons-in-ux-design](https://theblog.adobe.com/the-evolution-of-buttons-in-ux-design)
+- [https://uxplanet.org/buttons-in-ui-design-the-evolution-of-style-and-best-practices-56536dc5386e](https://uxplanet.org/buttons-in-ui-design-the-evolution-of-style-and-best-practices-56536dc5386e)
+- [https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6](https://uxplanet.org/button-ux-design-best-practices-types-and-states-647cf4ae0fc6)
+- [https://uxdesign.cc/button-design-user-interface-components-series-85243b6736c7](https://uxdesign.cc/button-design-user-interface-components-series-85243b6736c7)
+- [https://developer.apple.com/design/human-interface-guidelines/ios/controls/buttons/](https://developer.apple.com/design/human-interface-guidelines/ios/controls/buttons/)
+- [https://developer.android.com/guide/topics/ui/controls/button](https://developer.android.com/guide/topics/ui/controls/button)
+- [https://material.io/components/buttons](https://material.io/components/buttons)
+- [https://material.io/components/buttons-floating-action-button](https://material.io/components/buttons-floating-action-button)
+- https://developer.mozilla.org/ko/docs/Web/HTML/Element/button
+- [https://www.w3schools.com/tags/tag_button.asp](https://www.w3schools.com/tags/tag_button.asp)
+
