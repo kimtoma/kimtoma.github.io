@@ -3,3 +3,4 @@ _site
 .jekyll-cache
 .jekyll-metadata
 vendor
+media/2021/.DS_Store
