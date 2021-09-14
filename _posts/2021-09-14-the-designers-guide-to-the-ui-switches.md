@@ -50,15 +50,15 @@ title: UI를 여행하는 디자이너를 위한 안내서 - 스위치 (Switches
 
 참고자료
 
-- https://ko.dict.naver.com/#/entry/koko/447ffae49ce8478da60f64240c80df5b
-- https://en.wikipedia.org/wiki/Switch
-- https://www.behance.net/gallery/70302039/History-Of-Toggle-UIUX-Case-Study-UI-Samples
-- https://uxplanet.org/checkbox-and-toggle-in-forms-f0de6086ac41
-- https://uxdesign.cc/selection-controls-ui-component-series-3badc0bdb546
-- https://uxplanet.org/checkbox-vs-toggle-switch-7fc6e83f10b8
-- https://material.io/components/selection-controls#switches
-- https://www.nngroup.com/articles/toggle-switch-guidelines/
-- https://medium.muz.li/redesigning-the-toggle-switch-4eef8ded88cb
-- https://uxmovement.com/mobile/stop-misusing-toggle-switches/
-- https://www.dmcinfo.com/latest-thinking/blog/id/9728/user-interface-design-tips-checkboxes-vs-toggle-switches
-- https://developer.apple.com/design/human-interface-guidelines/ios/controls/switches/
+- [https://ko.dict.naver.com/#/entry/koko/447ffae49ce8478da60f64240c80df5b](https://ko.dict.naver.com/#/entry/koko/447ffae49ce8478da60f64240c80df5b)
+- [https://en.wikipedia.org/wiki/Switch](https://en.wikipedia.org/wiki/Switch)
+- [https://www.behance.net/gallery/70302039/History-Of-Toggle-UIUX-Case-Study-UI-Samples](https://www.behance.net/gallery/70302039/History-Of-Toggle-UIUX-Case-Study-UI-Samples)
+- [https://uxplanet.org/checkbox-and-toggle-in-forms-f0de6086ac41](https://uxplanet.org/checkbox-and-toggle-in-forms-f0de6086ac41)
+- [https://uxdesign.cc/selection-controls-ui-component-series-3badc0bdb546](https://uxdesign.cc/selection-controls-ui-component-series-3badc0bdb546)
+- [https://uxplanet.org/checkbox-vs-toggle-switch-7fc6e83f10b8](https://uxplanet.org/checkbox-vs-toggle-switch-7fc6e83f10b8)
+- [https://material.io/components/selection-controls#switches](https://material.io/components/selection-controls#switches)
+- [https://www.nngroup.com/articles/toggle-switch-guidelines/](https://www.nngroup.com/articles/toggle-switch-guidelines/)
+- [https://medium.muz.li/redesigning-the-toggle-switch-4eef8ded88cb](https://medium.muz.li/redesigning-the-toggle-switch-4eef8ded88cb)
+- [https://uxmovement.com/mobile/stop-misusing-toggle-switches/](https://uxmovement.com/mobile/stop-misusing-toggle-switches/)
+- [https://www.dmcinfo.com/latest-thinking/blog/id/9728/user-interface-design-tips-checkboxes-vs-toggle-switches](https://www.dmcinfo.com/latest-thinking/blog/id/9728/user-interface-design-tips-checkboxes-vs-toggle-switches)
+- [https://developer.apple.com/design/human-interface-guidelines/ios/controls/switches/](https://developer.apple.com/design/human-interface-guidelines/ios/controls/switches/)
