@@ -17,11 +17,15 @@ title: 2021년 회고
 
 
 
+
+
 ## 🤓 기획팀에 적응 중 (3월 ~ )
 
 - MS 오피스계열과 Jira / Confluence를 업무용 S/W로 사용함
 - 최근에는 기획 문서를 디자인팀과 함께 Figma에서 작성해서 공유하고 있음
 - 11월 컨플런스와 지라, 피그마를 사용해서 협업을 어떻게 하면 좋을 지 테스트해보고 있음
+
+
 
 
 
@@ -33,10 +37,14 @@ title: 2021년 회고
 
 
 
+
+
 ## 💔 건강에 이상 신호가 옴...
 
 - 허리가 아파서 엑스레이를 찍었더니 5,6번 경추 초기 디스크증상과 일자목 판정을 받아서 회사 메디컬 센터에서 계속 물리치료중...
 - 체중도 줄었다가 다시 늘어서 비만 상태... ㄷㄷㄷ 새해에 다시 다이어트 시작?! 😇
+
+
 
 
 
@@ -48,6 +56,8 @@ title: 2021년 회고
 
 
 
+
+
 ## ⛳️ 골프 레슨 받기 시작
 
 - 동이와 동이 부모님의 권유로 골프 레슨을 받기 시작함
@@ -56,11 +66,15 @@ title: 2021년 회고
 
 
 
+
+
 ## 🗒 **개인 블로그 업데이트함**
 
 - 워드프레스를 갱신해서 쓰다가 유료 구독을 해지함
 - [Github Pages](https://pages.github.com/)로 옮기고 [jekyll](https://jekyllrb-ko.github.io/)을 이용해서 마크다운으로 작성 중 ([kimtoma.com](https://kimtoma.com))
 - 매주 1개씩 글을 올릴 예정(52개) → ...이였으나 올해 작성한 글은 모두 합쳐서 3개... ㅜㅠ
+
+
 
 
 
@@ -73,11 +87,15 @@ title: 2021년 회고
 
 
 
+
+
 ## 👁 스마일 라식 수술함 (교정 시력 1.0됨)
 
 - 자전거 라이딩, PT레슨과 골프 레슨, 수영 등 운동을 할때마다 계속 소프트 렌즈를 사용했음
 - 더 이상 못 참겠다! 싶어서 친구 소개로 GS안과에서 스마일 라식 수술을 받았음 (2021-12-29)
 - 하루만에 광명을 되찾으니 너무 편안하고 안경쓰시는 분들에게 강력추천!
+
+
 
 
 
@@ -88,31 +106,25 @@ title: 2021년 회고
 
 
 
+
+
 ## 💸 주요 지름 결산
 
 - [Factor O2 로드 자전거](https://factorbikes.com/models/o2/) - 중고로 완차 샀는데 내년에는 더 자주 열심히!!!
-
 - [샤넬 코코 크러쉬 링](https://www.chanel.com/kr/fine-jewelry/p/J11785/coco-crush-ring/) - 안동퓌 선생님과 커플링
-
 - [비알레띠 뉴브리카](https://search.shopping.naver.com/catalog/28004141300?query=%EB%B9%84%EC%95%8C%EB%A0%88%EB%9D%A0%20%EB%89%B4%EB%B8%8C%EB%A6%AC%EC%B9%B4%204%EC%BB%B5&NaPm=ct%3Dkxu9rrcw%7Cci%3D6777247e72cab61f2b37c143eaf9d83b856dc39a%7Ctr%3Dslsl%7Csn%3D95694%7Chk%3Db6d978c92f8c170e3baf6a6fecb971916973b81e) - 고님의 소개로 모카포트로 집에서 내려먹으니 밖에서 사먹기 싫어짐
-
 - [아이폰 13 미니](https://www.apple.com/kr/iphone-13/) - 아이폰 12 맥스 쓰다가 넘어오니 너무 가볍고 손에 촥 붙고 좋은 것
-
 - [허먼밀러 에어론 체어](https://krgaming.hermanmiller.com/collections/shop-all/products/aeron-chair) - 회사 임직원 할인으로 샀는데 아직 도착안함
-
 - [신라호텔 패스트리 부티크 스페셜 케이크](https://www.shilla.net/seoul/dining/viewDining.do?contId=PSBQ#ad-image-0) - 케이크는 역시!
-
 - [오큘러스 퀘스트 2](https://www.oculus.com/quest-2/?locale=ko_KR) - VR 신세경을 보여주는 주커버그 센세이...
-
 - [오디오엔진 A2+ 스피커](https://audioengineusa.com/shop/wirelessspeakers/a2-wireless-computer-speakers/) - 아이맥 스피커와는 또 다른 맛
-
 - [소니 LP 플레이어](https://www.sony.co.kr/electronics/audio-components/ps-lx310bt) - 다시 야금야금 LP 모으는 중
-
 - [벨킨 맥세이프 3-in-1 무선 충전 스탠드](https://www.belkin.com/kr/chargers/wireless/charging-stands-docks/boost-charge-pro-3-in-1-wireless-charger-with-magsafe-15w/p/p-wiz009/) - 아이폰, 애플워치, 에어팟 모두 쓰는 앱등이는 편해서 웁니다...
-
 - [일엽편주 (청주/탁주)](http://www.ellyeoppyunjoo.com/) - 나 청주 좋아하는구나...
 
-  
+
+
+
 
 ## 😍 안동휘랑 행복하게 잘 지내고 있음
 
