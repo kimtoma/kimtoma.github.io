@@ -18,7 +18,6 @@ title: 2021년 회고
 
 
 
-
 ## 🤓 기획팀에 적응 중 (3월 ~ )
 
 - MS 오피스계열과 Jira / Confluence를 업무용 S/W로 사용함
@@ -32,7 +31,7 @@ title: 2021년 회고
 ## 🏆 작년에 이어 iF 디자인어워드 수상함
 
 - 2020년에 입사하고 나서 준비한 해외 디자인어워드 수상을 위해 Red dot과 iF 공모전을 출품 (Red dot 공모전은 탈락)
-- iF 디자인어워드는 커뮤니케이션 분야 Apps/Software 부문에서 본상 수상(https://ifworlddesignguide.com/entry/295159-paige)
+- iF 디자인어워드는 [커뮤니케이션 분야 Apps/Software 부문에서 본상 수상](https://ifworlddesignguide.com/entry/295159-paige)
 - iF 디자인어워드 제출과 F/U 을 해주신 모든 정현, 유민님과 디자인팀 제환, 아름, 다영님에게 감사!
 
 
@@ -51,7 +50,7 @@ title: 2021년 회고
 ## 🚴‍♂️ 로드 자전거 타기 시작
 
 - 배님이 추천해준 자전거를 급작스레(?) 충동구매해서 로드 자전거를 타기 시작함
-- 스트라바 기록: 55일 / 84시간 / 거리 1,883km / 고도 5,739m (https://www.strava.com/athletes/kimtoma)
+- [스트라바 기록](https://www.strava.com/athletes/kimtoma): 55일 / 84시간 / 거리 1,883km / 고도 5,739m
 - 남산도 올라가 보고, 북한산에 가려다가 펑크도 나보고... 9내년에는 더 자주 많이 타야지!
 
 
