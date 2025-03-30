@@ -1,9 +1,9 @@
 ---
 layout: page
-title: About Me
+title: About
 ---
 
-## 👋 About Me
+## 👋 Hello?
 
 안녕하세요 :)  
 
@@ -63,7 +63,9 @@ title: About Me
 - 명동 매장에서 다양한 사람을 만나며 ‘서비스의 본질은 사람을 이해하는 것’이라는 걸 처음 배운 시간  
 - (참고로, 4인분 시켜놓고 다이어트 콜라 시키는 손님도 진짜 있었어요)
 
+
 ---
+
 ## 🎓 Education
   
 > “학생 때가 제일 좋을 때”라는 말, 학생일 땐 왜 몰랐을까요?
@@ -78,22 +80,27 @@ title: About Me
 - 과제 폭탄 속에서도 졸업준비위원회 회장으로 활동하며 무사 졸업  
 - 덕분에 워킹홀리데이는 못 갔지만, 졸전은 성공적으로 마무리!  
 
+
 ---
+
 ## 🏆 Awards
 
 > 좋은 디자이너들과 협업하면서 iF 디자인 어워드를 2차례 수상할 수 있었어요.
 
-#### iF 디자인어워드 2021  
+### iF 디자인어워드 2021  
 - Communication 분야 App/SW 본상 수상
 - AI 기반 야구 콘텐츠 & 커뮤니티 모바일 앱, PAIGE
 - [🔗 PAIGE 수상작](https://ifdesign.com/en/winner-ranking/project/paige/295159)
 
-#### iF 디자인어워드 2020  
+
+### iF 디자인어워드 2020  
 - Communication 분야 App/SW 본상 수상 
 - 암호화폐 기반 리워드형 모바일 게임, The Hunters
 - [🔗 The Hunters 수상작](https://ifdesign.com/en/winner-ranking/project/mossland-the-hunters/274510)
 
+
 ---
+
 ## 🛠️ Tools
 
 > 인간은 도구를 사용하면서 진화해 왔고, AI도 결국 **인간의 지능을 확장**해주는 도구라고 생각해요.
@@ -105,7 +112,9 @@ title: About Me
 - **AI 도구**: ChatGPT, Claude, Ollama, Cursor, Dify
 - **커뮤니케이션**: Slack, Teams, Discord
 
+
 ---
+
 ## 🪪 Licenses
 
 > IT 자격증보단 실제 프로젝트에서 배우는 걸 좋아하는 타입이에요. 그래도 물속에서 쳐다보는 하늘이 좋아서 딴 스쿠버 다이빙 자격증은 있어요!
@@ -114,7 +123,9 @@ title: About Me
 - **🤿 스쿠버다이빙** - PADI Open Water Diver  
 - **🚘 운전면허** - 1종 보통
 
+
 ---
+
 ## 🌏 Have Been
 
 > 28살에 처음 비행기를 타고 떠난 보라카이 여행 이후 될 수 있으면 매년 한 번은 새로운 곳으로 떠나보려고 했어요. 최근 10년은 아내와 함께, 서로를 알아가는 여행이었고요.
@@ -131,7 +142,9 @@ title: About Me
 - **🇺🇸 미국** – LA, 샌프란시스코, 라스베이거스 (2017)  
 - **🇨🇦 캐나다** – 토론토 (2013)  
 
+
 ---
+
 ## 🔗 Connect
 
 > 이런 저를 조금 더 알고 싶다면, 아래 채널에서도 만나요 :)
