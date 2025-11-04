@@ -24,6 +24,10 @@ layout: default
 </aside>
 {% endif %}
 
+<!-- Mermaid - only loaded on post pages -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"
+        integrity="sha256-TtLOdUA8mstPoO6sGvHIGx2ceXrrX4KgIItO06XOn8A="
+        crossorigin="anonymous"></script>
 <script>
   mermaid.initialize({startOnLoad:true});
   window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));

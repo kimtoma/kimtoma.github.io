@@ -27,9 +27,6 @@ sass:
 
 # Options
 
-# Replace this value and uncomment to enable Google Analytics tracking
-ga_analytics: UA-163781427-1
-
 # Specify the author for blog posts
 author:
   name: Kim Kyungsoo
