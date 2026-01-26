@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark-poole">
+<html lang="en" data-theme="dark">
   {% include head.html %}
 
   <body>
@@ -12,6 +12,9 @@
             {% for nav in site.nav %}
             <small><a href="{{ nav.url }}">{{ nav.title }}</a></small>
             {% endfor %}
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+              <span class="theme-icon"></span>
+            </button>
           </nav>
         </h3>
       </header>
@@ -55,5 +58,43 @@
       ga("send", "pageview");
     </script>
     {% endif %}
+
+    <script>
+      (function() {
+        const toggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        const STORAGE_KEY = 'theme';
+
+        function getStoredTheme() {
+          return localStorage.getItem(STORAGE_KEY);
+        }
+
+        function setTheme(theme) {
+          html.setAttribute('data-theme', theme);
+          localStorage.setItem(STORAGE_KEY, theme);
+          updateIcon(theme);
+        }
+
+        function updateIcon(theme) {
+          const icon = toggle.querySelector('.theme-icon');
+          icon.textContent = theme === 'dark' ? '🌞' : '🌚';
+        }
+
+        // Initialize theme
+        const storedTheme = getStoredTheme();
+        if (storedTheme) {
+          setTheme(storedTheme);
+        } else {
+          updateIcon('dark');
+        }
+
+        // Toggle handler
+        toggle.addEventListener('click', function() {
+          const current = html.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        });
+      })();
+    </script>
   </body>
 </html>
