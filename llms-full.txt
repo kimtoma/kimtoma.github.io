@@ -1,0 +1,150 @@
+# kimtoma.com - Full Context for LLMs
+
+> Personal blog and portfolio of Kyungsoo Kim (김경수), a Service Planner & Product Designer with 15+ years of experience in digital product design.
+
+## Author Profile
+
+### Basic Information
+- Name: Kim Kyungsoo (김경수)
+- Nickname: kimtoma
+- Role: Service Planner, UX Designer, Product Manager
+- Location: Pangyo, South Korea
+- Email: kimtoma@gmail.com
+
+### Philosophy
+"쓸모 있으면서도 사람을 향한 서비스" (Services that are useful and human-centered)
+"좋은 사람과 좋은 팀이 있어야 좋은 제품이 만들어진다" (Good products come from good people and good teams)
+
+## Career History
+
+### KT Corporation (2024.06 ~ Present)
+- Position: Principal Researcher, Agentic AI Lab
+- Focus: AI Agent Service Planning
+- Organization: R&D Research Institute, Technology Innovation Division
+
+### NCsoft (2020.03 ~ 2024.05)
+- Position: Team Lead, Senior Product Manager, AI Product Team
+- Achievement: Led PAIGE project (iF Design Award 2021)
+- Focus: NLP/Streaming technology-based AI services
+
+### H-Nine (2010.06 ~ 2020.02)
+- Position: Team Lead, UX Design Manager
+- Achievement: Led The Hunters project (iF Design Award 2020)
+- Focus: Mobile apps, tablets, kiosks, robots UX design
+- Clients: Samsung, SK, Daelim Construction, startups
+
+## Awards
+
+### iF Design Award 2021
+- Category: Communication / App/SW
+- Project: PAIGE - AI-powered KBO baseball content & community app
+- URL: https://ifdesign.com/en/winner-ranking/project/paige/295159
+
+### iF Design Award 2020
+- Category: Communication / App/SW
+- Project: The Hunters - Cryptocurrency-based reward mobile game
+- URL: https://ifdesign.com/en/winner-ranking/project/mossland-the-hunters/274510
+
+## Projects
+
+### Main Projects
+1. **PAIGE** (https://paige.kr.nc.com/)
+   - AI-powered app for KBO Baseball fans
+   - Features: AI content generation, community, baseball statistics
+   - Award: iF Design Award 2021
+
+2. **The Hunters**
+   - Blockchain-based reward game
+   - Platform: Mossland
+   - Award: iF Design Award 2020
+
+3. **Wenzi** (https://wenzi.io)
+   - Marketplace for handmade classes & goods
+
+### Side Projects
+- **Momat Stickers**: LINE character stickers for foodies
+- **Playlisteem**: Music playlist sharing on Steem blockchain
+- **Translation Projects**: Smashing Magazine articles translated to Korean via Webactually
+
+## Blog Topics
+
+The blog covers:
+- UX/UI Design (buttons, UI switches, color contrast, thumb zones)
+- Design Tools (Abstract, Sketch, Figma)
+- Project Management (Jira, retrospectives)
+- Technology Trends (yearly trend analysis)
+- AI & Machine Learning
+- Blockchain & Cryptocurrency
+- Personal Development & Teamwork
+
+## Tools & Skills
+
+### Knowledge Management
+Confluence, Obsidian, Notion, GitHub, MS Office
+
+### Project Management
+Jira, Asana
+
+### Design
+Figma, Sketch, Adobe Creative Suite, Whiteboard, Post-it
+
+### AI Tools
+ChatGPT, Claude, Ollama, Cursor, Dify
+
+### Communication
+Slack, Teams, Discord
+
+## Education
+
+### Hongik University, Sejong Campus (2002 ~ 2010)
+- Major: Digital Media Design
+- Degree: Bachelor's
+
+### Munil High School (1999 ~ 2002)
+- Art Club member
+- Interest in comics and illustration
+
+## Certifications
+
+- PADI Advanced Open Water Diver
+- PADI Open Water Diver
+- Korean Driver's License (Class 1)
+
+## Travel Experience
+
+Countries visited: Iceland, UK, France, Thailand, Vietnam, Indonesia, Philippines, Hong Kong, Japan, USA, Canada
+
+## Social Links
+
+- Website: https://kimtoma.com
+- GitHub: https://github.com/kimtoma
+- Twitter/X: https://x.com/kimtoma (Since 2008)
+- Instagram: https://www.instagram.com/kimtoma
+- YouTube: https://www.youtube.com/@kimtoma
+- LinkedIn: https://www.linkedin.com/in/kimkyungsoo/
+
+## Technical Details
+
+### Site Architecture
+- Framework: Jekyll 4.1.1
+- Theme: Poole (customized with Dark/Light mode toggle)
+- Hosting: GitHub Pages
+- Domain: kimtoma.com (via Cloudflare)
+- Analytics: Google Analytics, Google Tag Manager, Cloudflare Insights
+
+### Features
+- Bilingual content (Korean primary, some English)
+- Dark/Light theme toggle with localStorage persistence
+- Mermaid.js diagram support
+- RSS/Atom feed
+- SEO optimized with jekyll-seo-tag
+
+## Content Language
+
+Primary language is Korean (한국어). Some technical content and project descriptions are in English.
+
+## Contact
+
+For professional inquiries:
+- Email: kimtoma@gmail.com
+- LinkedIn: https://www.linkedin.com/in/kimkyungsoo/

@@ -1,0 +1,36 @@
+# kimtoma.com
+
+> Personal blog and portfolio of Kyungsoo Kim (김경수), a Service Planner & Product Designer based in South Korea.
+
+## About
+
+- Name: Kim Kyungsoo (김경수)
+- Role: Service Planner, UX/Product Designer
+- Current: KT R&D - AI Agent Service Planning
+- Experience: 15+ years in digital product design
+- Location: Pangyo, South Korea
+
+## Featured Projects
+
+- PAIGE: AI-powered KBO baseball app (iF Design Award 2021)
+- The Hunters: Blockchain-based reward game (iF Design Award 2020)
+
+## Topics
+
+- UX/UI Design
+- Service Planning
+- AI & Technology Trends
+- Product Management
+
+## Links
+
+- Website: https://kimtoma.com
+- GitHub: https://github.com/kimtoma
+- Twitter/X: https://x.com/kimtoma
+- LinkedIn: https://www.linkedin.com/in/kimkyungsoo/
+
+## Technical
+
+- Built with Jekyll 4.1
+- Theme: Poole (Dark/Light mode)
+- Hosted on GitHub Pages
