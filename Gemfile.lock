@@ -75,6 +75,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler (>= 2.4.22)
   jekyll
   jekyll-gist
   jekyll-paginate
