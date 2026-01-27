@@ -12,6 +12,13 @@
 
 UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생각을 기록합니다.
 
+### 사이트
+
+| URL | 설명 |
+|-----|------|
+| [kimtoma.com](https://kimtoma.com) | 개인 블로그 |
+| [chat.kimtoma.com](https://chat.kimtoma.com) | AI 챗봇 (Gemini 기반) |
+
 ### 주요 프로젝트
 
 | 프로젝트 | 설명 | 수상 |
@@ -21,19 +28,29 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 
 ### 기술 스택
 
-- **프레임워크**: Jekyll 4.1
-- **테마**: Poole (Dark mode)
-- **배포**: GitHub Pages
-- **도메인**: kimtoma.com
+**블로그 (kimtoma.com)**
+- Jekyll 4.1 + Poole 테마
+- SCSS + CSS Variables
+- Dark/Light 테마 지원
+- GitHub Pages + Cloudflare CDN
+
+**AI 챗봇 (chat.kimtoma.com)**
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Cloudflare Workers (Gemini API 프록시)
+- iMessage 스타일 UI + 타이핑 효과
 
 ### 로컬 실행
 
 ```bash
-# 의존성 설치
+# 블로그 실행 (http://localhost:4000)
 bundle install
-
-# 개발 서버 실행 (http://localhost:4000)
 bundle exec jekyll serve
+
+# 챗봇 실행 (http://localhost:5173)
+cd chat-app
+npm install
+npm run dev
 ```
 
 ### 라이선스
@@ -50,6 +67,13 @@ MIT License - 테마 원작자: [Mark Otto](https://github.com/mdo)
 
 Writing about UX/UI design, service planning, AI, and technology trends.
 
+### Sites
+
+| URL | Description |
+|-----|-------------|
+| [kimtoma.com](https://kimtoma.com) | Personal blog |
+| [chat.kimtoma.com](https://chat.kimtoma.com) | AI Chatbot (Gemini-powered) |
+
 ### Featured Projects
 
 | Project | Description | Award |
@@ -59,19 +83,29 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 
 ### Tech Stack
 
-- **Framework**: Jekyll 4.1
-- **Theme**: Poole (Dark mode)
-- **Hosting**: GitHub Pages
-- **Domain**: kimtoma.com
+**Blog (kimtoma.com)**
+- Jekyll 4.1 + Poole theme
+- SCSS + CSS Variables
+- Dark/Light theme support
+- GitHub Pages + Cloudflare CDN
+
+**AI Chatbot (chat.kimtoma.com)**
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Cloudflare Workers (Gemini API proxy)
+- iMessage-style UI + typing effect
 
 ### Local Development
 
 ```bash
-# Install dependencies
+# Run blog (http://localhost:4000)
 bundle install
-
-# Run dev server (http://localhost:4000)
 bundle exec jekyll serve
+
+# Run chatbot (http://localhost:5173)
+cd chat-app
+npm install
+npm run dev
 ```
 
 ### License
