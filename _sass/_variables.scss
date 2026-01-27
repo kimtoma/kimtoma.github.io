@@ -1,4 +1,6 @@
+// Colors - matching chat.kimtoma.com
 :root {
+  // Gray scale
   --gray-000: #f8f9fa;
   --gray-100: #f1f3f5;
   --gray-200: #e9ecef;
@@ -9,11 +11,13 @@
   --gray-700: #495057;
   --gray-800: #343a40;
   --gray-900: #212529;
-  --dark-poole-001: hsl(200, 3%, 12%);
-  --dark-poole-002: hsl(0, 0%, 85%);
-  --dark-poole-link-color: rgba(255, 255, 255, 0.75);
-  --dark-poole-link-hover: #fff;
 
+  // Brand colors
+  --primary: #0080ff;
+  --primary-hover: #0066cc;
+  --primary-light: #4dabf7;
+
+  // Semantic colors
   --red: #fa5252;
   --pink: #e64980;
   --grape: #be4bdb;
@@ -30,66 +34,70 @@
   --blue-400: #4dabf7;
   --yellow-100: #fff3bf;
 
-  --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --body-font-size: 20px;
-  --body-line-height: 1.5;
-  --body-color: var(--gray-700);
-  --body-bg: #fff;
+  // Typography
+  --body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --body-font-size: 18px;
+  --body-line-height: 1.6;
 
-  --link-color: var(--blue);
-  --link-hover-color: #1c7ed6;
-
-  --heading-color: var(--gray-900);
-
-  --border-color: var(--gray-300);
-  --border-radius: 0.25rem;
-
-  --code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
-  --code-color: var(--grape);
-  --code-bg: var(--gray-000);
-
+  // Spacing
   --spacer: 1rem;
   --spacer-2: calc(var(--spacer) * 1.5);
   --spacer-3: calc(var(--spacer) * 3);
+  --border-radius: 0.5rem;
+
+  // Code
+  --code-font: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --body-color: var(--gray-300);
-    --body-bg: var(--gray-800);
-
-    --heading-color: #fff;
-
-    --link-color: var(--blue-300);
-    --link-hover-color: var(--blue-400);
-
-    --border-color: rgba(255, 255, 255, 0.15);
-
-    --code-bg: var(--gray-900);
-  }
-}
-
-// Light theme
+// Light theme (default)
 [data-theme="light"] {
-  --body-color: var(--gray-700);
-  --body-bg: #fff;
-  --heading-color: var(--gray-900);
-  --link-color: var(--blue);
-  --link-hover-color: #1c7ed6;
-  --border-color: var(--gray-300);
-  --code-bg: var(--gray-000);
+  --body-color: hsl(0, 0%, 9%);
+  --body-bg: hsl(0, 0%, 100%);
+  --heading-color: hsl(0, 0%, 3.9%);
+
+  --link-color: var(--primary);
+  --link-hover-color: var(--primary-hover);
+
+  --border-color: hsl(0, 0%, 89.8%);
+
+  --code-color: var(--grape);
+  --code-bg: hsl(0, 0%, 96.1%);
+
+  --muted-color: hsl(0, 0%, 45.1%);
+  --card-bg: hsl(0, 0%, 96.1%);
 }
 
-// Dark Poole theme
+// Dark theme - matching chat.kimtoma.com
 [data-theme="dark"] {
-  --body-color: var(--dark-poole-002);
-  --body-bg: var(--dark-poole-001);
-  --heading-color: var(--dark-poole-002);
-  --link-color: var(--dark-poole-link-color);
-  --link-hover-color: var(--dark-poole-link-hover);
-  --border-color: rgba(255, 255, 255, 0.15);
-  --code-bg: var(--gray-900);
+  --body-color: hsl(0, 0%, 98%);
+  --body-bg: hsl(0, 0%, 7%);
+  --heading-color: hsl(0, 0%, 98%);
+
+  --link-color: var(--primary);
+  --link-hover-color: var(--primary-light);
+
+  --border-color: hsl(0, 0%, 20%);
+
+  --code-color: var(--blue-300);
+  --code-bg: hsl(0, 0%, 14.9%);
+
+  --muted-color: hsl(0, 0%, 63.9%);
+  --card-bg: hsl(0, 0%, 14.9%);
+}
+
+// System preference fallback
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --body-color: hsl(0, 0%, 98%);
+    --body-bg: hsl(0, 0%, 7%);
+    --heading-color: hsl(0, 0%, 98%);
+    --link-color: var(--primary);
+    --link-hover-color: var(--primary-light);
+    --border-color: hsl(0, 0%, 20%);
+    --code-bg: hsl(0, 0%, 14.9%);
+    --muted-color: hsl(0, 0%, 63.9%);
+    --card-bg: hsl(0, 0%, 14.9%);
+  }
 }

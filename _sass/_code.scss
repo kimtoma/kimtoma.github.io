@@ -1,22 +1,37 @@
-// Code
-//
-// Inline and block-level code snippets. Includes tweaks to syntax highlighted
-// snippets from Pygments/Rouge and Gist embeds.
+// Code - matching chat.kimtoma.com style
 
 code,
 pre {
   font-family: var(--code-font);
 }
 
+// Inline code
 code {
+  padding: 0.2em 0.4em;
   font-size: 85%;
+  color: var(--code-color);
+  background-color: var(--code-bg);
+  border-radius: 0.375rem;
 }
 
+// Code blocks
 pre {
   display: block;
   margin-top: 0;
-  margin-bottom: var(--spacer-3);
+  margin-bottom: var(--spacer-2);
+  padding: var(--spacer);
   overflow: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: var(--code-bg);
+  border-radius: var(--border-radius);
+
+  code {
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    border-radius: 0;
+  }
 }
 
 .highlight {
@@ -24,9 +39,11 @@ pre {
   margin-bottom: var(--spacer);
   background-color: var(--code-bg);
   border-radius: var(--border-radius);
+  overflow: auto;
 
   pre {
     margin-bottom: 0;
+    padding: 0;
   }
 
   // Triple backticks (code fencing) doubles the .highlight elements
@@ -48,7 +65,8 @@ pre {
   .gutter {
     vertical-align: top;
     user-select: none;
-    opacity: .25;
+    opacity: 0.4;
+    padding-right: var(--spacer);
   }
 }
 

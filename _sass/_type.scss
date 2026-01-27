@@ -1,11 +1,9 @@
-// Typography
-//
-// Headings, body text, lists, and other misc typographic elements.
+// Typography - matching chat.kimtoma.com style
 
 h1, h2, h3, h4, h5, h6 {
-  margin-bottom: .5rem;
-  font-weight: 600;
-  line-height: 1.25;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  line-height: 1.3;
   color: var(--heading-color);
 }
 
@@ -14,7 +12,7 @@ h1 {
 }
 
 h2 {
-  margin-top: 1rem;
+  margin-top: 2rem;
   font-size: 1.5rem;
 }
 
@@ -39,24 +37,17 @@ ul, ol, dl {
 }
 
 dt {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 dd {
-  margin-bottom: .5rem;
-}
-
-hr {
-  position: relative;
-  margin: var(--spacer-2) 0;
-  border: 0;
-  border-top: 1px solid var(--border-color);
+  margin-bottom: 0.5rem;
 }
 
 abbr {
   font-size: 85%;
-  font-weight: bold;
-  color: var(--gray-600);
+  font-weight: 600;
+  color: var(--muted-color);
   text-transform: uppercase;
 
   &[title] {
@@ -66,18 +57,16 @@ abbr {
 }
 
 blockquote {
-  padding: .5rem 1rem;
-  margin: .8rem 0;
-  color: var(--gray-500);
-  border-left: .25rem solid var(--border-color);
+  padding: var(--spacer);
+  margin: var(--spacer) 0;
+  color: var(--muted-color);
+  border-left: 4px solid var(--primary);
+  background-color: var(--card-bg);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  font-style: italic;
 
   p:last-child {
     margin-bottom: 0;
-  }
-
-  @media (min-width: 30em) {
-    padding-right: 5rem;
-    padding-left: 1.25rem;
   }
 }
 
@@ -85,31 +74,25 @@ figure {
   margin: 0;
 }
 
-
 // Markdown footnotes
-//
-// See the example content post for an example.
-
-// Footnote number within body text
 a[href^="#fn:"],
-// Back to footnote link
 a[href^="#fnref:"] {
   display: inline-block;
-  margin-left: .1rem;
-  font-weight: bold;
+  margin-left: 0.1rem;
+  font-weight: 600;
 }
 
-// List of footnotes
 .footnotes {
   margin-top: 2rem;
+  padding-top: var(--spacer);
+  border-top: 1px solid var(--border-color);
   font-size: 85%;
+  color: var(--muted-color);
 }
 
-// Custom type
-//
-// Extend paragraphs with `.lead` for larger introductory text.
-
+// Lead text for introductions
 .lead {
   font-size: 1.25rem;
-  font-weight: 300;
+  font-weight: 400;
+  color: var(--muted-color);
 }

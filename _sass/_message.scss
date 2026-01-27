@@ -1,12 +1,31 @@
-// Messages
-//
-// Show alert messages to users. You may add it to single elements like a `<p>`,
-// or to a parent if there are multiple elements to show.
+// Messages - matching chat.kimtoma.com style
 
 .message {
   padding: var(--spacer);
   margin-bottom: var(--spacer);
-  color: var(--gray-900);
-  background-color: var(--yellow-100);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary);
   border-radius: var(--border-radius);
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Message variants
+.message-info {
+  border-left-color: var(--blue);
+}
+
+.message-warning {
+  border-left-color: var(--yellow);
+}
+
+.message-error {
+  border-left-color: var(--red);
+}
+
+.message-success {
+  border-left-color: var(--green);
 }

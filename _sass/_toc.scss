@@ -1,16 +1,40 @@
-// Table of Contents
+// Table of Contents - matching chat.kimtoma.com style
 
 #markdown-toc {
-  padding: var(--spacer-2) var(--spacer-3);
+  padding: var(--spacer);
   margin-bottom: var(--spacer-2);
-  border: solid var(--border-color);
-  border-width: 1px 0;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  list-style-position: inside;
 
   &::before {
     display: block;
-    margin-left: calc(var(--spacer-3) * -1);
+    margin-bottom: 0.5rem;
     content: "Contents";
-    font-size: 85%;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  li {
+    padding: 0.25rem 0;
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: var(--link-hover-color);
+    }
+  }
+
+  // Nested lists
+  ul {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    padding-left: 1.25rem;
   }
 }

@@ -1,11 +1,10 @@
-// Masthead
-//
-// Super small header above the content for site name and short description.
+// Masthead - matching chat.kimtoma.com header style
 
 .masthead {
   padding-top: var(--spacer);
   padding-bottom: var(--spacer);
-  margin-bottom: var(--spacer-3);
+  margin-bottom: var(--spacer-2);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .masthead-title {
@@ -14,16 +13,24 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.75rem;
 
   > a {
     color: inherit;
     text-decoration: none;
+    font-weight: 600;
+    font-size: 1.25rem;
+
+    &:hover {
+      color: var(--link-color);
+      text-decoration: none;
+    }
   }
 
   small {
     font-weight: 400;
-    opacity: 0.5;
+    color: var(--muted-color, var(--body-color));
+    opacity: 0.7;
   }
 }
 
@@ -31,33 +38,57 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
 
   a {
     white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted-color, var(--body-color));
+    opacity: 0.8;
+    transition: opacity 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      opacity: 1;
+      color: var(--link-color);
+      text-decoration: none;
+    }
   }
 }
 
-// Theme toggle button
+// Theme toggle button - matching chat style
 .theme-toggle {
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--card-bg, transparent);
   border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
-  padding: 0.25rem;
-  margin-left: 0.5rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1;
   color: var(--body-color);
   opacity: 0.7;
-  transition: opacity 0.2s ease;
-  vertical-align: middle;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 
   &:hover {
     opacity: 1;
+    background: var(--card-bg);
   }
 
   &:focus {
-    outline: none;
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.theme-icon {
+  display: block;
 }

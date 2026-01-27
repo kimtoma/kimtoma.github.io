@@ -1,9 +1,12 @@
-// Body resets
-//
-// Update the foundational and global aspects of the page.
+// Body resets - matching chat.kimtoma.com style
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -14,17 +17,19 @@ body {
   color: var(--body-color);
   background-color: var(--body-bg);
   -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-// No `:visited` state is required by default (browsers will use `a`)
 a {
   color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.15s ease;
 
-  // `:focus` is linked to `:hover` for basic accessibility
   &:hover,
   &:focus {
     color: var(--link-hover-color);
+    text-decoration: underline;
   }
 
   strong {
@@ -48,7 +53,7 @@ table {
 
 td,
 th {
-  padding: .25rem .5rem;
+  padding: 0.5rem 0.75rem;
   border-color: inherit;
   border-style: solid;
   border-width: 0;
@@ -57,6 +62,7 @@ th {
 
 th {
   text-align: left;
+  font-weight: 600;
 }
 
 thead th {
@@ -64,7 +70,28 @@ thead th {
 }
 
 mark {
-  padding: .15rem;
+  padding: 0.15rem 0.3rem;
   background-color: var(--yellow-100);
-  border-radius: .125rem;
+  border-radius: 0.25rem;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  margin: var(--spacer-2) 0;
+}
+
+blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: var(--spacer);
+  margin-left: 0;
+  margin-right: 0;
+  color: var(--muted-color, var(--body-color));
+  font-style: italic;
+}
+
+// Selection
+::selection {
+  background-color: var(--primary);
+  color: white;
 }
