@@ -1,0 +1,10 @@
+name = "gemini-proxy"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables (set these using wrangler secret)
+# GEMINI_API_KEY = "your-api-key-here"  # DO NOT put real key here
+# ALLOWED_ORIGINS = "https://chat.kimtoma.com"
+
+[env.production]
+name = "gemini-proxy"

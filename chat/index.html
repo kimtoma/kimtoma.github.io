@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - kimtoma.com</title>
+
+  <!-- Reuse blog styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+  <!-- Markdown & Code highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <style>
+    :root {
+      --gray-000: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-300: #dee2e6;
+      --gray-400: #ced4da;
+      --gray-500: #adb5bd;
+      --gray-600: #868e96;
+      --gray-700: #495057;
+      --gray-800: #343a40;
+      --gray-900: #212529;
+      --dark-poole-001: hsl(200, 3%, 12%);
+      --dark-poole-002: hsl(0, 0%, 85%);
+
+      --blue: #228be6;
+      --blue-300: #74c0fc;
+      --blue-400: #4dabf7;
+      --green: #40c057;
+
+      --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+      --border-radius: 0.5rem;
+    }
+
+    [data-theme="light"] {
+      --body-color: var(--gray-700);
+      --body-bg: #fff;
+      --heading-color: var(--gray-900);
+      --message-user-bg: var(--blue);
+      --message-ai-bg: var(--gray-100);
+      --message-ai-color: var(--gray-900);
+      --input-bg: var(--gray-000);
+      --input-border: var(--gray-300);
+      --button-bg: var(--blue);
+      --code-bg: var(--gray-900);
+    }
+
+    [data-theme="dark"] {
+      --body-color: var(--dark-poole-002);
+      --body-bg: var(--dark-poole-001);
+      --heading-color: var(--dark-poole-002);
+      --message-user-bg: var(--blue-400);
+      --message-ai-bg: var(--gray-800);
+      --message-ai-color: var(--gray-200);
+      --input-bg: var(--gray-800);
+      --input-border: rgba(255, 255, 255, 0.15);
+      --button-bg: var(--blue-300);
+      --code-bg: var(--gray-900);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--body-font);
+      background-color: var(--body-bg);
+      color: var(--body-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--input-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: var(--heading-color);
+    }
+
+    h1 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-family: var(--body-font);
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.8;
+    }
+
+    .btn-secondary {
+      background: var(--input-bg);
+      color: var(--body-color);
+      border: 1px solid var(--input-border);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      display: flex;
+      gap: 1rem;
+      max-width: 85%;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.ai {
+      align-self: flex-start;
+    }
+
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+
+    .message.user .message-avatar {
+      background: var(--message-user-bg);
+    }
+
+    .message.ai .message-avatar {
+      background: var(--message-ai-bg);
+    }
+
+    .message-content {
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      line-height: 1.6;
+    }
+
+    .message.user .message-content {
+      background: var(--message-user-bg);
+      color: white;
+    }
+
+    .message.ai .message-content {
+      background: var(--message-ai-bg);
+      color: var(--message-ai-color);
+    }
+
+    .message-content p:first-child {
+      margin-top: 0;
+    }
+
+    .message-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .message-content pre {
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 0.25rem;
+      overflow-x: auto;
+      margin: 0.5rem 0;
+    }
+
+    .message-content code {
+      font-family: var(--code-font);
+      font-size: 0.875rem;
+    }
+
+    .message-content :not(pre) > code {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 0.25rem;
+    }
+
+    .typing {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: var(--message-ai-bg);
+      border-radius: var(--border-radius);
+      color: var(--message-ai-color);
+      max-width: 85px;
+    }
+
+    .typing.active {
+      display: flex;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .typing-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% { opacity: 0.3; }
+      30% { opacity: 1; }
+    }
+
+    .input-area {
+      padding: 1rem;
+      border-top: 1px solid var(--input-border);
+    }
+
+    .input-container {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--input-border);
+      border-radius: var(--border-radius);
+      background: var(--input-bg);
+      color: var(--body-color);
+      font-family: var(--body-font);
+      font-size: 1rem;
+      resize: none;
+      min-height: 52px;
+      max-height: 200px;
+    }
+
+    #messageInput:focus {
+      outline: none;
+      border-color: var(--button-bg);
+    }
+
+    #sendBtn {
+      padding: 0.75rem 1.5rem;
+      background: var(--button-bg);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-family: var(--body-font);
+      font-size: 1rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    #sendBtn:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+
+    #sendBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--gray-500);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .empty-state h2 {
+      font-size: 2rem;
+      margin: 1rem 0 0.5rem;
+      color: var(--heading-color);
+    }
+
+    .empty-state p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><a href="/">kimtoma.com</a> / chat</h1>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="clearBtn">새 대화</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span class="theme-icon">🌞</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="messages">
+      <div class="empty-state">
+        <div style="font-size: 3rem;">💬</div>
+        <h2>안녕하세요!</h2>
+        <p>무엇을 도와드릴까요?</p>
+      </div>
+    </div>
+
+    <div class="typing">
+      <div class="typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-container">
+        <textarea
+          id="messageInput"
+          placeholder="메시지를 입력하세요..."
+          rows="1"
+        ></textarea>
+        <button id="sendBtn">전송</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="chat.js" data-cfasync="false"></script>
+</body>
+</html>
