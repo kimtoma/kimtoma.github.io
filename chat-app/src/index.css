@@ -40,6 +40,13 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+  html, body, #root {
+    @apply h-full;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
   body {
     @apply bg-background text-foreground;
@@ -47,6 +54,25 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* Mobile viewport fix */
+.h-screen-safe {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Safe area padding for iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.input-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* iMessage style bubbles */

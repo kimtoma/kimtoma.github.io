@@ -185,7 +185,7 @@ export function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto">
+    <div className="flex flex-col h-screen-safe max-w-2xl mx-auto relative">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">
@@ -220,7 +220,7 @@ export function Chat() {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 pb-24">
         {messages.length === 0 && !isTyping ? (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">
@@ -281,7 +281,7 @@ export function Chat() {
       </div>
 
       {/* Input */}
-      <div className="border-t border-border bg-background p-4 pb-safe">
+      <div className="input-container border-t border-border bg-background p-4 max-w-2xl mx-auto w-full">
         <div className="flex items-end gap-2 bg-secondary rounded-2xl px-4 py-2">
           <textarea
             ref={inputRef}
