@@ -1,0 +1,308 @@
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Send, Trash2, Moon, Sun } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { marked } from 'marked'
+
+interface Message {
+  role: 'user' | 'assistant'
+  content: string
+  isTyping?: boolean
+}
+
+const API_ENDPOINT = 'https://gemini-proxy.kimtoma.workers.dev/chat'
+const STORAGE_KEY = 'chat_messages'
+
+// Configure marked
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+})
+
+// Split text into sentences
+function splitIntoSentences(text: string): string[] {
+  // Split by sentence endings, keeping the delimiter
+  const sentences = text.split(/(?<=[.!?。！？\n])\s*/g).filter(s => s.trim())
+
+  // If no sentences found, split by newlines or return as single chunk
+  if (sentences.length === 0) {
+    return text.split('\n').filter(s => s.trim())
+  }
+
+  return sentences
+}
+
+export function Chat() {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+  const [isDark, setIsDark] = useState(true)
+  const [typingContent, setTypingContent] = useState('')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const typingRef = useRef<boolean>(false)
+
+  // Load messages from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        // Remove any typing flags from saved messages
+        setMessages(parsed.map((m: Message) => ({ ...m, isTyping: false })))
+      } catch (e) {
+        console.error('Failed to parse saved messages', e)
+      }
+    }
+
+    // Load theme preference
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme) {
+      setIsDark(savedTheme === 'dark')
+    } else {
+      setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    }
+  }, [])
+
+  // Save messages to localStorage (exclude typing state)
+  useEffect(() => {
+    const toSave = messages.map(m => ({ role: m.role, content: m.content }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
+  }, [messages])
+
+  // Apply theme
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark)
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  }, [isDark])
+
+  // Scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, typingContent])
+
+  // Typing effect
+  const typeMessage = useCallback(async (fullContent: string) => {
+    typingRef.current = true
+    setIsTyping(true)
+    setTypingContent('')
+
+    const sentences = splitIntoSentences(fullContent)
+    let accumulated = ''
+
+    for (const sentence of sentences) {
+      if (!typingRef.current) break
+
+      // Add sentence character by character for smooth effect
+      for (let i = 0; i < sentence.length; i++) {
+        if (!typingRef.current) break
+        accumulated += sentence[i]
+        setTypingContent(accumulated)
+        // Faster typing speed
+        await new Promise(resolve => setTimeout(resolve, 15))
+      }
+
+      // Small pause between sentences
+      if (typingRef.current) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+      }
+    }
+
+    // Typing complete - add full message
+    if (typingRef.current) {
+      setMessages(prev => [...prev, { role: 'assistant', content: fullContent }])
+    }
+
+    setIsTyping(false)
+    setTypingContent('')
+    typingRef.current = false
+  }, [])
+
+  // Auto-resize textarea
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+    e.target.style.height = 'auto'
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
+  }
+
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading || isTyping) return
+
+    const userMessage: Message = { role: 'user', content: input.trim() }
+    setMessages(prev => [...prev, userMessage])
+    setInput('')
+    setIsLoading(true)
+
+    // Reset textarea height
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage.content,
+          history: messages,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      setIsLoading(false)
+      // Start typing effect
+      await typeMessage(data.response)
+    } catch (error) {
+      setIsLoading(false)
+      const errorContent = `오류가 발생했습니다. ${error instanceof Error ? error.message : '잠시 후 다시 시도해주세요.'}`
+      setMessages(prev => [...prev, { role: 'assistant', content: errorContent }])
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
+
+  const clearMessages = () => {
+    typingRef.current = false
+    setIsTyping(false)
+    setTypingContent('')
+    setMessages([])
+    localStorage.removeItem(STORAGE_KEY)
+  }
+
+  const renderMarkdown = (content: string) => {
+    return { __html: marked.parse(content) as string }
+  }
+
+  return (
+    <div className="flex flex-col h-screen max-w-2xl mx-auto">
+      {/* Header */}
+      <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground font-semibold">
+            K
+          </div>
+          <div>
+            <h1 className="font-semibold text-foreground">kimtoma</h1>
+            <p className="text-xs text-muted-foreground">
+              {isLoading ? '생각 중...' : isTyping ? '입력 중...' : 'AI Assistant'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsDark(!isDark)}
+            className="text-muted-foreground"
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={clearMessages}
+            className="text-muted-foreground"
+          >
+            <Trash2 className="h-5 w-5" />
+          </Button>
+        </div>
+      </header>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
+        {messages.length === 0 && !isTyping ? (
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">
+              K
+            </div>
+            <h2 className="text-lg font-medium text-foreground mb-2">kimtoma에게 물어보세요</h2>
+            <p className="text-sm max-w-xs">
+              AI 에이전트, UX 디자인, 서비스 기획 등<br />
+              무엇이든 물어보세요!
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex",
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                )}
+              >
+                <div
+                  className={cn(
+                    message.role === 'user' ? 'bubble-user' : 'bubble-assistant',
+                    'markdown-content'
+                  )}
+                  dangerouslySetInnerHTML={renderMarkdown(message.content)}
+                />
+              </div>
+            ))}
+
+            {/* Loading indicator */}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bubble-assistant">
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Typing effect */}
+            {isTyping && typingContent && (
+              <div className="flex justify-start">
+                <div
+                  className="bubble-assistant markdown-content"
+                  dangerouslySetInnerHTML={renderMarkdown(typingContent)}
+                />
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-border bg-background p-4 pb-safe">
+        <div className="flex items-end gap-2 bg-secondary rounded-2xl px-4 py-2">
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="메시지를 입력하세요..."
+            disabled={isLoading || isTyping}
+            rows={1}
+            className="flex-1 bg-transparent resize-none outline-none text-foreground placeholder:text-muted-foreground text-sm py-1.5 max-h-[120px]"
+          />
+          <Button
+            onClick={sendMessage}
+            disabled={!input.trim() || isLoading || isTyping}
+            size="icon"
+            className="h-8 w-8 rounded-full shrink-0"
+          >
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

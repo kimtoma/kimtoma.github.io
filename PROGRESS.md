@@ -1,252 +1,119 @@
-# 🚧 작업 진행 상황: chat.kimtoma.com
+# chat.kimtoma.com
 
-**마지막 업데이트**: 2026-01-27
-**상태**: 코드 작성 완료, 배포 대기 중
+**마지막 업데이트**: 2026-01-28
+**상태**: React UI 리팩토링 진행 중
 
-## ✅ 완료된 작업
+## 완료된 작업
 
-### 1. Frontend 개발 완료
-- ✅ `chat/index.html`: 채팅 UI (블로그와 동일한 Dark/Light 테마)
-- ✅ `chat/chat.js`: 채팅 로직, localStorage 대화 기록 관리
-- ✅ 마크다운 렌더링 (marked.js)
-- ✅ 코드 구문 강조 (highlight.js - Atom One Dark 테마)
-- ✅ 반응형 디자인
+### Backend (Cloudflare Worker)
+- Gemini API 프록시 (`workers/gemini-proxy/`)
+- Rate Limiting (IP당 분당 5건, 일당 50건 / 전체 일당 500건)
+- System Prompt: 김경수(kimtoma) 페르소나
+- Worker URL: `https://gemini-proxy.kimtoma.workers.dev`
 
-### 2. Backend 개발 완료
-- ✅ `workers/gemini-proxy/index.js`: Cloudflare Worker (Gemini API 프록시)
-- ✅ `workers/gemini-proxy/wrangler.toml`: Worker 설정 파일
-- ✅ CORS 설정
-- ✅ API 키 보안 처리
-
-### 3. 문서화 완료
-- ✅ `chat/README.md`: Frontend 배포 가이드
-- ✅ `workers/gemini-proxy/README.md`: Worker 배포 가이드
-- ✅ `PROGRESS.md`: 이 파일 (진행 상황 추적)
+### Frontend (React + shadcn/ui)
+- Vite + React + TypeScript 프로젝트 (`chat-app/`)
+- Tailwind CSS + shadcn/ui 스타일
+- iMessage 스타일 채팅 UI
+- Dark/Light 테마 토글
+- localStorage 대화 기록 저장
+- 타이핑 효과 (문자 단위로 표시)
+- 빌드 결과물 → `chat/` 폴더로 복사
 
 ---
 
-## 🔴 다음에 해야 할 일
+## 현재 진행 중
 
-### STEP 1: Gemini API 키 발급 (5분)
+### 타이핑 효과 구현 완료
+- 응답을 받은 후 문자 단위로 타이핑 효과
+- 헤더에 "생각 중...", "입력 중..." 상태 표시
+- 타이핑 중 입력 비활성화
 
-Google AI Studio에서 무료 API 키 발급:
-
-1. https://aistudio.google.com/app/apikey 접속
-2. Google 계정 로그인
-3. "Create API Key" 클릭
-4. API 키 복사 (안전한 곳에 저장)
-
-> **중요**: API 키는 절대 GitHub에 커밋하지 마세요!
+### 테스트 필요
+- http://localhost:8080 에서 타이핑 효과 테스트
+- 이상하면 스트리밍 방식(2번)으로 전환 검토
 
 ---
 
-### STEP 2: Cloudflare Worker 배포 (10분)
-
-```bash
-# 1. Wrangler CLI 설치 (최초 1회만)
-npm install -g wrangler
-
-# 2. Cloudflare 로그인
-wrangler login
-# → 브라우저가 열리면 로그인
-
-# 3. Worker 디렉토리로 이동
-cd workers/gemini-proxy
-
-# 4. Gemini API 키 설정 (환경 변수로 안전하게 저장)
-wrangler secret put GEMINI_API_KEY
-# → 프롬프트가 나오면 STEP 1에서 발급받은 API 키 입력
-
-# 5. CORS 허용 도메인 설정
-wrangler secret put ALLOWED_ORIGINS
-# → 프롬프트가 나오면 입력: https://chat.kimtoma.com
-
-# 6. 배포!
-wrangler deploy
-# → 배포 완료 후 Worker URL이 출력됩니다
-# → 예: https://gemini-proxy-abc123.YOUR_SUBDOMAIN.workers.dev
-```
-
-**📝 배포 완료 후 Worker URL을 메모하세요!**
-
----
-
-### STEP 3: Frontend 설정 업데이트 (2분)
-
-배포한 Worker URL로 frontend 설정을 업데이트합니다:
-
-`chat/chat.js` 파일의 7번째 줄 수정:
-
-```javascript
-// 변경 전
-API_ENDPOINT: 'https://gemini-proxy.YOUR_SUBDOMAIN.workers.dev/chat',
-
-// 변경 후 (STEP 2에서 받은 실제 Worker URL 사용)
-API_ENDPOINT: 'https://gemini-proxy-abc123.YOUR_SUBDOMAIN.workers.dev/chat',
-```
-
-수정 후 저장하고 커밋:
-
-```bash
-git add chat/chat.js
-git commit -m "Update API endpoint with deployed worker URL"
-git push origin master
-```
-
----
-
-### STEP 4: 로컬 테스트 (5분)
-
-배포 전에 로컬에서 테스트:
-
-```bash
-# 터미널 1: Worker 로컬 실행
-cd workers/gemini-proxy
-wrangler dev
-
-# 터미널 2: Frontend 로컬 실행
-cd chat
-python3 -m http.server 8080
-# 또는
-npx serve .
-```
-
-브라우저에서 `http://localhost:8080` 접속하여 테스트
-
-테스트 전 `chat/chat.js`를 임시로 수정:
-```javascript
-API_ENDPOINT: 'http://localhost:8787/chat',
-```
-
-테스트 완료 후 다시 원래대로 되돌리기!
-
----
-
-### STEP 5: 서브도메인 설정 (10분)
-
-#### 방법 A: Cloudflare Pages로 배포 (권장) ⭐
-
-1. **Cloudflare Dashboard** 접속
-   - https://dash.cloudflare.com
-
-2. **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**
-
-3. **저장소 선택**
-   - `kimtoma.github.io` 선택
-   - Authorization 필요시 GitHub 연동
-
-4. **Build settings**
-   - Project name: `chat-kimtoma` (또는 원하는 이름)
-   - Production branch: `master`
-   - Build command: (비워두기)
-   - Build output directory: `/chat`
-
-5. **Deploy** 클릭
-
-6. **Custom domains** 설정
-   - Settings → Custom domains → Add custom domain
-   - Domain name: `chat.kimtoma.com`
-   - Add domain
-
-7. **DNS 자동 설정 확인**
-   - Cloudflare가 자동으로 DNS 레코드를 추가합니다
-   - DNS → Records에서 `chat` CNAME 레코드 확인
-
-#### 방법 B: 기존 GitHub Pages 사용
-
-현재 GitHub Pages가 `kimtoma.com`으로 설정되어 있다면:
-
-1. **Cloudflare DNS** 설정
-   - DNS → Add record
-   - Type: `CNAME`
-   - Name: `chat`
-   - Target: `kimtoma.github.io`
-   - Proxy status: Proxied (오렌지 구름)
-   - Save
-
-2. **접속 테스트**
-   - `https://kimtoma.com/chat/` 또는
-   - `https://chat.kimtoma.com`
-
----
-
-### STEP 6: 최종 테스트 (3분)
-
-1. `https://chat.kimtoma.com` 접속
-2. 메시지 입력 테스트
-3. Dark/Light 테마 토글 테스트
-4. 새로고침 후 대화 기록 유지 확인
-5. "새 대화" 버튼 테스트
-
----
-
-## 📝 현재 파일 구조
+## 파일 구조
 
 ```
 kimtoma.github.io/
-├── chat/
-│   ├── index.html          ✅ 채팅 UI
-│   ├── chat.js             ⚠️  API_ENDPOINT 업데이트 필요
-│   └── README.md           ✅ 배포 가이드
+├── chat/                    # 빌드된 정적 파일 (배포용)
+│   ├── index.html
+│   └── assets/
+├── chat-app/                # React 소스코드
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Chat.tsx     # 메인 채팅 컴포넌트
+│   │   │   └── ui/
+│   │   │       └── button.tsx
+│   │   ├── lib/
+│   │   │   └── utils.ts     # cn 유틸리티
+│   │   ├── App.tsx
+│   │   └── index.css        # Tailwind + 커스텀 스타일
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   └── tsconfig.app.json
+├── chat-backup/             # 이전 HTML 버전 백업
 ├── workers/
 │   └── gemini-proxy/
-│       ├── index.js        ✅ Worker 코드
-│       ├── wrangler.toml   ✅ Worker 설정
-│       └── README.md       ✅ Worker 가이드
-├── PROGRESS.md             ✅ 이 파일 (진행 상황)
-└── CLAUDE.md               ✅ 프로젝트 설명
+│       ├── index.js         # Worker 코드
+│       └── wrangler.toml
+└── progress.md              # 이 파일
 ```
 
 ---
 
-## 🔧 문제 해결
+## 다음에 할 일
 
-### CORS 에러 발생 시
+1. **타이핑 효과 테스트**
+   - 로컬에서 테스트: http://localhost:8080
+   - 타이핑 속도, UX 확인
+
+2. **필요시 스트리밍 방식으로 전환**
+   - Gemini API streamGenerateContent 사용
+   - Worker + Frontend 모두 수정 필요
+
+3. **배포**
+   - Cloudflare Pages 빌드 설정 업데이트
+   - Build command: `cd chat-app && npm install && npm run build`
+   - Build output: `chat-app/dist`
+
+4. **추가 개선 아이디어**
+   - 코드 복사 버튼
+   - 메시지 재생성 버튼
+   - 대화 내보내기
+
+---
+
+## 개발 명령어
 
 ```bash
-# Worker의 ALLOWED_ORIGINS 재설정
+# 로컬 개발
+cd chat-app
+npm run dev
+
+# 빌드
+npm run build
+
+# 빌드 결과물 chat 폴더로 복사
+cp -r dist/* ../chat/
+
+# Worker 배포
 cd workers/gemini-proxy
-wrangler secret put ALLOWED_ORIGINS
-# 입력: https://chat.kimtoma.com
+wrangler deploy
+
+# System Prompt 수정 후 배포
+# workers/gemini-proxy/index.js의 SYSTEM_PROMPT 수정 후
 wrangler deploy
 ```
 
-### API 키 에러 발생 시
-
-```bash
-# Gemini API 키 재설정
-wrangler secret put GEMINI_API_KEY
-# 새 API 키 입력
-wrangler deploy
-```
-
-### Worker 로그 확인
-
-```bash
-cd workers/gemini-proxy
-wrangler tail
-# 실시간 로그 확인
-```
-
 ---
 
-## 💡 추가 기능 아이디어 (나중에)
+## 참고 링크
 
-- [ ] 대화 내보내기 (JSON, Markdown)
-- [ ] 다중 대화 세션 관리
-- [ ] 코드 복사 버튼
-- [ ] 음성 입력 지원
-- [ ] 이미지 업로드 지원 (Gemini Pro Vision)
-- [ ] Rate limiting 추가
-- [ ] 사용량 통계 대시보드
-
----
-
-## 📞 연락처
-
-- 이슈: https://github.com/kimtoma/kimtoma.github.io/issues
-- 이메일: (필요시 추가)
-
----
-
-**다음 작업 시작 시**: 이 파일의 "다음에 해야 할 일" 섹션부터 시작하세요!
+- 사이트: https://chat.kimtoma.com
+- Worker 대시보드: https://dash.cloudflare.com
+- shadcn/ui: https://ui.shadcn.com
