@@ -3,7 +3,7 @@
 
   // Configuration
   const CONFIG = {
-    API_ENDPOINT: 'https://gemini-proxy.YOUR_SUBDOMAIN.workers.dev/chat', // 나중에 변경
+    API_ENDPOINT: 'https://gemini-proxy.kimtoma.workers.dev/chat',
     STORAGE_KEY_MESSAGES: 'chat_messages',
     STORAGE_KEY_THEME: 'theme',
   };

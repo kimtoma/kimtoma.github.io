@@ -6,5 +6,10 @@ compatibility_date = "2024-01-01"
 # GEMINI_API_KEY = "your-api-key-here"  # DO NOT put real key here
 # ALLOWED_ORIGINS = "https://chat.kimtoma.com"
 
+# KV namespace for rate limiting
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "5eae5cba427340469dae1664b6e076d6"
+
 [env.production]
 name = "gemini-proxy"
