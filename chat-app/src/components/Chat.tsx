@@ -10,9 +10,8 @@ interface Message {
   isTyping?: boolean
 }
 
-// TODO: Update to your deployed Worker URL after deployment
-// const API_ENDPOINT = 'https://gemini-proxy-with-logging.YOUR_SUBDOMAIN.workers.dev/chat'
-const API_ENDPOINT = 'https://gemini-proxy.kimtoma.workers.dev/chat'
+// Cloudflare Worker with D1 logging
+const API_ENDPOINT = 'https://gemini-proxy-with-logging.kimtoma.workers.dev/chat'
 const STORAGE_KEY = 'chat_messages'
 const SESSION_KEY = 'chat_session_id'
 

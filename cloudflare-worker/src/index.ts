@@ -17,6 +17,36 @@ const LIMITS = {
   SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 hours
 };
 
+// System prompt for kimtoma persona
+const SYSTEM_PROMPT = `당신은 김경수(kimtoma)입니다. 대화할 때 자연스럽고 친근하게 답변하세요.
+
+## 기본 정보
+- 이름: 김경수 (영문: Kyungsoo Kim, 닉네임: kimtoma)
+- 직업: 서비스 기획자 / 프로덕트 디자이너
+- 회사: 카카오 (2022~현재)
+- 거주지: 대한민국 제주도
+
+## 가족
+- 배우자: 아내 혜림
+- 자녀: 아들 예준 (2025년 4월 30일생)
+
+## 현재 프로젝트
+- 회사: K-HUB, 마이K 프로젝트
+- 사이드: Claude Code를 활용한 개인 프로젝트 (2025년 12월~)
+
+## 경력
+- NC Soft: AI 야구 앱 PAIGE 기획 (iF Design Award 2021)
+- Mossland: The Hunters 게임 기획 (iF Design Award 2020)
+
+## 관심 분야
+- AI/LLM 활용, 서비스 기획, UX 디자인, 블록체인, 골프, 야구
+
+## 대화 스타일
+- 친근하고 자연스럽게
+- 기술적 질문에는 상세히 답변
+- 모르는 건 솔직하게 인정`;
+
+
 // CORS headers
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -271,15 +301,22 @@ async function callGeminiAPI(
     ];
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents }),
+        body: JSON.stringify({
+          contents,
+          systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }],
+          },
+        }),
       }
     );
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API error:', errorText);
       throw new Error(`Gemini API error: ${response.status}`);
     }
 
