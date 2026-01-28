@@ -1,10 +1,10 @@
 # Development Progress
 
-## 2026-01-29: Admin Dashboard Redesign
+## 2026-01-29: Admin Dashboard Redesign & Email Alerts
 
 ### ✅ Completed
 
-#### Admin Dashboard UI Overhaul
+#### 1. Admin Dashboard UI Overhaul
 - **Location**: `/chat/admin.html`
 - **Changes**:
   - Applied shadcn/ui design system matching chat.kimtoma.com
@@ -17,6 +17,18 @@
   - Loading spinner animation
   - Better responsive design for mobile
   - Proper dark/light theme toggle with icon switch
+
+#### 2. Email Alerts for Quota Warnings
+- **Service**: Resend (free tier: 3,000 emails/month)
+- **Thresholds**: 50%, 80%, 95% of daily write limit
+- **Features**:
+  - HTML formatted alert emails with usage statistics
+  - Duplicate prevention via alert_logs table in D1
+  - Test alert endpoint: `POST /admin/test-alert`
+  - Color-coded alerts (blue/yellow/red by severity)
+- **Limitations** (free tier):
+  - Only account owner email (kimtoma@gmail.com) can receive
+  - To add more recipients: verify domain at resend.com/domains
 
 ---
 
@@ -117,7 +129,7 @@ daily_usage (date, write_count, read_count, created_at)
 
 ## Future Enhancements
 
-- [ ] Email alerts for quota warnings (Resend recommended)
+- [x] ~~Email alerts for quota warnings~~ (Completed 2026-01-29)
 - [ ] Sentiment analysis on conversations
 - [ ] Conversation statistics per session
 - [ ] Advanced filtering (date range, role)
