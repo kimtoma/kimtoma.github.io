@@ -7,14 +7,11 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
   <style>
-    /* shadcn/ui CSS Variables */
     :root {
       --background: 0 0% 100%;
       --foreground: 0 0% 3.9%;
       --card: 0 0% 100%;
       --card-foreground: 0 0% 3.9%;
-      --popover: 0 0% 100%;
-      --popover-foreground: 0 0% 3.9%;
       --primary: 211 100% 50%;
       --primary-foreground: 0 0% 100%;
       --secondary: 0 0% 96.1%;
@@ -26,13 +23,11 @@
       --destructive: 0 84.2% 60.2%;
       --destructive-foreground: 0 0% 98%;
       --success: 142 76% 36%;
-      --success-foreground: 0 0% 98%;
-      --warning: 38 92% 50%;
-      --warning-foreground: 0 0% 9%;
       --border: 0 0% 89.8%;
       --input: 0 0% 89.8%;
       --ring: 211 100% 50%;
       --radius: 0.75rem;
+      --sidebar-width: 240px;
     }
 
     .dark {
@@ -40,8 +35,6 @@
       --foreground: 0 0% 98%;
       --card: 0 0% 10%;
       --card-foreground: 0 0% 98%;
-      --popover: 0 0% 10%;
-      --popover-foreground: 0 0% 98%;
       --primary: 211 100% 50%;
       --primary-foreground: 0 0% 100%;
       --secondary: 0 0% 14.9%;
@@ -53,55 +46,50 @@
       --destructive: 0 62.8% 50.6%;
       --destructive-foreground: 0 0% 98%;
       --success: 142 76% 36%;
-      --success-foreground: 0 0% 98%;
-      --warning: 38 92% 50%;
-      --warning-foreground: 0 0% 9%;
       --border: 0 0% 20%;
       --input: 0 0% 20%;
       --ring: 211 100% 50%;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      border-color: hsl(var(--border));
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; border-color: hsl(var(--border)); }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
       background: hsl(var(--background));
       color: hsl(var(--foreground));
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    /* Header */
-    header {
+    /* Layout */
+    .app-layout {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0 24px;
-      border-bottom: 1px solid hsl(var(--border));
-      margin-bottom: 32px;
+      min-height: 100vh;
     }
 
-    .header-title {
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: hsl(var(--card));
+      border-right: 1px solid hsl(var(--border));
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid hsl(var(--border));
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .header-logo {
-      width: 40px;
-      height: 40px;
+    .sidebar-logo {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
       display: flex;
@@ -109,13 +97,77 @@
       justify-content: center;
       color: hsl(var(--primary-foreground));
       font-weight: 600;
-      font-size: 18px;
+      font-size: 16px;
     }
 
-    h1 {
-      font-size: 24px;
+    .sidebar-title {
+      font-size: 16px;
       font-weight: 600;
-      letter-spacing: -0.025em;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: hsl(var(--muted-foreground));
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 4px;
+    }
+
+    .nav-item:hover {
+      background: hsl(var(--accent));
+      color: hsl(var(--foreground));
+    }
+
+    .nav-item.active {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 12px;
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .main-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid hsl(var(--border));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: hsl(var(--background));
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .main-header h1 {
+      font-size: 20px;
+      font-weight: 600;
     }
 
     .header-actions {
@@ -124,7 +176,15 @@
       align-items: center;
     }
 
-    /* Buttons - shadcn/ui style */
+    .page-content {
+      padding: 24px;
+      max-width: 1200px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -136,83 +196,29 @@
       border-radius: var(--radius);
       border: none;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.15s;
       white-space: nowrap;
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .btn-primary:hover:not(:disabled) { background: hsl(var(--primary) / 0.9); }
+    .btn-secondary { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+    .btn-secondary:hover:not(:disabled) { background: hsl(var(--muted)); }
+    .btn-destructive { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+    .btn-ghost { background: transparent; color: hsl(var(--foreground)); }
+    .btn-ghost:hover:not(:disabled) { background: hsl(var(--accent)); }
+    .btn-outline { background: transparent; border: 1px solid hsl(var(--border)); color: hsl(var(--foreground)); }
+    .btn-outline:hover:not(:disabled) { background: hsl(var(--accent)); }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .btn-icon { padding: 10px; width: 40px; height: 40px; }
 
-    .btn-primary {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: hsl(var(--primary) / 0.9);
-    }
-
-    .btn-secondary {
-      background: hsl(var(--secondary));
-      color: hsl(var(--secondary-foreground));
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      background: hsl(var(--muted));
-    }
-
-    .btn-destructive {
-      background: hsl(var(--destructive));
-      color: hsl(var(--destructive-foreground));
-    }
-
-    .btn-destructive:hover:not(:disabled) {
-      background: hsl(var(--destructive) / 0.9);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: hsl(var(--foreground));
-    }
-
-    .btn-ghost:hover:not(:disabled) {
-      background: hsl(var(--accent));
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid hsl(var(--border));
-      color: hsl(var(--foreground));
-    }
-
-    .btn-outline:hover:not(:disabled) {
-      background: hsl(var(--accent));
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 13px;
-    }
-
-    .btn-icon {
-      padding: 10px;
-      width: 40px;
-      height: 40px;
-    }
-
-    .btn-icon svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    /* Card - shadcn/ui style */
+    /* Cards */
     .card {
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
       border-radius: var(--radius);
-      overflow: hidden;
+      margin-bottom: 24px;
     }
 
     .card-header {
@@ -222,87 +228,59 @@
       align-items: center;
     }
 
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-    }
+    .card-title { font-size: 18px; font-weight: 600; }
+    .card-description { font-size: 14px; color: hsl(var(--muted-foreground)); margin-top: 4px; }
+    .card-content { padding: 0 24px 24px; }
 
-    .card-description {
-      font-size: 14px;
-      color: hsl(var(--muted-foreground));
-      margin-top: 4px;
-    }
-
-    .card-content {
-      padding: 0 24px 24px;
-    }
-
-    /* Stats Grid */
+    /* Stats */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
     .stat-card {
       background: hsl(var(--card));
       border: 1px solid hsl(var(--border));
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 20px;
     }
 
-    .stat-label {
-      color: hsl(var(--muted-foreground));
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
+    .stat-label { color: hsl(var(--muted-foreground)); font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+    .stat-value { font-size: 32px; font-weight: 700; line-height: 1; }
+    .stat-sub { font-size: 12px; color: hsl(var(--muted-foreground)); margin-top: 8px; }
 
-    .stat-value {
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1;
-    }
+    .progress { width: 100%; height: 6px; background: hsl(var(--secondary)); border-radius: 9999px; margin-top: 10px; overflow: hidden; }
+    .progress-bar { height: 100%; background: hsl(var(--primary)); border-radius: 9999px; transition: width 0.3s; }
+    .progress-bar.warning { background: hsl(38 92% 50%); }
+    .progress-bar.destructive { background: hsl(var(--destructive)); }
 
-    .stat-sub {
-      font-size: 13px;
-      color: hsl(var(--muted-foreground));
-      margin-top: 8px;
-    }
+    /* Table */
+    .table-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid hsl(var(--border)); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 12px 16px; background: hsl(var(--muted)); font-weight: 600; font-size: 12px; color: hsl(var(--muted-foreground)); text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 12px 16px; border-top: 1px solid hsl(var(--border)); }
+    tr:hover td { background: hsl(var(--muted) / 0.5); }
 
-    /* Progress Bar */
-    .progress {
-      width: 100%;
-      height: 8px;
-      background: hsl(var(--secondary));
-      border-radius: 9999px;
-      margin-top: 12px;
-      overflow: hidden;
-    }
+    .badge { display: inline-flex; padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 9999px; text-transform: uppercase; }
+    .badge-user { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+    .badge-ai { background: hsl(var(--success)); color: white; }
 
-    .progress-bar {
-      height: 100%;
-      background: hsl(var(--primary));
-      border-radius: 9999px;
-      transition: width 0.3s ease;
-    }
+    .content-preview { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: hsl(var(--muted-foreground)); }
 
-    .progress-bar.warning {
-      background: hsl(var(--warning));
+    .session-id {
+      padding: 3px 6px;
+      background: hsl(var(--muted));
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 11px;
+      cursor: pointer;
     }
+    .session-id:hover { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
 
-    .progress-bar.destructive {
-      background: hsl(var(--destructive));
-    }
-
-    /* Input - shadcn/ui style */
-    input[type="text"],
-    input[type="password"],
-    input[type="number"],
-    select {
+    /* Inputs */
+    input, textarea, select {
       width: 100%;
       padding: 10px 12px;
       font-size: 14px;
@@ -310,130 +288,13 @@
       border-radius: var(--radius);
       background: hsl(var(--background));
       color: hsl(var(--foreground));
-      transition: border-color 0.15s, box-shadow 0.15s;
     }
+    input:focus, textarea:focus { outline: none; border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1); }
 
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: hsl(var(--ring));
-      box-shadow: 0 0 0 3px hsl(var(--ring) / 0.1);
-    }
+    .filters { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filters input { flex: 1; min-width: 180px; }
 
-    input::placeholder {
-      color: hsl(var(--muted-foreground));
-    }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filters input {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .filters .btn {
-      flex-shrink: 0;
-    }
-
-    /* Badge */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .badge-user {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-    }
-
-    .badge-ai {
-      background: hsl(var(--success));
-      color: hsl(var(--success-foreground));
-    }
-
-    /* Table */
-    .table-container {
-      overflow-x: auto;
-      border-radius: var(--radius);
-      border: 1px solid hsl(var(--border));
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th {
-      text-align: left;
-      padding: 12px 16px;
-      background: hsl(var(--muted));
-      font-weight: 600;
-      font-size: 13px;
-      color: hsl(var(--muted-foreground));
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid hsl(var(--border));
-    }
-
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid hsl(var(--border));
-      vertical-align: middle;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: hsl(var(--muted) / 0.5);
-    }
-
-    .content-preview {
-      max-width: 300px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: hsl(var(--muted-foreground));
-    }
-
-    .session-id {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 8px;
-      background: hsl(var(--muted));
-      border-radius: 6px;
-      font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .session-id:hover {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-    }
-
-    .session-id.copied {
-      background: hsl(var(--success));
-      color: hsl(var(--success-foreground));
-    }
-
-    /* Modal - shadcn/ui style */
+    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -455,374 +316,60 @@
       max-height: calc(100vh - 48px);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 25px 50px -12px hsl(0 0% 0% / 0.25);
     }
 
-    .modal-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid hsl(var(--border));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .modal-header { padding: 20px 24px; border-bottom: 1px solid hsl(var(--border)); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 18px; font-weight: 600; }
+    .modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: transparent; border: none; color: hsl(var(--muted-foreground)); cursor: pointer; }
+    .modal-close:hover { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
+    .modal-body { padding: 24px; overflow-y: auto; flex: 1; }
 
-    .modal-header h3 {
-      font-size: 18px;
-      font-weight: 600;
-    }
+    .replay-info { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 16px; background: hsl(var(--muted)); border-radius: var(--radius); margin-bottom: 20px; font-size: 13px; color: hsl(var(--muted-foreground)); }
+    .replay-info span { display: flex; align-items: center; gap: 6px; }
+    .replay-message { margin-bottom: 16px; display: flex; flex-direction: column; }
+    .replay-message.user { align-items: flex-end; }
+    .replay-message.ai { align-items: flex-start; }
+    .replay-bubble { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .replay-message.user .replay-bubble { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-bottom-right-radius: 4px; }
+    .replay-message.ai .replay-bubble { background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); border-bottom-left-radius: 4px; }
+    .replay-time { font-size: 11px; color: hsl(var(--muted-foreground)); margin-top: 4px; padding: 0 8px; }
 
-    .modal-close {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      background: transparent;
-      border: none;
-      color: hsl(var(--muted-foreground));
-      cursor: pointer;
-      transition: all 0.15s;
-    }
+    /* Auth */
+    .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .auth-card { width: 100%; max-width: 400px; }
+    .auth-header { text-align: center; margin-bottom: 32px; }
+    .auth-logo { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7)); display: flex; align-items: center; justify-content: center; color: hsl(var(--primary-foreground)); font-weight: 700; font-size: 28px; margin: 0 auto 16px; }
+    .auth-header h2 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .auth-header p { color: hsl(var(--muted-foreground)); font-size: 14px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
 
-    .modal-close:hover {
-      background: hsl(var(--muted));
-      color: hsl(var(--foreground));
-    }
+    /* Utils */
+    .alert { padding: 16px; border-radius: var(--radius); margin-bottom: 20px; font-size: 14px; display: flex; align-items: center; gap: 12px; }
+    .alert-error { background: hsl(var(--destructive) / 0.1); border: 1px solid hsl(var(--destructive) / 0.2); color: hsl(var(--destructive)); }
+    .alert-success { background: hsl(var(--success) / 0.1); border: 1px solid hsl(var(--success) / 0.2); color: hsl(var(--success)); }
 
-    .modal-body {
-      padding: 24px;
-      overflow-y: auto;
-      flex: 1;
-    }
+    .loading { text-align: center; padding: 48px; color: hsl(var(--muted-foreground)); }
+    .loading-spinner { width: 24px; height: 24px; border: 2px solid hsl(var(--muted)); border-top-color: hsl(var(--primary)); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Replay Messages */
-    .replay-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      padding: 12px 16px;
-      background: hsl(var(--muted));
-      border-radius: var(--radius);
-      margin-bottom: 20px;
-      font-size: 13px;
-      color: hsl(var(--muted-foreground));
-    }
+    .empty-state { text-align: center; padding: 48px 24px; color: hsl(var(--muted-foreground)); }
 
-    .replay-info span {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+    .icon { width: 18px; height: 18px; flex-shrink: 0; }
+    .icon-sm { width: 16px; height: 16px; }
 
-    .replay-message {
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .replay-message.user {
-      align-items: flex-end;
-    }
-
-    .replay-message.ai {
-      align-items: flex-start;
-    }
-
-    .replay-bubble {
-      max-width: 85%;
-      padding: 12px 16px;
-      border-radius: 18px;
-      font-size: 14px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .replay-message.user .replay-bubble {
-      background: hsl(var(--primary));
-      color: hsl(var(--primary-foreground));
-      border-bottom-right-radius: 4px;
-    }
-
-    .replay-message.ai .replay-bubble {
-      background: hsl(var(--secondary));
-      color: hsl(var(--secondary-foreground));
-      border-bottom-left-radius: 4px;
-    }
-
-    .replay-time {
-      font-size: 11px;
-      color: hsl(var(--muted-foreground));
-      margin-top: 4px;
-      padding: 0 8px;
-    }
-
-    /* Analytics Charts */
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .chart-card {
-      background: hsl(var(--background));
-      border: 1px solid hsl(var(--border));
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-
-    .chart-card h4 {
-      font-size: 14px;
-      font-weight: 500;
-      color: hsl(var(--muted-foreground));
-      margin-bottom: 16px;
-    }
-
-    .bar-chart {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      height: 140px;
-      padding-top: 20px;
-    }
-
-    .bar-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 0;
-    }
-
-    .bar {
-      width: 100%;
-      background: hsl(var(--primary));
-      border-radius: 4px 4px 0 0;
-      min-height: 4px;
-      transition: height 0.3s ease;
-    }
-
-    .bar-value {
-      font-size: 10px;
-      font-weight: 600;
-      color: hsl(var(--foreground));
-      margin-bottom: 4px;
-    }
-
-    .bar-label {
-      font-size: 10px;
-      color: hsl(var(--muted-foreground));
-      margin-top: 6px;
-      text-align: center;
-    }
-
-    .list-chart {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: hsl(var(--muted));
-      border-radius: var(--radius);
-    }
-
-    .list-item-label {
-      font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-      font-size: 12px;
-      color: hsl(var(--muted-foreground));
-    }
-
-    .list-item-value {
-      font-weight: 600;
-      color: hsl(var(--primary));
-    }
-
-    /* Pagination */
-    .pagination {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
-      margin-top: 24px;
-    }
-
-    .pagination span {
-      padding: 10px 16px;
-      font-size: 14px;
-      color: hsl(var(--muted-foreground));
-    }
-
-    /* Auth Form */
-    .auth-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .auth-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .auth-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: hsl(var(--primary-foreground));
-      font-weight: 700;
-      font-size: 28px;
-      margin: 0 auto 16px;
-    }
-
-    .auth-header h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .auth-header p {
-      color: hsl(var(--muted-foreground));
-      font-size: 14px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    /* Loading & Messages */
-    .loading {
-      text-align: center;
-      padding: 48px;
-      color: hsl(var(--muted-foreground));
-    }
-
-    .loading-spinner {
-      width: 24px;
-      height: 24px;
-      border: 2px solid hsl(var(--muted));
-      border-top-color: hsl(var(--primary));
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 12px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .alert {
-      padding: 16px;
-      border-radius: var(--radius);
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .alert-error {
-      background: hsl(var(--destructive) / 0.1);
-      border: 1px solid hsl(var(--destructive) / 0.2);
-      color: hsl(var(--destructive));
-    }
-
-    .alert-success {
-      background: hsl(var(--success) / 0.1);
-      border: 1px solid hsl(var(--success) / 0.2);
-      color: hsl(var(--success));
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: hsl(var(--muted-foreground));
-    }
-
-    .empty-state svg {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    /* SVG Icons */
-    .icon {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-
-    .icon-sm {
-      width: 16px;
-      height: 16px;
-    }
+    .pagination { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 20px; }
+    .pagination span { padding: 10px 16px; font-size: 14px; color: hsl(var(--muted-foreground)); }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .container {
-        padding: 16px;
-      }
-
-      header {
-        flex-direction: column;
-        gap: 16px;
-        align-items: flex-start;
-      }
-
-      .header-actions {
-        width: 100%;
-        flex-wrap: wrap;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .filters {
-        flex-direction: column;
-      }
-
-      .filters input {
-        width: 100%;
-      }
-
-      .analytics-grid {
-        grid-template-columns: 1fr;
-      }
-
-      th, td {
-        padding: 10px 12px;
-        font-size: 13px;
-      }
-
-      .content-preview {
-        max-width: 150px;
-      }
+      .sidebar { width: 100%; height: auto; position: relative; }
+      .main-content { margin-left: 0; }
+      .app-layout { flex-direction: column; }
+      .sidebar-nav { display: flex; padding: 8px; overflow-x: auto; }
+      .nav-item { margin-bottom: 0; margin-right: 4px; white-space: nowrap; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .filters { flex-direction: column; }
     }
   </style>
 </head>
@@ -836,26 +383,15 @@
           <h2>Admin Login</h2>
           <p>Enter your credentials to access the dashboard</p>
         </div>
-
         <div class="form-group">
           <label>API Endpoint</label>
-          <input type="text" id="apiEndpoint" value="https://gemini-proxy-with-logging.kimtoma.workers.dev" placeholder="Worker URL">
+          <input type="text" id="apiEndpoint" value="https://gemini-proxy-with-logging.kimtoma.workers.dev">
         </div>
-
         <div class="form-group">
           <label>Admin Token</label>
           <input type="password" id="adminToken" placeholder="Enter admin token">
         </div>
-
-        <button class="btn btn-primary" onclick="login()" style="width: 100%;">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-            <polyline points="10 17 15 12 10 7"/>
-            <line x1="15" y1="12" x2="3" y2="12"/>
-          </svg>
-          Sign In
-        </button>
-
+        <button class="btn btn-primary" onclick="login()" style="width: 100%;">Sign In</button>
         <div id="authError" class="alert alert-error" style="display: none; margin-top: 20px;"></div>
       </div>
     </div>
@@ -868,8 +404,7 @@
         <h3>Conversation Replay</h3>
         <button class="modal-close" onclick="closeReplayModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
@@ -880,239 +415,143 @@
     </div>
   </div>
 
-  <!-- Main Section -->
-  <div id="mainSection" style="display: none;">
-    <div class="container">
-      <header>
-        <div class="header-title">
-          <div class="header-logo">K</div>
-          <div>
-            <h1>Chat Admin</h1>
-            <p style="font-size: 14px; color: hsl(var(--muted-foreground)); margin-top: 2px;">kimtoma.com Dashboard</p>
-          </div>
+  <!-- Main App -->
+  <div id="mainSection" class="app-layout" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">K</div>
+        <span class="sidebar-title">Chat Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" onclick="showPage('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Dashboard
         </div>
+        <div class="nav-item" onclick="showPage('prompt')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+          </svg>
+          System Prompt
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="nav-item" onclick="logout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <h1 id="pageTitle">Dashboard</h1>
         <div class="header-actions">
-          <button class="btn btn-outline" onclick="refreshData()">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          <button class="btn btn-outline btn-sm" onclick="refreshData()">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
             </svg>
             Refresh
           </button>
-          <button class="btn btn-destructive" onclick="cleanup()">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-            Cleanup
-          </button>
           <button class="btn btn-icon btn-ghost" onclick="toggleTheme()" title="Toggle theme">
             <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"/>
-              <line x1="12" y1="1" x2="12" y2="3"/>
-              <line x1="12" y1="21" x2="12" y2="23"/>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-              <line x1="1" y1="12" x2="3" y2="12"/>
-              <line x1="21" y1="12" x2="23" y2="12"/>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
             </svg>
             <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
           </button>
-          <button class="btn btn-secondary" onclick="logout()">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Logout
-          </button>
         </div>
       </header>
 
-      <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
-      <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+      <div class="page-content">
+        <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+        <div id="successMessage" class="alert alert-success" style="display: none;"></div>
 
-      <!-- Statistics -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Messages</div>
-          <div class="stat-value" id="totalMessages">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Sessions</div>
-          <div class="stat-value" id="totalSessions">-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Today's Writes</div>
-          <div class="stat-value" id="todayWrites">-</div>
-          <div class="stat-sub">
-            Limit: <span id="writeLimit">-</span> (<span id="writePercentage">-</span>%)
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Messages</div>
+              <div class="stat-value" id="totalMessages">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Sessions</div>
+              <div class="stat-value" id="totalSessions">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Today's Writes</div>
+              <div class="stat-value" id="todayWrites">-</div>
+              <div class="stat-sub">Limit: <span id="writeLimit">-</span> (<span id="writePercentage">-</span>%)</div>
+              <div class="progress"><div class="progress-bar" id="writeProgress" style="width: 0%"></div></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Today's Reads</div>
+              <div class="stat-value" id="todayReads">-</div>
+              <div class="stat-sub">Limit: <span id="readLimit">-</span></div>
+            </div>
           </div>
-          <div class="progress">
-            <div class="progress-bar" id="writeProgress" style="width: 0%"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Today's Reads</div>
-          <div class="stat-value" id="todayReads">-</div>
-          <div class="stat-sub">Limit: <span id="readLimit">-</span></div>
-        </div>
-      </div>
 
-      <!-- System Prompt Section -->
-      <div class="card" style="margin-bottom: 24px;">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">System Prompt</h2>
-            <p class="card-description">AI persona and behavior configuration</p>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <span id="promptStatus" style="font-size: 12px; color: hsl(var(--muted-foreground)); padding: 6px 12px; background: hsl(var(--muted)); border-radius: var(--radius);"></span>
-            <button class="btn btn-primary btn-sm" onclick="saveSystemPrompt()">
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                <polyline points="17 21 17 13 7 13 7 21"/>
-                <polyline points="7 3 7 8 15 8"/>
-              </svg>
-              Save
-            </button>
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Recent Conversations</h2>
+                <p class="card-description">Latest chat messages</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="exportToCSV()">Export CSV</button>
+            </div>
+            <div class="card-content">
+              <div class="filters">
+                <input type="text" id="sessionFilter" placeholder="Filter by Session ID...">
+                <input type="text" id="contentFilter" placeholder="Search content...">
+                <button class="btn btn-primary btn-sm" onclick="loadLogs()">Search</button>
+                <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Clear</button>
+              </div>
+              <div id="logsContainer"><div class="loading"><div class="loading-spinner"></div>Loading...</div></div>
+              <div class="pagination" id="pagination" style="display: none;">
+                <button class="btn btn-outline btn-sm" onclick="previousPage()">Previous</button>
+                <span>Page <strong id="currentPage">1</strong></span>
+                <button class="btn btn-outline btn-sm" onclick="nextPage()">Next</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="card-content">
-          <textarea id="systemPromptEditor" style="width: 100%; min-height: 300px; padding: 16px; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace; font-size: 13px; line-height: 1.6; background: hsl(var(--background)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); color: hsl(var(--foreground)); resize: vertical;" placeholder="Loading system prompt..."></textarea>
-          <p style="margin-top: 12px; font-size: 13px; color: hsl(var(--muted-foreground));">
-            Markdown 형식으로 작성하세요. 변경 후 Save를 클릭하면 즉시 적용됩니다.
-          </p>
-        </div>
-      </div>
 
-      <!-- Memory Management Section -->
-      <div class="card" style="margin-bottom: 24px;">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Memory Management</h2>
-            <p class="card-description">Manage conversation sessions and context</p>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-outline btn-sm" onclick="loadMemory()">
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 4 23 10 17 10"/>
-                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-              </svg>
-              Refresh
-            </button>
-            <button class="btn btn-destructive btn-sm" onclick="clearAllMemory()">
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-              Clear All
-            </button>
-          </div>
-        </div>
-        <div class="card-content">
-          <div id="memoryContainer">
-            <div class="loading">
-              <div class="loading-spinner"></div>
-              Loading sessions...
+        <!-- System Prompt Page -->
+        <div id="page-prompt" class="page">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">System Prompt</h2>
+                <p class="card-description">Configure AI persona and behavior</p>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span id="promptStatus" style="font-size: 12px; color: hsl(var(--muted-foreground)); padding: 6px 12px; background: hsl(var(--muted)); border-radius: var(--radius);"></span>
+                <button class="btn btn-primary btn-sm" onclick="saveSystemPrompt()">Save Changes</button>
+              </div>
+            </div>
+            <div class="card-content">
+              <textarea id="systemPromptEditor" style="min-height: 400px; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace; font-size: 13px; line-height: 1.6; resize: vertical;" placeholder="Loading..."></textarea>
+              <p style="margin-top: 12px; font-size: 13px; color: hsl(var(--muted-foreground));">
+                Markdown format. Changes apply immediately to new conversations.
+              </p>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Analytics Section -->
-      <div class="card" style="margin-bottom: 24px;">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Analytics</h2>
-            <p class="card-description">Usage statistics and trends</p>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="loadAnalytics()">
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
-            Refresh
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="analytics-grid">
-            <div class="chart-card">
-              <h4>Daily Messages (Last 14 Days)</h4>
-              <div id="dailyChart" class="bar-chart"></div>
-            </div>
-            <div class="chart-card">
-              <h4>Hourly Activity</h4>
-              <div id="hourlyChart" class="bar-chart"></div>
-            </div>
-            <div class="chart-card">
-              <h4>Top Users by Messages</h4>
-              <div id="topUsersChart" class="list-chart"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Logs Section -->
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h2 class="card-title">Conversation Logs</h2>
-            <p class="card-description">Browse and search chat history</p>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="exportToCSV()">
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Export CSV
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="filters">
-            <input type="text" id="sessionFilter" placeholder="Filter by Session ID...">
-            <input type="text" id="contentFilter" placeholder="Search content...">
-            <input type="number" id="limitFilter" value="50" min="10" max="500" style="max-width: 100px;" placeholder="Limit">
-            <button class="btn btn-primary" onclick="loadLogs()">
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-              Search
-            </button>
-            <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
-          </div>
-
-          <div id="logsContainer">
-            <div class="loading">
-              <div class="loading-spinner"></div>
-              Loading logs...
-            </div>
-          </div>
-
-          <div class="pagination" id="pagination" style="display: none;">
-            <button class="btn btn-outline btn-sm" onclick="previousPage()">
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"/>
-              </svg>
-              Previous
-            </button>
-            <span>Page <strong id="currentPage">1</strong></span>
-            <button class="btn btn-outline btn-sm" onclick="nextPage()">
-              Next
-              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   </div>
 
   <script data-cfasync="false">
@@ -1130,68 +569,54 @@
         apiEndpoint = savedEndpoint;
         adminToken = savedToken;
         document.getElementById('authSection').style.display = 'none';
-        document.getElementById('mainSection').style.display = 'block';
+        document.getElementById('mainSection').style.display = 'flex';
         loadData();
       } else {
         document.getElementById('authSection').style.display = 'flex';
-        document.getElementById('apiEndpoint').value = savedEndpoint || 'https://gemini-proxy-with-logging.kimtoma.workers.dev';
       }
-
       setupTheme();
     })();
+
+    function showPage(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + page).classList.add('active');
+      event.currentTarget.classList.add('active');
+      document.getElementById('pageTitle').textContent = page === 'dashboard' ? 'Dashboard' : 'System Prompt';
+    }
 
     function login() {
       const endpoint = document.getElementById('apiEndpoint').value.trim();
       const token = document.getElementById('adminToken').value.trim();
-
-      if (!endpoint || !token) {
-        showAuthError('Please enter both API endpoint and admin token');
-        return;
-      }
-
+      if (!endpoint || !token) { showAuthError('Please enter both fields'); return; }
       apiEndpoint = endpoint;
       adminToken = token;
-
       localStorage.setItem('admin_endpoint', apiEndpoint);
       localStorage.setItem('admin_token', adminToken);
-
       document.getElementById('authSection').style.display = 'none';
-      document.getElementById('mainSection').style.display = 'block';
-
+      document.getElementById('mainSection').style.display = 'flex';
       loadData();
     }
 
-    function logout() {
-      localStorage.removeItem('admin_token');
-      location.reload();
-    }
+    function logout() { localStorage.removeItem('admin_token'); location.reload(); }
 
-    function showAuthError(message) {
-      const errorEl = document.getElementById('authError');
-      errorEl.textContent = message;
-      errorEl.style.display = 'flex';
+    function showAuthError(msg) {
+      const el = document.getElementById('authError');
+      el.textContent = msg;
+      el.style.display = 'flex';
     }
 
     async function loadData() {
-      await Promise.all([loadStats(), loadLogs(), loadAnalytics(), loadSystemPrompt(), loadMemory()]);
+      await Promise.all([loadStats(), loadLogs(), loadSystemPrompt()]);
     }
+
+    function refreshData() { currentPage = 1; loadData(); }
 
     async function loadStats() {
       try {
-        const response = await fetch(`${apiEndpoint}/admin/stats`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            logout();
-            return;
-          }
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const stats = await response.json();
-
+        const res = await fetch(`${apiEndpoint}/admin/stats`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) { if (res.status === 401) logout(); throw new Error(`HTTP ${res.status}`); }
+        const stats = await res.json();
         document.getElementById('totalMessages').textContent = stats.total_messages.toLocaleString();
         document.getElementById('totalSessions').textContent = stats.total_sessions.toLocaleString();
         document.getElementById('todayWrites').textContent = stats.today_writes.toLocaleString();
@@ -1199,666 +624,155 @@
         document.getElementById('writeLimit').textContent = stats.daily_write_limit.toLocaleString();
         document.getElementById('readLimit').textContent = stats.daily_read_limit.toLocaleString();
         document.getElementById('writePercentage').textContent = stats.write_limit_percentage;
-
-        const percentage = parseFloat(stats.write_limit_percentage);
-        const progressEl = document.getElementById('writeProgress');
-        progressEl.style.width = `${Math.min(percentage, 100)}%`;
-        progressEl.className = 'progress-bar';
-        if (percentage > 80) progressEl.classList.add('destructive');
-        else if (percentage > 50) progressEl.classList.add('warning');
-
-      } catch (error) {
-        showError('Failed to load statistics: ' + error.message);
-      }
+        const pct = parseFloat(stats.write_limit_percentage);
+        const bar = document.getElementById('writeProgress');
+        bar.style.width = `${Math.min(pct, 100)}%`;
+        bar.className = 'progress-bar' + (pct > 80 ? ' destructive' : pct > 50 ? ' warning' : '');
+      } catch (e) { showError('Failed to load stats: ' + e.message); }
     }
 
     async function loadLogs() {
-      const sessionId = document.getElementById('sessionFilter').value.trim();
-      const contentSearch = document.getElementById('contentFilter').value.trim();
-      const limit = parseInt(document.getElementById('limitFilter').value) || 50;
-      pageSize = limit;
+      const session = document.getElementById('sessionFilter').value.trim();
+      const content = document.getElementById('contentFilter').value.trim();
       const offset = (currentPage - 1) * pageSize;
-
       try {
-        let url = `${apiEndpoint}/admin/logs?limit=${limit}&offset=${offset}`;
-        if (sessionId) url += `&session=${encodeURIComponent(sessionId)}`;
-        if (contentSearch) url += `&content=${encodeURIComponent(contentSearch)}`;
-
-        const response = await fetch(url, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            logout();
-            return;
-          }
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
+        let url = `${apiEndpoint}/admin/logs?limit=${pageSize}&offset=${offset}`;
+        if (session) url += `&session=${encodeURIComponent(session)}`;
+        if (content) url += `&content=${encodeURIComponent(content)}`;
+        const res = await fetch(url, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         renderLogs(data.logs);
-
         document.getElementById('currentPage').textContent = currentPage;
         document.getElementById('pagination').style.display = data.logs.length > 0 ? 'flex' : 'none';
-
-      } catch (error) {
-        showError('Failed to load logs: ' + error.message);
-      }
+      } catch (e) { showError('Failed to load logs: ' + e.message); }
     }
 
     function renderLogs(logs) {
       const container = document.getElementById('logsContainer');
-
       if (!logs || logs.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            <p>No logs found</p>
-          </div>
-        `;
+        container.innerHTML = '<div class="empty-state"><p>No conversations found</p></div>';
         return;
       }
-
-      container.innerHTML = `
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>Session</th>
-                <th>Role</th>
-                <th>Content</th>
-                <th>IP</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${logs.map(log => `
-                <tr>
-                  <td style="white-space: nowrap;">${new Date(log.timestamp).toLocaleString()}</td>
-                  <td>
-                    <span class="session-id" onclick="copySessionId('${log.session_id}', this)" title="Click to copy">
-                      ${log.session_id.substring(8, 24)}...
-                    </span>
-                  </td>
-                  <td><span class="badge badge-${log.role}">${log.role}</span></td>
-                  <td class="content-preview" title="${escapeHtml(log.content)}">${escapeHtml(log.content)}</td>
-                  <td style="font-family: monospace; font-size: 12px;">${log.user_ip}</td>
-                  <td>
-                    <button class="btn btn-outline btn-sm" onclick="openReplay('${log.session_id}')">
-                      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                      </svg>
-                      Replay
-                    </button>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
+      container.innerHTML = `<div class="table-container"><table>
+        <thead><tr><th>Time</th><th>Session</th><th>Role</th><th>Content</th><th>Action</th></tr></thead>
+        <tbody>${logs.map(log => `<tr>
+          <td style="white-space:nowrap;font-size:12px;">${new Date(log.timestamp).toLocaleString()}</td>
+          <td><span class="session-id" onclick="copySessionId('${log.session_id}',this)">${log.session_id.substring(8,22)}...</span></td>
+          <td><span class="badge badge-${log.role}">${log.role}</span></td>
+          <td class="content-preview" title="${escapeHtml(log.content)}">${escapeHtml(log.content)}</td>
+          <td><button class="btn btn-outline btn-sm" onclick="openReplay('${log.session_id}')">Replay</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
     }
 
-    function nextPage() {
-      currentPage++;
-      loadLogs();
+    function nextPage() { currentPage++; loadLogs(); }
+    function previousPage() { if (currentPage > 1) { currentPage--; loadLogs(); } }
+    function clearFilters() { document.getElementById('sessionFilter').value = ''; document.getElementById('contentFilter').value = ''; currentPage = 1; loadLogs(); }
+
+    async function copySessionId(id, el) {
+      try { await navigator.clipboard.writeText(id); el.textContent = 'Copied!'; setTimeout(() => { el.textContent = id.substring(8, 22) + '...'; }, 1500); }
+      catch { document.getElementById('sessionFilter').value = id; }
     }
 
-    function previousPage() {
-      if (currentPage > 1) {
-        currentPage--;
-        loadLogs();
-      }
-    }
-
-    function refreshData() {
-      currentPage = 1;
-      loadData();
-    }
-
-    function clearFilters() {
-      document.getElementById('sessionFilter').value = '';
-      document.getElementById('contentFilter').value = '';
-      currentPage = 1;
-      loadLogs();
-    }
-
-    async function copySessionId(sessionId, element) {
-      try {
-        await navigator.clipboard.writeText(sessionId);
-        element.classList.add('copied');
-        element.textContent = 'Copied!';
-
-        setTimeout(() => {
-          element.classList.remove('copied');
-          element.textContent = sessionId.substring(8, 24) + '...';
-        }, 1500);
-      } catch (err) {
-        document.getElementById('sessionFilter').value = sessionId;
-        showSuccess('Session ID pasted to search field');
-      }
-    }
-
-    // Conversation Replay
     async function openReplay(sessionId) {
       const modal = document.getElementById('replayModal');
-      const infoEl = document.getElementById('replayInfo');
-      const contentEl = document.getElementById('replayContent');
-
+      const info = document.getElementById('replayInfo');
+      const content = document.getElementById('replayContent');
       modal.style.display = 'flex';
-      infoEl.innerHTML = '<span>Loading...</span>';
-      contentEl.innerHTML = '';
-
+      info.innerHTML = '<span>Loading...</span>';
+      content.innerHTML = '';
       try {
-        const response = await fetch(`${apiEndpoint}/admin/logs?session=${encodeURIComponent(sessionId)}&limit=500`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        const messages = data.logs.sort((a, b) => a.timestamp - b.timestamp);
-
-        if (messages.length === 0) {
-          contentEl.innerHTML = '<div class="empty-state"><p>No messages found</p></div>';
-          return;
-        }
-
-        const firstMsg = messages[0];
-        const lastMsg = messages[messages.length - 1];
-        const duration = Math.round((lastMsg.timestamp - firstMsg.timestamp) / 1000 / 60);
-
-        infoEl.innerHTML = `
-          <span>
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            ${new Date(firstMsg.timestamp).toLocaleDateString()}
-          </span>
-          <span>
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            ${messages.length} messages
-          </span>
-          <span>
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            ${duration} min
-          </span>
-          <span>
-            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="2" y1="12" x2="22" y2="12"/>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-            </svg>
-            ${firstMsg.user_ip}
-          </span>
-        `;
-
-        contentEl.innerHTML = messages.map(msg => `
-          <div class="replay-message ${msg.role}">
-            <div class="replay-bubble">${escapeHtml(msg.content)}</div>
-            <div class="replay-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-          </div>
-        `).join('');
-
-      } catch (error) {
-        contentEl.innerHTML = `<div class="alert alert-error">Failed to load: ${error.message}</div>`;
-      }
+        const res = await fetch(`${apiEndpoint}/admin/logs?session=${encodeURIComponent(sessionId)}&limit=500`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const msgs = data.logs.sort((a,b) => a.timestamp - b.timestamp);
+        if (msgs.length === 0) { content.innerHTML = '<div class="empty-state"><p>No messages</p></div>'; return; }
+        const first = msgs[0], last = msgs[msgs.length-1];
+        const dur = Math.round((last.timestamp - first.timestamp) / 60000);
+        info.innerHTML = `<span>${new Date(first.timestamp).toLocaleDateString()}</span><span>${msgs.length} messages</span><span>${dur} min</span><span>${first.user_ip}</span>`;
+        content.innerHTML = msgs.map(m => `<div class="replay-message ${m.role}"><div class="replay-bubble">${escapeHtml(m.content)}</div><div class="replay-time">${new Date(m.timestamp).toLocaleTimeString()}</div></div>`).join('');
+      } catch (e) { content.innerHTML = `<div class="alert alert-error">${e.message}</div>`; }
     }
 
-    function closeReplayModal(event) {
-      if (!event || event.target === event.currentTarget) {
-        document.getElementById('replayModal').style.display = 'none';
-      }
-    }
+    function closeReplayModal(e) { if (!e || e.target === e.currentTarget) document.getElementById('replayModal').style.display = 'none'; }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReplayModal(); });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeReplayModal();
-    });
-
-    // Analytics
-    async function loadAnalytics() {
-      try {
-        const response = await fetch(`${apiEndpoint}/admin/analytics`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        renderDailyChart(data.daily_messages || []);
-        renderHourlyChart(data.hourly_distribution || []);
-        renderTopUsers(data.top_users || []);
-
-      } catch (error) {
-        console.error('Analytics error:', error);
-      }
-    }
-
-    function renderDailyChart(data) {
-      const container = document.getElementById('dailyChart');
-      if (!data || data.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="padding: 24px;"><p>No data available</p></div>';
-        return;
-      }
-
-      const maxCount = Math.max(...data.map(d => d.count));
-
-      container.innerHTML = data.map(d => {
-        const height = maxCount > 0 ? (d.count / maxCount * 100) : 4;
-        const dateStr = d.date.substring(5);
-        return `
-          <div class="bar-item">
-            <div class="bar-value">${d.count}</div>
-            <div class="bar" style="height: ${height}px"></div>
-            <div class="bar-label">${dateStr}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderHourlyChart(data) {
-      const container = document.getElementById('hourlyChart');
-      if (!data || data.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="padding: 24px;"><p>No data available</p></div>';
-        return;
-      }
-
-      const hourlyData = new Array(24).fill(0);
-      data.forEach(d => { hourlyData[parseInt(d.hour)] = d.count; });
-
-      const maxCount = Math.max(...hourlyData);
-
-      container.innerHTML = hourlyData.map((count, hour) => {
-        const height = maxCount > 0 ? (count / maxCount * 100) : 4;
-        return `
-          <div class="bar-item">
-            <div class="bar-value">${count || ''}</div>
-            <div class="bar" style="height: ${Math.max(height, 4)}px; opacity: ${count > 0 ? 1 : 0.3}"></div>
-            <div class="bar-label">${hour}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderTopUsers(data) {
-      const container = document.getElementById('topUsersChart');
-      if (!data || data.length === 0) {
-        container.innerHTML = '<div class="empty-state" style="padding: 24px;"><p>No data available</p></div>';
-        return;
-      }
-
-      container.innerHTML = data.slice(0, 5).map(d => `
-        <div class="list-item">
-          <span class="list-item-label">${maskIP(d.user_ip)}</span>
-          <span class="list-item-value">${d.message_count} msgs</span>
-        </div>
-      `).join('');
-    }
-
-    function maskIP(ip) {
-      if (!ip) return 'unknown';
-      if (ip.includes(':')) {
-        return ip.substring(0, 12) + '...';
-      } else {
-        const parts = ip.split('.');
-        return parts[0] + '.' + parts[1] + '.*.*';
-      }
-    }
-
-    async function cleanup() {
-      if (!confirm('Delete all messages older than 30 days?')) return;
-
-      try {
-        const response = await fetch(`${apiEndpoint}/admin/cleanup`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const result = await response.json();
-        showSuccess(`Cleanup completed: ${result.deleted_messages} messages deleted`);
-        loadData();
-
-      } catch (error) {
-        showError('Cleanup failed: ' + error.message);
-      }
-    }
-
-    // System Prompt Management
     async function loadSystemPrompt() {
       try {
-        const response = await fetch(`${apiEndpoint}/admin/system-prompt`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
+        const res = await fetch(`${apiEndpoint}/admin/system-prompt`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         document.getElementById('systemPromptEditor').value = data.system_prompt;
-
-        const statusEl = document.getElementById('promptStatus');
-        if (data.is_default) {
-          statusEl.textContent = 'Using default prompt';
-          statusEl.style.color = 'hsl(var(--warning))';
-        } else {
-          const date = new Date(data.updated_at).toLocaleString();
-          statusEl.textContent = `Last updated: ${date}`;
-          statusEl.style.color = 'hsl(var(--muted-foreground))';
-        }
-
-      } catch (error) {
-        console.error('Failed to load system prompt:', error);
-        document.getElementById('systemPromptEditor').placeholder = 'Failed to load system prompt';
-      }
+        const status = document.getElementById('promptStatus');
+        status.textContent = data.is_default ? 'Using default' : `Updated: ${new Date(data.updated_at).toLocaleString()}`;
+      } catch (e) { console.error(e); }
     }
 
     async function saveSystemPrompt() {
       const prompt = document.getElementById('systemPromptEditor').value.trim();
-
-      if (!prompt) {
-        showError('System prompt cannot be empty');
-        return;
-      }
-
+      if (!prompt) { showError('Prompt cannot be empty'); return; }
       try {
-        const response = await fetch(`${apiEndpoint}/admin/system-prompt`, {
+        const res = await fetch(`${apiEndpoint}/admin/system-prompt`, {
           method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${adminToken}`,
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ system_prompt: prompt })
         });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const result = await response.json();
-        showSuccess('System prompt saved successfully');
-
-        const statusEl = document.getElementById('promptStatus');
-        const date = new Date(result.updated_at).toLocaleString();
-        statusEl.textContent = `Last updated: ${date}`;
-        statusEl.style.color = 'hsl(var(--muted-foreground))';
-
-      } catch (error) {
-        showError('Failed to save system prompt: ' + error.message);
-      }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        showSuccess('System prompt saved');
+        document.getElementById('promptStatus').textContent = `Updated: ${new Date(data.updated_at).toLocaleString()}`;
+      } catch (e) { showError('Save failed: ' + e.message); }
     }
 
-    // Memory Management
-    async function loadMemory() {
-      const container = document.getElementById('memoryContainer');
-
+    async function exportToCSV() {
       try {
-        const response = await fetch(`${apiEndpoint}/admin/memory`, {
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        renderMemory(data.sessions || []);
-
-      } catch (error) {
-        container.innerHTML = `<div class="alert alert-error">Failed to load memory: ${error.message}</div>`;
-      }
+        let logs = [], offset = 0;
+        while (true) {
+          const res = await fetch(`${apiEndpoint}/admin/logs?limit=500&offset=${offset}`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+          const data = await res.json();
+          if (!data.logs?.length) break;
+          logs = logs.concat(data.logs);
+          offset += 500;
+          if (logs.length >= 10000) break;
+        }
+        if (!logs.length) { showError('No logs'); return; }
+        const rows = [['Timestamp','Session','Role','Content','IP'].join(',')];
+        logs.forEach(l => rows.push([new Date(l.timestamp).toISOString(), l.session_id, l.role, `"${(l.content||'').replace(/"/g,'""').replace(/\n/g,' ')}"`, l.user_ip||''].join(',')));
+        const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `chat-logs-${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        showSuccess(`Exported ${logs.length} logs`);
+      } catch (e) { showError('Export failed: ' + e.message); }
     }
 
-    function renderMemory(sessions) {
-      const container = document.getElementById('memoryContainer');
-
-      if (!sessions || sessions.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
-            <p>No active sessions</p>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Session</th>
-                <th>First Message</th>
-                <th>Messages</th>
-                <th>Last Active</th>
-                <th>IP</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${sessions.map(s => `
-                <tr>
-                  <td>
-                    <span class="session-id" onclick="copySessionId('${s.id}', this)" title="Click to copy">
-                      ${s.id.substring(8, 24)}...
-                    </span>
-                  </td>
-                  <td class="content-preview" title="${escapeHtml(s.first_message || '')}">${escapeHtml(s.first_message || '-')}</td>
-                  <td><strong>${s.message_count}</strong></td>
-                  <td style="white-space: nowrap;">${new Date(s.last_active).toLocaleString()}</td>
-                  <td style="font-family: monospace; font-size: 12px;">${s.user_ip || '-'}</td>
-                  <td>
-                    <div style="display: flex; gap: 4px;">
-                      <button class="btn btn-outline btn-sm" onclick="openReplay('${s.id}')" title="View conversation">
-                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polygon points="5 3 19 12 5 21 5 3"/>
-                        </svg>
-                      </button>
-                      <button class="btn btn-destructive btn-sm" onclick="clearSession('${s.id}')" title="Delete session">
-                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polyline points="3 6 5 6 21 6"/>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    async function clearSession(sessionId) {
-      if (!confirm(`Delete session ${sessionId.substring(0, 20)}...?`)) return;
-
-      try {
-        const response = await fetch(`${apiEndpoint}/admin/memory?session=${encodeURIComponent(sessionId)}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        showSuccess('Session deleted');
-        loadMemory();
-        loadStats();
-
-      } catch (error) {
-        showError('Failed to delete session: ' + error.message);
-      }
-    }
-
-    async function clearAllMemory() {
-      if (!confirm('⚠️ This will delete ALL conversation sessions. Are you sure?')) return;
-      if (!confirm('This action cannot be undone. Type "DELETE" to confirm.')) return;
-
-      try {
-        const response = await fetch(`${apiEndpoint}/admin/memory?confirm=true`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const result = await response.json();
-        showSuccess(`Deleted ${result.deleted_sessions} sessions and ${result.deleted_messages} messages`);
-        loadMemory();
-        loadStats();
-
-      } catch (error) {
-        showError('Failed to clear memory: ' + error.message);
-      }
-    }
-
-    function showError(message) {
+    function showError(msg) {
       const el = document.getElementById('errorMessage');
-      el.innerHTML = `
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        ${message}
-      `;
+      el.textContent = msg;
       el.style.display = 'flex';
       setTimeout(() => el.style.display = 'none', 5000);
     }
 
-    function showSuccess(message) {
+    function showSuccess(msg) {
       const el = document.getElementById('successMessage');
-      el.innerHTML = `
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-          <polyline points="22 4 12 14.01 9 11.01"/>
-        </svg>
-        ${message}
-      `;
+      el.textContent = msg;
       el.style.display = 'flex';
       setTimeout(() => el.style.display = 'none', 5000);
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
-    // Theme management
-    function setupTheme() {
-      const storedTheme = localStorage.getItem('theme') || 'dark';
-      setTheme(storedTheme);
-    }
-
+    function setupTheme() { setTheme(localStorage.getItem('theme') || 'dark'); }
     function setTheme(theme) {
       document.documentElement.classList.remove('dark', 'light');
       document.documentElement.classList.add(theme);
       localStorage.setItem('theme', theme);
-      updateThemeIcon(theme);
+      const sun = document.querySelector('.theme-icon-sun'), moon = document.querySelector('.theme-icon-moon');
+      if (sun && moon) { sun.style.display = theme === 'dark' ? 'block' : 'none'; moon.style.display = theme === 'dark' ? 'none' : 'block'; }
     }
-
-    function updateThemeIcon(theme) {
-      const sunIcon = document.querySelector('.theme-icon-sun');
-      const moonIcon = document.querySelector('.theme-icon-moon');
-      if (sunIcon && moonIcon) {
-        sunIcon.style.display = theme === 'dark' ? 'block' : 'none';
-        moonIcon.style.display = theme === 'dark' ? 'none' : 'block';
-      }
-    }
-
-    function toggleTheme() {
-      const isDark = document.documentElement.classList.contains('dark');
-      setTheme(isDark ? 'light' : 'dark');
-    }
-
-    // Export to CSV
-    async function exportToCSV() {
-      const exportBtn = document.querySelector('.card-header .btn-primary');
-      const originalHTML = exportBtn.innerHTML;
-      exportBtn.innerHTML = `
-        <div class="loading-spinner" style="width: 16px; height: 16px; margin: 0;"></div>
-        Exporting...
-      `;
-      exportBtn.disabled = true;
-
-      try {
-        let allLogs = [];
-        let offset = 0;
-        const batchSize = 500;
-
-        while (true) {
-          const response = await fetch(`${apiEndpoint}/admin/logs?limit=${batchSize}&offset=${offset}`, {
-            headers: { 'Authorization': `Bearer ${adminToken}` }
-          });
-
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-          const data = await response.json();
-          if (!data.logs || data.logs.length === 0) break;
-
-          allLogs = allLogs.concat(data.logs);
-          offset += batchSize;
-
-          if (allLogs.length >= 10000) break;
-
-          exportBtn.innerHTML = `
-            <div class="loading-spinner" style="width: 16px; height: 16px; margin: 0;"></div>
-            ${allLogs.length} logs...
-          `;
-        }
-
-        if (allLogs.length === 0) {
-          showError('No logs to export');
-          return;
-        }
-
-        const headers = ['Timestamp', 'Session ID', 'Role', 'Content', 'IP', 'User Agent'];
-        const csvRows = [headers.join(',')];
-
-        for (const log of allLogs) {
-          const row = [
-            new Date(log.timestamp).toISOString(),
-            log.session_id,
-            log.role,
-            `"${(log.content || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`,
-            log.user_ip || '',
-            `"${(log.user_agent || '').replace(/"/g, '""')}"`
-          ];
-          csvRows.push(row.join(','));
-        }
-
-        const BOM = '\uFEFF';
-        const blob = new Blob([BOM + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `chat-logs-${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        showSuccess(`Exported ${allLogs.length} logs to CSV`);
-
-      } catch (error) {
-        showError('Export failed: ' + error.message);
-      } finally {
-        exportBtn.innerHTML = originalHTML;
-        exportBtn.disabled = false;
-      }
-    }
+    function toggleTheme() { setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); }
   </script>
 </body>
 </html>
