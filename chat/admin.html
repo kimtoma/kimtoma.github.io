@@ -282,6 +282,137 @@
       color: white;
     }
 
+    /* Conversation Replay Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 0;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .replay-message {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .replay-message.user {
+      align-items: flex-end;
+    }
+
+    .replay-message.ai {
+      align-items: flex-start;
+    }
+
+    .replay-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .replay-message.user .replay-bubble {
+      background: var(--accent);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .replay-message.ai .replay-bubble {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+    }
+
+    .replay-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      padding: 0 8px;
+    }
+
+    .replay-info {
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .replay-info span {
+      margin-right: 16px;
+    }
+
+    .btn-replay {
+      padding: 4px 8px;
+      font-size: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .btn-replay:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
     .pagination {
       display: flex;
       gap: 10px;
@@ -366,6 +497,20 @@
     </div>
     <button class="btn-primary" onclick="login()" style="width: 100%;">Login</button>
     <div id="authError" style="margin-top: 15px; display: none;"></div>
+  </div>
+
+  <!-- Conversation Replay Modal -->
+  <div id="replayModal" class="modal-overlay" style="display: none;" onclick="closeReplayModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>💬 Conversation Replay</h3>
+        <button class="modal-close" onclick="closeReplayModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="replayInfo" class="replay-info"></div>
+        <div id="replayContent"></div>
+      </div>
+    </div>
   </div>
 
   <div id="mainSection" style="display: none;">
@@ -601,6 +746,7 @@
             <th>Role</th>
             <th>Content</th>
             <th>IP</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -611,6 +757,7 @@
               <td><span class="role-badge role-${log.role}">${log.role.toUpperCase()}</span></td>
               <td class="content-preview" title="${escapeHtml(log.content)}">${escapeHtml(log.content)}</td>
               <td>${log.user_ip}</td>
+              <td><button class="btn-replay" onclick="openReplay('${log.session_id}')">▶️ Replay</button></td>
             </tr>
           `).join('')}
         </tbody>
@@ -660,6 +807,73 @@
         showSuccess('Session ID pasted to search field');
       }
     }
+
+    // Conversation Replay
+    async function openReplay(sessionId) {
+      const modal = document.getElementById('replayModal');
+      const infoEl = document.getElementById('replayInfo');
+      const contentEl = document.getElementById('replayContent');
+
+      modal.style.display = 'flex';
+      infoEl.innerHTML = '<span>Loading...</span>';
+      contentEl.innerHTML = '';
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/logs?session=${encodeURIComponent(sessionId)}&limit=500`, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const messages = data.logs.sort((a, b) => a.timestamp - b.timestamp);
+
+        if (messages.length === 0) {
+          contentEl.innerHTML = '<div class="loading">No messages found</div>';
+          return;
+        }
+
+        // Session info
+        const firstMsg = messages[0];
+        const lastMsg = messages[messages.length - 1];
+        const duration = Math.round((lastMsg.timestamp - firstMsg.timestamp) / 1000 / 60);
+
+        infoEl.innerHTML = `
+          <span>📅 ${new Date(firstMsg.timestamp).toLocaleDateString()}</span>
+          <span>💬 ${messages.length} messages</span>
+          <span>⏱️ ${duration} min</span>
+          <span>🌐 ${firstMsg.user_ip}</span>
+        `;
+
+        // Render messages
+        contentEl.innerHTML = messages.map(msg => `
+          <div class="replay-message ${msg.role}">
+            <div class="replay-bubble">${escapeHtml(msg.content)}</div>
+            <div class="replay-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+          </div>
+        `).join('');
+
+      } catch (error) {
+        contentEl.innerHTML = `<div class="error">Failed to load: ${error.message}</div>`;
+      }
+    }
+
+    function closeReplayModal(event) {
+      if (!event || event.target === event.currentTarget) {
+        document.getElementById('replayModal').style.display = 'none';
+      }
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeReplayModal();
+      }
+    });
 
     async function cleanup() {
       if (!confirm('Delete all messages older than 30 days?')) {
