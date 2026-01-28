@@ -413,6 +413,96 @@
       border-color: var(--accent);
     }
 
+    /* Analytics Charts */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .chart-container {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .chart-container h4 {
+      margin: 0 0 16px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 150px;
+      padding-top: 10px;
+    }
+
+    .bar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      min-height: 4px;
+      transition: height 0.3s;
+    }
+
+    .bar-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+    }
+
+    .bar-value {
+      font-size: 10px;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .list-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .list-item-label {
+      color: var(--text-secondary);
+      font-family: monospace;
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list-item-value {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
     .pagination {
       display: flex;
       gap: 10px;
@@ -558,6 +648,34 @@
         </div>
       </div>
 
+      <!-- Analytics Section -->
+      <div class="section" id="analyticsSection">
+        <div class="section-header">
+          <h2 class="section-title">📈 Analytics</h2>
+          <button class="btn-secondary" onclick="loadAnalytics()">🔄 Refresh</button>
+        </div>
+
+        <div class="analytics-grid">
+          <!-- Daily Messages Chart -->
+          <div class="chart-container">
+            <h4>Daily Messages (Last 14 Days)</h4>
+            <div id="dailyChart" class="bar-chart"></div>
+          </div>
+
+          <!-- Hourly Distribution -->
+          <div class="chart-container">
+            <h4>Hourly Activity</h4>
+            <div id="hourlyChart" class="bar-chart"></div>
+          </div>
+
+          <!-- Top Users -->
+          <div class="chart-container">
+            <h4>Top Users by Messages</h4>
+            <div id="topUsersChart" class="list-chart"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Logs Section -->
       <div class="section">
         <div class="section-header">
@@ -646,7 +764,7 @@
     }
 
     async function loadData() {
-      await Promise.all([loadStats(), loadLogs()]);
+      await Promise.all([loadStats(), loadLogs(), loadAnalytics()]);
     }
 
     async function loadStats() {
@@ -874,6 +992,106 @@
         closeReplayModal();
       }
     });
+
+    // Analytics
+    async function loadAnalytics() {
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/analytics`, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderDailyChart(data.daily_messages || []);
+        renderHourlyChart(data.hourly_distribution || []);
+        renderTopUsers(data.top_users || []);
+
+      } catch (error) {
+        console.error('Analytics error:', error);
+      }
+    }
+
+    function renderDailyChart(data) {
+      const container = document.getElementById('dailyChart');
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="loading">No data</div>';
+        return;
+      }
+
+      const maxCount = Math.max(...data.map(d => d.count));
+
+      container.innerHTML = data.map(d => {
+        const height = maxCount > 0 ? (d.count / maxCount * 120) : 4;
+        const dateStr = d.date.substring(5); // MM-DD
+        return `
+          <div class="bar-item">
+            <div class="bar-value">${d.count}</div>
+            <div class="bar" style="height: ${height}px"></div>
+            <div class="bar-label">${dateStr}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderHourlyChart(data) {
+      const container = document.getElementById('hourlyChart');
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="loading">No data</div>';
+        return;
+      }
+
+      // Fill in missing hours
+      const hourlyData = new Array(24).fill(0);
+      data.forEach(d => {
+        hourlyData[parseInt(d.hour)] = d.count;
+      });
+
+      const maxCount = Math.max(...hourlyData);
+
+      container.innerHTML = hourlyData.map((count, hour) => {
+        const height = maxCount > 0 ? (count / maxCount * 120) : 4;
+        return `
+          <div class="bar-item">
+            <div class="bar-value">${count || ''}</div>
+            <div class="bar" style="height: ${Math.max(height, 4)}px; opacity: ${count > 0 ? 1 : 0.3}"></div>
+            <div class="bar-label">${hour}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTopUsers(data) {
+      const container = document.getElementById('topUsersChart');
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div class="loading">No data</div>';
+        return;
+      }
+
+      container.innerHTML = data.slice(0, 5).map(d => `
+        <div class="list-item">
+          <span class="list-item-label">${maskIP(d.user_ip)}</span>
+          <span class="list-item-value">${d.message_count} msgs</span>
+        </div>
+      `).join('');
+    }
+
+    function maskIP(ip) {
+      if (!ip) return 'unknown';
+      // Partially mask IP for privacy
+      if (ip.includes(':')) {
+        // IPv6
+        return ip.substring(0, 12) + '...';
+      } else {
+        // IPv4
+        const parts = ip.split('.');
+        return parts[0] + '.' + parts[1] + '.*.*';
+      }
+    }
 
     async function cleanup() {
       if (!confirm('Delete all messages older than 30 days?')) {

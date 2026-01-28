@@ -81,6 +81,10 @@ export default {
         return await handleCleanup(request, env);
       }
 
+      if (url.pathname === '/admin/analytics' && request.method === 'GET') {
+        return await handleAnalytics(request, env);
+      }
+
       if (url.pathname === '/health') {
         return jsonResponse({ status: 'ok', timestamp: Date.now() });
       }
@@ -288,6 +292,69 @@ async function handleCleanup(request: Request, env: Env): Promise<Response> {
   return jsonResponse({
     deleted_messages: deleteResult.meta.changes,
     message: 'Cleanup completed successfully',
+  });
+}
+
+/**
+ * Handle analytics data
+ */
+async function handleAnalytics(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  await incrementReadCount(env);
+
+  // Get messages per day (last 14 days)
+  const fourteenDaysAgo = Date.now() - (14 * 24 * 60 * 60 * 1000);
+  const dailyMessages = await env.DB.prepare(`
+    SELECT
+      date(timestamp/1000, 'unixepoch') as date,
+      COUNT(*) as count,
+      COUNT(DISTINCT session_id) as sessions
+    FROM chat_messages
+    WHERE timestamp > ?
+    GROUP BY date(timestamp/1000, 'unixepoch')
+    ORDER BY date ASC
+  `).bind(fourteenDaysAgo).all();
+
+  // Get hourly distribution (all time)
+  const hourlyDistribution = await env.DB.prepare(`
+    SELECT
+      strftime('%H', timestamp/1000, 'unixepoch', 'localtime') as hour,
+      COUNT(*) as count
+    FROM chat_messages
+    GROUP BY hour
+    ORDER BY hour ASC
+  `).all();
+
+  // Get top user IPs
+  const topUsers = await env.DB.prepare(`
+    SELECT
+      user_ip,
+      COUNT(*) as message_count,
+      COUNT(DISTINCT id) as session_count
+    FROM chat_sessions
+    GROUP BY user_ip
+    ORDER BY message_count DESC
+    LIMIT 10
+  `).all();
+
+  // Get popular topics (simple word frequency from user messages)
+  const recentUserMessages = await env.DB.prepare(`
+    SELECT content
+    FROM chat_messages
+    WHERE role = 'user'
+    ORDER BY timestamp DESC
+    LIMIT 200
+  `).all();
+
+  return jsonResponse({
+    daily_messages: dailyMessages.results,
+    hourly_distribution: hourlyDistribution.results,
+    top_users: topUsers.results,
+    recent_user_messages: recentUserMessages.results?.length || 0,
   });
 }
 
