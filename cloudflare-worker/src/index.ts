@@ -95,6 +95,15 @@ export default {
         return await handleClearMemory(request, env);
       }
 
+      // Sentiment analysis
+      if (url.pathname === '/admin/sentiment' && request.method === 'GET') {
+        return await handleGetSentiment(request, env);
+      }
+
+      if (url.pathname === '/admin/sentiment/analyze' && request.method === 'POST') {
+        return await handleAnalyzeSentiment(request, env);
+      }
+
       if (url.pathname === '/health') {
         return jsonResponse({ status: 'ok', timestamp: Date.now() });
       }
@@ -458,6 +467,216 @@ async function handleClearMemory(request: Request, env: Env): Promise<Response> 
       deleted_messages: msgResult.meta.changes,
       deleted_sessions: sessResult.meta.changes,
     });
+  }
+}
+
+/**
+ * Handle get sentiment data
+ */
+async function handleGetSentiment(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  await incrementReadCount(env);
+
+  // Get sessions with sentiment data
+  const sessions = await env.DB.prepare(`
+    SELECT
+      s.id,
+      s.created_at,
+      s.last_active,
+      s.message_count,
+      s.user_ip,
+      sa.sentiment,
+      sa.sentiment_score,
+      sa.summary,
+      sa.analyzed_at
+    FROM chat_sessions s
+    LEFT JOIN session_sentiment sa ON s.id = sa.session_id
+    ORDER BY s.last_active DESC
+    LIMIT 50
+  `).all();
+
+  // Get sentiment distribution
+  const distribution = await env.DB.prepare(`
+    SELECT
+      sentiment,
+      COUNT(*) as count
+    FROM session_sentiment
+    GROUP BY sentiment
+  `).all();
+
+  // Get average sentiment score
+  const avgScore = await env.DB.prepare(`
+    SELECT AVG(sentiment_score) as avg_score
+    FROM session_sentiment
+  `).first() as any;
+
+  return jsonResponse({
+    sessions: sessions.results,
+    distribution: distribution.results,
+    average_score: avgScore?.avg_score || 0,
+    total_analyzed: distribution.results?.reduce((sum: number, d: any) => sum + d.count, 0) || 0,
+  });
+}
+
+/**
+ * Handle analyze sentiment for a session
+ */
+async function handleAnalyzeSentiment(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const body = await request.json() as { session_id?: string; analyze_all?: boolean };
+
+  if (body.analyze_all) {
+    // Analyze all unanalyzed sessions (limit to 10 at a time to avoid timeout)
+    const unanalyzed = await env.DB.prepare(`
+      SELECT s.id
+      FROM chat_sessions s
+      LEFT JOIN session_sentiment sa ON s.id = sa.session_id
+      WHERE sa.session_id IS NULL AND s.message_count >= 2
+      ORDER BY s.last_active DESC
+      LIMIT 10
+    `).all();
+
+    const results = [];
+    for (const session of (unanalyzed.results || [])) {
+      const result = await analyzeSessionSentiment(env, (session as any).id);
+      results.push({ session_id: (session as any).id, ...result });
+    }
+
+    return jsonResponse({
+      success: true,
+      analyzed: results.length,
+      results,
+    });
+  }
+
+  if (!body.session_id) {
+    return jsonResponse({ error: 'session_id or analyze_all required' }, 400);
+  }
+
+  const result = await analyzeSessionSentiment(env, body.session_id);
+
+  if (result.error) {
+    return jsonResponse({ error: result.error }, 500);
+  }
+
+  return jsonResponse({
+    success: true,
+    session_id: body.session_id,
+    ...result,
+  });
+}
+
+/**
+ * Analyze sentiment for a specific session using Gemini
+ */
+async function analyzeSessionSentiment(env: Env, sessionId: string): Promise<{
+  sentiment?: string;
+  sentiment_score?: number;
+  summary?: string;
+  error?: string;
+}> {
+  try {
+    // Get all messages for this session
+    const messages = await env.DB.prepare(`
+      SELECT role, content, timestamp
+      FROM chat_messages
+      WHERE session_id = ?
+      ORDER BY timestamp ASC
+    `).bind(sessionId).all();
+
+    if (!messages.results || messages.results.length < 2) {
+      return { error: 'Not enough messages to analyze' };
+    }
+
+    // Format conversation for analysis
+    const conversation = messages.results.map((m: any) =>
+      `${m.role === 'user' ? '사용자' : 'AI'}: ${m.content}`
+    ).join('\n\n');
+
+    // Call Gemini for sentiment analysis
+    const prompt = `다음 대화를 분석해서 JSON 형식으로 응답해주세요.
+
+대화:
+${conversation}
+
+다음 형식으로만 응답하세요 (다른 텍스트 없이 JSON만):
+{
+  "sentiment": "positive" | "negative" | "neutral" | "mixed",
+  "score": 0.0 ~ 1.0 (0=매우 부정, 0.5=중립, 1=매우 긍정),
+  "summary": "대화 내용 한줄 요약 (20자 이내)",
+  "topics": ["주요 토픽1", "토픽2"]
+}`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 200,
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Gemini API error: ${response.status}`);
+    }
+
+    const data = await response.json() as any;
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) {
+      throw new Error('No response from Gemini');
+    }
+
+    // Parse JSON response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Invalid JSON response');
+    }
+
+    const analysis = JSON.parse(jsonMatch[0]);
+
+    // Save to database
+    const now = Date.now();
+    await env.DB.prepare(`
+      INSERT INTO session_sentiment (session_id, sentiment, sentiment_score, summary, topics, analyzed_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(session_id) DO UPDATE SET
+        sentiment = excluded.sentiment,
+        sentiment_score = excluded.sentiment_score,
+        summary = excluded.summary,
+        topics = excluded.topics,
+        analyzed_at = excluded.analyzed_at
+    `).bind(
+      sessionId,
+      analysis.sentiment,
+      analysis.score,
+      analysis.summary,
+      JSON.stringify(analysis.topics || []),
+      now
+    ).run();
+
+    return {
+      sentiment: analysis.sentiment,
+      sentiment_score: analysis.score,
+      summary: analysis.summary,
+    };
+  } catch (error) {
+    console.error('Sentiment analysis error:', error);
+    return { error: (error as Error).message };
   }
 }
 

@@ -266,6 +266,10 @@
     .badge { display: inline-flex; padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 9999px; text-transform: uppercase; }
     .badge-user { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
     .badge-ai { background: hsl(var(--success)); color: white; }
+    .badge-positive { background: hsl(142 76% 36%); color: white; }
+    .badge-negative { background: hsl(var(--destructive)); color: white; }
+    .badge-neutral { background: hsl(var(--muted)); color: hsl(var(--muted-foreground)); }
+    .badge-mixed { background: hsl(38 92% 50%); color: white; }
 
     .content-preview { max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: hsl(var(--muted-foreground)); }
 
@@ -439,6 +443,15 @@
           </svg>
           System Prompt
         </div>
+        <div class="nav-item" onclick="showPage('sentiment')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+          Sentiment
+        </div>
       </nav>
       <div class="sidebar-footer">
         <div class="nav-item" onclick="logout()">
@@ -550,6 +563,42 @@
             </div>
           </div>
         </div>
+
+        <!-- Sentiment Analysis Page -->
+        <div id="page-sentiment" class="page">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Analyzed Sessions</div>
+              <div class="stat-value" id="sentimentTotal">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Average Score</div>
+              <div class="stat-value" id="sentimentAvg">-</div>
+              <div class="stat-sub">0 = Negative, 1 = Positive</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Positive</div>
+              <div class="stat-value" id="sentimentPositive" style="color: hsl(142 76% 36%);">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Negative</div>
+              <div class="stat-value" id="sentimentNegative" style="color: hsl(var(--destructive));">-</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Session Sentiment</h2>
+                <p class="card-description">AI-powered conversation mood analysis</p>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="analyzeAllSentiment()" id="analyzeBtn">Analyze New Sessions</button>
+            </div>
+            <div class="card-content">
+              <div id="sentimentContainer"><div class="loading"><div class="loading-spinner"></div>Loading...</div></div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -582,7 +631,9 @@
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById('page-' + page).classList.add('active');
       event.currentTarget.classList.add('active');
-      document.getElementById('pageTitle').textContent = page === 'dashboard' ? 'Dashboard' : 'System Prompt';
+      const titles = { dashboard: 'Dashboard', prompt: 'System Prompt', sentiment: 'Sentiment Analysis' };
+      document.getElementById('pageTitle').textContent = titles[page] || page;
+      if (page === 'sentiment') loadSentiment();
     }
 
     function login() {
@@ -773,6 +824,62 @@
       if (sun && moon) { sun.style.display = theme === 'dark' ? 'block' : 'none'; moon.style.display = theme === 'dark' ? 'none' : 'block'; }
     }
     function toggleTheme() { setTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); }
+
+    // Sentiment Analysis Functions
+    async function loadSentiment() {
+      try {
+        const res = await fetch(`${apiEndpoint}/admin/sentiment`, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        document.getElementById('sentimentTotal').textContent = data.total_analyzed || 0;
+        document.getElementById('sentimentAvg').textContent = data.average_score ? data.average_score.toFixed(2) : '-';
+
+        const dist = data.distribution || [];
+        const getCount = (s) => (dist.find(d => d.sentiment === s)?.count || 0);
+        document.getElementById('sentimentPositive').textContent = getCount('positive');
+        document.getElementById('sentimentNegative').textContent = getCount('negative');
+
+        renderSentimentTable(data.sessions || []);
+      } catch (e) { showError('Failed to load sentiment: ' + e.message); }
+    }
+
+    function renderSentimentTable(sessions) {
+      const container = document.getElementById('sentimentContainer');
+      if (!sessions || sessions.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No sessions found. Click "Analyze New Sessions" to start.</p></div>';
+        return;
+      }
+      container.innerHTML = `<div class="table-container"><table>
+        <thead><tr><th>Session</th><th>Messages</th><th>Sentiment</th><th>Score</th><th>Summary</th><th>Analyzed</th></tr></thead>
+        <tbody>${sessions.map(s => `<tr>
+          <td><span class="session-id" onclick="copySessionId('${s.id}',this)">${s.id.substring(8,22)}...</span></td>
+          <td>${s.message_count || 0}</td>
+          <td>${s.sentiment ? `<span class="badge badge-${s.sentiment}">${s.sentiment}</span>` : '<span style="color:hsl(var(--muted-foreground))">-</span>'}</td>
+          <td>${s.sentiment_score != null ? s.sentiment_score.toFixed(2) : '-'}</td>
+          <td class="content-preview">${s.summary || '-'}</td>
+          <td style="font-size:12px;">${s.analyzed_at ? new Date(s.analyzed_at).toLocaleDateString() : '-'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+    }
+
+    async function analyzeAllSentiment() {
+      const btn = document.getElementById('analyzeBtn');
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+      try {
+        const res = await fetch(`${apiEndpoint}/admin/sentiment/analyze`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ analyze_all: true })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        showSuccess(`Analyzed ${data.analyzed} sessions`);
+        await loadSentiment();
+      } catch (e) { showError('Analysis failed: ' + e.message); }
+      finally { btn.disabled = false; btn.textContent = 'Analyze New Sessions'; }
+    }
   </script>
 </body>
 </html>
