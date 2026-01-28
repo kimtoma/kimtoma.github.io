@@ -6,46 +6,47 @@
 
 #### 1. Cloudflare Worker with D1 Database Logging
 - **Location**: `/cloudflare-worker/`
+- **URL**: `https://gemini-proxy-with-logging.kimtoma.workers.dev`
 - **Features**:
-  - Gemini API proxy with request/response logging
+  - Gemini API proxy (gemini-2.0-flash model)
+  - kimtoma persona via System Prompt
   - D1 SQLite database integration
   - Session management (track conversations by user)
   - Free tier limits enforcement (100K writes/day, 5M reads/day)
   - Auto-cleanup for data older than 30 days
   - CORS enabled for web access
 
-**Files created**:
-- `src/index.ts` - Worker code with D1 bindings
-- `src/schema.sql` - Database schema (sessions, messages, usage)
-- `wrangler.toml` - Cloudflare configuration
-- `package.json` - Dependencies
-- `README.md` - API documentation
-
 #### 2. Admin Dashboard
 - **Location**: `/chat/admin.html`
+- **URL**: `https://chat.kimtoma.com/admin.html`
 - **Features**:
   - 📊 Real-time statistics (messages, sessions, daily usage)
   - 📝 Conversation logs viewer with pagination
-  - 🔍 Filter by session ID
+  - 🔍 Filter by Session ID
+  - 🔍 Filter by Content (keyword search)
+  - 📥 Export to CSV (Google Sheets compatible)
+  - 💬 Conversation Replay (chat-style modal)
+  - 📈 Analytics Dashboard:
+    - Daily messages chart (14 days)
+    - Hourly activity distribution
+    - Top users by message count
+  - 📋 Click-to-copy Session ID
   - 🗑️ Cleanup old data (30+ days)
   - 🔐 Token-based authentication
   - 🌓 Dark/Light theme
-  - Usage limit visualization with progress bars
 
-#### 3. Chat Client Updates
-- **Location**: `/chat-app/src/components/Chat.tsx`
-- **Changes**:
-  - Added session ID generation and persistence
-  - Include sessionId in API requests
-  - Handle sessionId from server responses
-  - Reset session on conversation clear
-
-#### 4. Documentation
-- **Location**: `/DEPLOYMENT_GUIDE.md`
-- Complete step-by-step deployment guide
-- Database management commands
-- Troubleshooting section
-- Cost estimation for free tier
+#### 3. Chat Client
+- **Location**: `/chat-app/`
+- **URL**: `https://chat.kimtoma.com`
+- **Features**:
+  - React + TypeScript + Vite
+  - Tailwind CSS + shadcn/ui
+  - iMessage-style UI
+  - Typing effect (character by character)
+  - Session ID generation and persistence
+  - Dark/Light theme toggle
+  - Mobile-responsive (iOS safe area)
+  - Favicon matching kimtoma.com
 
 ### 📋 Database Schema
 
@@ -60,12 +61,12 @@ chat_messages (id, session_id, role, content, timestamp, token_count)
 daily_usage (date, write_count, read_count, created_at)
 ```
 
-### 🔒 Security Features
+### 🔒 Security
 
-- Admin API protected with Bearer token authentication
+- Admin API protected with Bearer token
 - CORS configured for allowed origins
 - Rate limiting via daily usage tracking
-- IP logging for analytics (privacy consideration needed)
+- IP logging for analytics (partially masked in UI)
 
 ### 💰 Free Tier Capacity
 
@@ -77,35 +78,6 @@ daily_usage (date, write_count, read_count, created_at)
 **Estimated Capacity**:
 - ~25,000 conversations/day (4 writes per conversation)
 - ~750,000 conversations stored (30-day retention)
-- Plenty of headroom for personal use
-
-### 📊 Analytics Capabilities
-
-With D1 logging, you can now analyze:
-- Total conversations and messages
-- Popular topics and questions
-- User engagement patterns
-- Error rates and API issues
-- Peak usage times
-- Session duration and message count per session
-
-### 🚀 Next Steps
-
-**Deployment** (see DEPLOYMENT_GUIDE.md):
-1. Deploy Cloudflare Worker with D1
-2. Set environment secrets (GEMINI_API_KEY, ADMIN_TOKEN)
-3. Update chat client API endpoint
-4. Rebuild and deploy chat app
-5. Push to GitHub Pages
-
-**Future Enhancements**:
-- [ ] Data export functionality (CSV, JSON)
-- [ ] Advanced analytics dashboard
-- [ ] Sentiment analysis on conversations
-- [ ] Conversation search by content
-- [ ] Email alerts for quota warnings
-- [ ] Conversation replay feature
-- [ ] Multi-language support for admin panel
 
 ---
 
@@ -123,5 +95,15 @@ With D1 logging, you can now analyze:
 
 ---
 
+## Future Enhancements
+
+- [ ] Sentiment analysis on conversations
+- [ ] Email alerts for quota warnings
+- [ ] Multi-language support for admin panel
+- [ ] Advanced filtering (date range, role)
+- [ ] Conversation statistics per session
+
+---
+
 **Last Updated**: 2026-01-28
-**Status**: Ready for deployment
+**Status**: Complete
