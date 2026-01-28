@@ -262,6 +262,26 @@
       white-space: nowrap;
     }
 
+    .session-id {
+      cursor: pointer;
+      padding: 2px 6px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+
+    .session-id:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .session-id.copied {
+      background: var(--success);
+      color: white;
+    }
+
     .pagination {
       display: flex;
       gap: 10px;
@@ -587,7 +607,7 @@
           ${logs.map(log => `
             <tr>
               <td>${new Date(log.timestamp).toLocaleString()}</td>
-              <td><code>${log.session_id.substring(0, 20)}...</code></td>
+              <td><span class="session-id" onclick="copySessionId('${log.session_id}', this)" title="Click to copy">${log.session_id.substring(8, 24)}...</span></td>
               <td><span class="role-badge role-${log.role}">${log.role.toUpperCase()}</span></td>
               <td class="content-preview" title="${escapeHtml(log.content)}">${escapeHtml(log.content)}</td>
               <td>${log.user_ip}</td>
@@ -622,6 +642,23 @@
       document.getElementById('contentFilter').value = '';
       currentPage = 1;
       loadLogs();
+    }
+
+    async function copySessionId(sessionId, element) {
+      try {
+        await navigator.clipboard.writeText(sessionId);
+        element.classList.add('copied');
+        element.textContent = 'Copied!';
+
+        setTimeout(() => {
+          element.classList.remove('copied');
+          element.textContent = sessionId.substring(8, 24) + '...';
+        }, 1500);
+      } catch (err) {
+        // Fallback: paste into search field
+        document.getElementById('sessionFilter').value = sessionId;
+        showSuccess('Session ID pasted to search field');
+      }
     }
 
     async function cleanup() {
