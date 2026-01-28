@@ -19,12 +19,10 @@ const LIMITS = {
 };
 
 // Email alert configuration
-// Note: Resend free tier only allows sending to account owner's email
-// To add more recipients, verify domain at resend.com/domains
 const ALERT_CONFIG = {
-  EMAILS: ['kimtoma@gmail.com'], // Add 'kyungsoo.kim@kt.com' after domain verification
+  EMAILS: ['kimtoma@gmail.com', 'kyungsoo.kim@kt.com'],
   THRESHOLDS: [50, 80, 95], // Percentage thresholds for alerts
-  FROM_EMAIL: 'kimtoma Chat <onboarding@resend.dev>', // Use Resend's default sender (free tier)
+  FROM_EMAIL: 'Chat Alerts <alerts@kimtoma.com>',
 };
 
 // System prompt for kimtoma persona
