@@ -43,6 +43,23 @@
 - **Recipients**: kimtoma@gmail.com, kyungsoo.kim@kt.com
 - **From**: alerts@kimtoma.com (verified domain)
 
+#### 4. Sentiment Analysis
+- **Location**: Admin Dashboard → Sentiment page
+- **API Endpoints**:
+  - `GET /admin/sentiment` - Get sentiment data and stats
+  - `POST /admin/sentiment/analyze` - Analyze sessions
+- **Features**:
+  - Gemini-powered conversation mood analysis
+  - Sentiment categories: positive, negative, neutral, mixed
+  - Score: 0.0 (negative) to 1.0 (positive)
+  - Auto-generated conversation summary
+  - Batch analysis for unanalyzed sessions
+- **Storage**: D1 `session_sentiment` table
+
+#### 5. kimtoma.com SVG Icons
+- Replaced emoji theme toggle (🌞/🌚) with SVG icons
+- Matching minimal style from chat.kimtoma.com
+
 ---
 
 ## 2026-01-28: Chat Logging System with Cloudflare D1
@@ -106,6 +123,9 @@ settings (key TEXT PRIMARY KEY, value TEXT, updated_at INTEGER)
 
 -- Alert Logs: Prevent duplicate email alerts (added 2026-01-29)
 alert_logs (id, alert_key TEXT UNIQUE, threshold INTEGER, sent_at INTEGER)
+
+-- Session Sentiment: AI-analyzed conversation mood (added 2026-01-29)
+session_sentiment (id, session_id TEXT UNIQUE, sentiment TEXT, sentiment_score REAL, summary TEXT, topics TEXT, analyzed_at INTEGER)
 ```
 
 ### 🔒 Security
@@ -147,7 +167,7 @@ alert_logs (id, alert_key TEXT UNIQUE, threshold INTEGER, sent_at INTEGER)
 - [x] ~~Email alerts for quota warnings~~ (Completed 2026-01-29)
 - [x] ~~System prompt management~~ (Completed 2026-01-29)
 - [x] ~~Admin sidebar navigation~~ (Completed 2026-01-29)
-- [ ] Sentiment analysis on conversations
+- [x] ~~Sentiment analysis on conversations~~ (Completed 2026-01-29)
 - [ ] Conversation statistics per session
 - [ ] Advanced filtering (date range, role)
 - [ ] Multi-language support for admin panel
