@@ -401,9 +401,11 @@
         </div>
 
         <div class="filters">
-          <input type="text" id="sessionFilter" placeholder="Session ID" style="min-width: 300px;">
+          <input type="text" id="sessionFilter" placeholder="Session ID" style="min-width: 250px;">
+          <input type="text" id="contentFilter" placeholder="Content Search (keyword)" style="min-width: 250px;">
           <input type="number" id="limitFilter" value="50" min="10" max="500" style="width: 100px;" placeholder="Limit">
           <button class="btn-primary" onclick="loadLogs()">Search</button>
+          <button class="btn-secondary" onclick="clearFilters()">Clear</button>
         </div>
 
         <div id="logsContainer">
@@ -522,6 +524,7 @@
 
     async function loadLogs() {
       const sessionId = document.getElementById('sessionFilter').value.trim();
+      const contentSearch = document.getElementById('contentFilter').value.trim();
       const limit = parseInt(document.getElementById('limitFilter').value) || 50;
       pageSize = limit;
       const offset = (currentPage - 1) * pageSize;
@@ -530,6 +533,9 @@
         let url = `${apiEndpoint}/admin/logs?limit=${limit}&offset=${offset}`;
         if (sessionId) {
           url += `&session=${encodeURIComponent(sessionId)}`;
+        }
+        if (contentSearch) {
+          url += `&content=${encodeURIComponent(contentSearch)}`;
         }
 
         const response = await fetch(url, {
@@ -609,6 +615,13 @@
     function refreshData() {
       currentPage = 1;
       loadData();
+    }
+
+    function clearFilters() {
+      document.getElementById('sessionFilter').value = '';
+      document.getElementById('contentFilter').value = '';
+      currentPage = 1;
+      loadLogs();
     }
 
     async function cleanup() {

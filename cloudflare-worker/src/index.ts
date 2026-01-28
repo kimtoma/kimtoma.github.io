@@ -166,6 +166,7 @@ async function handleAdminLogs(request: Request, env: Env): Promise<Response> {
   const limit = parseInt(url.searchParams.get('limit') || '100');
   const offset = parseInt(url.searchParams.get('offset') || '0');
   const sessionId = url.searchParams.get('session');
+  const contentSearch = url.searchParams.get('content');
 
   let query = `
     SELECT
@@ -182,10 +183,20 @@ async function handleAdminLogs(request: Request, env: Env): Promise<Response> {
   `;
 
   const params: any[] = [];
+  const conditions: string[] = [];
 
   if (sessionId) {
-    query += ` WHERE m.session_id = ?`;
+    conditions.push(`m.session_id = ?`);
     params.push(sessionId);
+  }
+
+  if (contentSearch) {
+    conditions.push(`m.content LIKE ?`);
+    params.push(`%${contentSearch}%`);
+  }
+
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`;
   }
 
   query += ` ORDER BY m.timestamp DESC LIMIT ? OFFSET ?`;
