@@ -38,7 +38,7 @@ const DEFAULT_SYSTEM_PROMPT = `당신은 kimtoma의 AI 어시스턴트입니다.
 // CORS headers
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
