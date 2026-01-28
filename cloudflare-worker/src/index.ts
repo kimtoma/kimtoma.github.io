@@ -25,34 +25,14 @@ const ALERT_CONFIG = {
   FROM_EMAIL: 'Chat Alerts <alerts@kimtoma.com>',
 };
 
-// System prompt for kimtoma persona
-const SYSTEM_PROMPT = `당신은 김경수(kimtoma)입니다. 대화할 때 자연스럽고 친근하게 답변하세요.
-
-## 기본 정보
-- 이름: 김경수 (영문: Kyungsoo Kim, 닉네임: kimtoma)
-- 직업: 서비스 기획자 / 프로덕트 디자이너
-- 회사: 카카오 (2022~현재)
-- 거주지: 대한민국 제주도
-
-## 가족
-- 배우자: 아내 혜림
-- 자녀: 아들 예준 (2025년 4월 30일생)
-
-## 현재 프로젝트
-- 회사: K-HUB, 마이K 프로젝트
-- 사이드: Claude Code를 활용한 개인 프로젝트 (2025년 12월~)
-
-## 경력
-- NC Soft: AI 야구 앱 PAIGE 기획 (iF Design Award 2021)
-- Mossland: The Hunters 게임 기획 (iF Design Award 2020)
-
-## 관심 분야
-- AI/LLM 활용, 서비스 기획, UX 디자인, 블록체인, 골프, 야구
+// Default system prompt (used as fallback if not set in DB)
+const DEFAULT_SYSTEM_PROMPT = `당신은 kimtoma의 AI 어시스턴트입니다. 친근하고 자연스럽게 대화하세요.
 
 ## 대화 스타일
-- 친근하고 자연스럽게
+- 친근하고 자연스럽게 답변
 - 기술적 질문에는 상세히 답변
-- 모르는 건 솔직하게 인정`;
+- 모르는 건 솔직하게 인정
+- 한국어로 대화`;
 
 
 // CORS headers
@@ -95,6 +75,24 @@ export default {
 
       if (url.pathname === '/admin/test-alert' && request.method === 'POST') {
         return await handleTestAlert(request, env);
+      }
+
+      // System prompt management
+      if (url.pathname === '/admin/system-prompt' && request.method === 'GET') {
+        return await handleGetSystemPrompt(request, env);
+      }
+
+      if (url.pathname === '/admin/system-prompt' && request.method === 'PUT') {
+        return await handleUpdateSystemPrompt(request, env);
+      }
+
+      // Memory management
+      if (url.pathname === '/admin/memory' && request.method === 'GET') {
+        return await handleGetMemory(request, env);
+      }
+
+      if (url.pathname === '/admin/memory' && request.method === 'DELETE') {
+        return await handleClearMemory(request, env);
       }
 
       if (url.pathname === '/health') {
@@ -147,8 +145,9 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
     // Save user message to DB
     await saveMessage(env, sessionId, 'user', body.message, timestamp, userIp, userAgent);
 
-    // Call Gemini API
-    const geminiResponse = await callGeminiAPI(env, body.message, body.history || []);
+    // Get system prompt and call Gemini API
+    const systemPrompt = await getSystemPrompt(env);
+    const geminiResponse = await callGeminiAPI(env, body.message, body.history || [], systemPrompt);
 
     if (geminiResponse.error) {
       return jsonResponse({ error: geminiResponse.error }, 500);
@@ -308,6 +307,161 @@ async function handleCleanup(request: Request, env: Env): Promise<Response> {
 }
 
 /**
+ * Get system prompt from DB or return default
+ */
+async function getSystemPrompt(env: Env): Promise<string> {
+  const result = await env.DB.prepare(
+    'SELECT value FROM settings WHERE key = ?'
+  ).bind('system_prompt').first() as any;
+
+  return result?.value || DEFAULT_SYSTEM_PROMPT;
+}
+
+/**
+ * Handle get system prompt
+ */
+async function handleGetSystemPrompt(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const systemPrompt = await getSystemPrompt(env);
+  const result = await env.DB.prepare(
+    'SELECT updated_at FROM settings WHERE key = ?'
+  ).bind('system_prompt').first() as any;
+
+  return jsonResponse({
+    system_prompt: systemPrompt,
+    is_default: !result,
+    updated_at: result?.updated_at || null,
+  });
+}
+
+/**
+ * Handle update system prompt
+ */
+async function handleUpdateSystemPrompt(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const body = await request.json() as { system_prompt: string };
+
+  if (!body.system_prompt?.trim()) {
+    return jsonResponse({ error: 'system_prompt is required' }, 400);
+  }
+
+  const now = Date.now();
+  await env.DB.prepare(`
+    INSERT INTO settings (key, value, updated_at)
+    VALUES ('system_prompt', ?, ?)
+    ON CONFLICT(key) DO UPDATE SET
+      value = excluded.value,
+      updated_at = excluded.updated_at
+  `).bind(body.system_prompt.trim(), now).run();
+
+  return jsonResponse({
+    success: true,
+    message: 'System prompt updated',
+    updated_at: now,
+  });
+}
+
+/**
+ * Handle get memory (conversation statistics by session)
+ */
+async function handleGetMemory(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const url = new URL(request.url);
+  const sessionId = url.searchParams.get('session');
+
+  if (sessionId) {
+    // Get specific session's messages
+    const messages = await env.DB.prepare(`
+      SELECT id, role, content, timestamp
+      FROM chat_messages
+      WHERE session_id = ?
+      ORDER BY timestamp ASC
+    `).bind(sessionId).all();
+
+    const session = await env.DB.prepare(`
+      SELECT * FROM chat_sessions WHERE id = ?
+    `).bind(sessionId).first();
+
+    return jsonResponse({
+      session,
+      messages: messages.results,
+      message_count: messages.results?.length || 0,
+    });
+  } else {
+    // Get all sessions with message counts
+    const sessions = await env.DB.prepare(`
+      SELECT
+        s.id,
+        s.created_at,
+        s.last_active,
+        s.message_count,
+        s.user_ip,
+        (SELECT content FROM chat_messages WHERE session_id = s.id ORDER BY timestamp ASC LIMIT 1) as first_message
+      FROM chat_sessions s
+      ORDER BY s.last_active DESC
+      LIMIT 50
+    `).all();
+
+    return jsonResponse({
+      sessions: sessions.results,
+      total: sessions.results?.length || 0,
+    });
+  }
+}
+
+/**
+ * Handle clear memory (delete session or all sessions)
+ */
+async function handleClearMemory(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  const url = new URL(request.url);
+  const sessionId = url.searchParams.get('session');
+
+  if (sessionId) {
+    // Delete specific session
+    await env.DB.prepare('DELETE FROM chat_messages WHERE session_id = ?').bind(sessionId).run();
+    await env.DB.prepare('DELETE FROM chat_sessions WHERE id = ?').bind(sessionId).run();
+
+    return jsonResponse({
+      success: true,
+      message: `Session ${sessionId} deleted`,
+    });
+  } else {
+    // Delete all sessions (requires confirmation parameter)
+    const confirm = url.searchParams.get('confirm');
+    if (confirm !== 'true') {
+      return jsonResponse({ error: 'Add ?confirm=true to delete all sessions' }, 400);
+    }
+
+    const msgResult = await env.DB.prepare('DELETE FROM chat_messages').run();
+    const sessResult = await env.DB.prepare('DELETE FROM chat_sessions').run();
+
+    return jsonResponse({
+      success: true,
+      message: 'All sessions deleted',
+      deleted_messages: msgResult.meta.changes,
+      deleted_sessions: sessResult.meta.changes,
+    });
+  }
+}
+
+/**
  * Handle test alert (for testing email delivery)
  */
 async function handleTestAlert(request: Request, env: Env): Promise<Response> {
@@ -419,7 +573,8 @@ async function handleAnalytics(request: Request, env: Env): Promise<Response> {
 async function callGeminiAPI(
   env: Env,
   message: string,
-  history: Array<{ role: string; content: string }>
+  history: Array<{ role: string; content: string }>,
+  systemPrompt: string
 ): Promise<{ response?: string; error?: string }> {
   try {
     const contents = [
@@ -441,7 +596,7 @@ async function callGeminiAPI(
         body: JSON.stringify({
           contents,
           systemInstruction: {
-            parts: [{ text: SYSTEM_PROMPT }],
+            parts: [{ text: systemPrompt }],
           },
         }),
       }

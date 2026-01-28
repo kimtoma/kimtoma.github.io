@@ -963,6 +963,67 @@
         </div>
       </div>
 
+      <!-- System Prompt Section -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">System Prompt</h2>
+            <p class="card-description">AI persona and behavior configuration</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span id="promptStatus" style="font-size: 12px; color: hsl(var(--muted-foreground)); padding: 6px 12px; background: hsl(var(--muted)); border-radius: var(--radius);"></span>
+            <button class="btn btn-primary btn-sm" onclick="saveSystemPrompt()">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Save
+            </button>
+          </div>
+        </div>
+        <div class="card-content">
+          <textarea id="systemPromptEditor" style="width: 100%; min-height: 300px; padding: 16px; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace; font-size: 13px; line-height: 1.6; background: hsl(var(--background)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); color: hsl(var(--foreground)); resize: vertical;" placeholder="Loading system prompt..."></textarea>
+          <p style="margin-top: 12px; font-size: 13px; color: hsl(var(--muted-foreground));">
+            Markdown 형식으로 작성하세요. 변경 후 Save를 클릭하면 즉시 적용됩니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- Memory Management Section -->
+      <div class="card" style="margin-bottom: 24px;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Memory Management</h2>
+            <p class="card-description">Manage conversation sessions and context</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-outline btn-sm" onclick="loadMemory()">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              Refresh
+            </button>
+            <button class="btn btn-destructive btn-sm" onclick="clearAllMemory()">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              Clear All
+            </button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div id="memoryContainer">
+            <div class="loading">
+              <div class="loading-spinner"></div>
+              Loading sessions...
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Analytics Section -->
       <div class="card" style="margin-bottom: 24px;">
         <div class="card-header">
@@ -1112,7 +1173,7 @@
     }
 
     async function loadData() {
-      await Promise.all([loadStats(), loadLogs(), loadAnalytics()]);
+      await Promise.all([loadStats(), loadLogs(), loadAnalytics(), loadSystemPrompt(), loadMemory()]);
     }
 
     async function loadStats() {
@@ -1473,6 +1534,191 @@
 
       } catch (error) {
         showError('Cleanup failed: ' + error.message);
+      }
+    }
+
+    // System Prompt Management
+    async function loadSystemPrompt() {
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/system-prompt`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        document.getElementById('systemPromptEditor').value = data.system_prompt;
+
+        const statusEl = document.getElementById('promptStatus');
+        if (data.is_default) {
+          statusEl.textContent = 'Using default prompt';
+          statusEl.style.color = 'hsl(var(--warning))';
+        } else {
+          const date = new Date(data.updated_at).toLocaleString();
+          statusEl.textContent = `Last updated: ${date}`;
+          statusEl.style.color = 'hsl(var(--muted-foreground))';
+        }
+
+      } catch (error) {
+        console.error('Failed to load system prompt:', error);
+        document.getElementById('systemPromptEditor').placeholder = 'Failed to load system prompt';
+      }
+    }
+
+    async function saveSystemPrompt() {
+      const prompt = document.getElementById('systemPromptEditor').value.trim();
+
+      if (!prompt) {
+        showError('System prompt cannot be empty');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/system-prompt`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ system_prompt: prompt })
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const result = await response.json();
+        showSuccess('System prompt saved successfully');
+
+        const statusEl = document.getElementById('promptStatus');
+        const date = new Date(result.updated_at).toLocaleString();
+        statusEl.textContent = `Last updated: ${date}`;
+        statusEl.style.color = 'hsl(var(--muted-foreground))';
+
+      } catch (error) {
+        showError('Failed to save system prompt: ' + error.message);
+      }
+    }
+
+    // Memory Management
+    async function loadMemory() {
+      const container = document.getElementById('memoryContainer');
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/memory`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        renderMemory(data.sessions || []);
+
+      } catch (error) {
+        container.innerHTML = `<div class="alert alert-error">Failed to load memory: ${error.message}</div>`;
+      }
+    }
+
+    function renderMemory(sessions) {
+      const container = document.getElementById('memoryContainer');
+
+      if (!sessions || sessions.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5;">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <p>No active sessions</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Session</th>
+                <th>First Message</th>
+                <th>Messages</th>
+                <th>Last Active</th>
+                <th>IP</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sessions.map(s => `
+                <tr>
+                  <td>
+                    <span class="session-id" onclick="copySessionId('${s.id}', this)" title="Click to copy">
+                      ${s.id.substring(8, 24)}...
+                    </span>
+                  </td>
+                  <td class="content-preview" title="${escapeHtml(s.first_message || '')}">${escapeHtml(s.first_message || '-')}</td>
+                  <td><strong>${s.message_count}</strong></td>
+                  <td style="white-space: nowrap;">${new Date(s.last_active).toLocaleString()}</td>
+                  <td style="font-family: monospace; font-size: 12px;">${s.user_ip || '-'}</td>
+                  <td>
+                    <div style="display: flex; gap: 4px;">
+                      <button class="btn btn-outline btn-sm" onclick="openReplay('${s.id}')" title="View conversation">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                      </button>
+                      <button class="btn btn-destructive btn-sm" onclick="clearSession('${s.id}')" title="Delete session">
+                        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function clearSession(sessionId) {
+      if (!confirm(`Delete session ${sessionId.substring(0, 20)}...?`)) return;
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/memory?session=${encodeURIComponent(sessionId)}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        showSuccess('Session deleted');
+        loadMemory();
+        loadStats();
+
+      } catch (error) {
+        showError('Failed to delete session: ' + error.message);
+      }
+    }
+
+    async function clearAllMemory() {
+      if (!confirm('⚠️ This will delete ALL conversation sessions. Are you sure?')) return;
+      if (!confirm('This action cannot be undone. Type "DELETE" to confirm.')) return;
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/memory?confirm=true`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const result = await response.json();
+        showSuccess(`Deleted ${result.deleted_sessions} sessions and ${result.deleted_messages} messages`);
+        loadMemory();
+        loadStats();
+
+      } catch (error) {
+        showError('Failed to clear memory: ' + error.message);
       }
     }
 
