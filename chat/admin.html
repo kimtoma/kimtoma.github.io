@@ -397,6 +397,7 @@
       <div class="section">
         <div class="section-header">
           <h2 class="section-title">📝 Conversation Logs</h2>
+          <button class="btn-primary" onclick="exportToCSV()">📥 Export CSV</button>
         </div>
 
         <div class="filters">
@@ -681,6 +682,95 @@
       const current = document.documentElement.getAttribute('data-theme');
       const next = current === 'dark' ? 'light' : 'dark';
       setTheme(next);
+    }
+
+    // Export logs to CSV
+    async function exportToCSV() {
+      const exportBtn = document.querySelector('.section-header .btn-primary');
+      const originalText = exportBtn.textContent;
+      exportBtn.textContent = '⏳ Exporting...';
+      exportBtn.disabled = true;
+
+      try {
+        // Fetch all logs (up to 10000)
+        let allLogs = [];
+        let offset = 0;
+        const batchSize = 500;
+
+        while (true) {
+          const response = await fetch(`${apiEndpoint}/admin/logs?limit=${batchSize}&offset=${offset}`, {
+            headers: {
+              'Authorization': `Bearer ${adminToken}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!data.logs || data.logs.length === 0) {
+            break;
+          }
+
+          allLogs = allLogs.concat(data.logs);
+          offset += batchSize;
+
+          // Safety limit
+          if (allLogs.length >= 10000) {
+            break;
+          }
+
+          // Update button text with progress
+          exportBtn.textContent = `⏳ Loading... ${allLogs.length} logs`;
+        }
+
+        if (allLogs.length === 0) {
+          showError('No logs to export');
+          return;
+        }
+
+        // Convert to CSV
+        const headers = ['Timestamp', 'Session ID', 'Role', 'Content', 'IP', 'User Agent'];
+        const csvRows = [headers.join(',')];
+
+        for (const log of allLogs) {
+          const row = [
+            new Date(log.timestamp).toISOString(),
+            log.session_id,
+            log.role,
+            `"${(log.content || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`,
+            log.user_ip || '',
+            `"${(log.user_agent || '').replace(/"/g, '""')}"`
+          ];
+          csvRows.push(row.join(','));
+        }
+
+        const csvContent = csvRows.join('\n');
+
+        // Add BOM for Korean character support in Excel
+        const BOM = '\uFEFF';
+        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+
+        // Download
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `chat-logs-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        showSuccess(`Exported ${allLogs.length} logs to CSV`);
+
+      } catch (error) {
+        showError('Export failed: ' + error.message);
+      } finally {
+        exportBtn.textContent = originalText;
+        exportBtn.disabled = false;
+      }
     }
   </script>
 </body>
