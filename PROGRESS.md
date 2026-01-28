@@ -26,9 +26,8 @@
   - Duplicate prevention via alert_logs table in D1
   - Test alert endpoint: `POST /admin/test-alert`
   - Color-coded alerts (blue/yellow/red by severity)
-- **Limitations** (free tier):
-  - Only account owner email (kimtoma@gmail.com) can receive
-  - To add more recipients: verify domain at resend.com/domains
+- **Recipients**: kimtoma@gmail.com, kyungsoo.kim@kt.com
+- **From**: alerts@kimtoma.com (verified domain)
 
 ---
 
