@@ -1,24 +1,38 @@
 # Development Progress
 
-## 2026-01-29: Admin Dashboard Redesign & Email Alerts
+## 2026-01-29: Admin Dashboard Redesign & System Prompt Management
 
 ### ✅ Completed
 
-#### 1. Admin Dashboard UI Overhaul
+#### 1. Admin Dashboard with Sidebar Navigation
 - **Location**: `/chat/admin.html`
-- **Changes**:
-  - Applied shadcn/ui design system matching chat.kimtoma.com
+- **URL**: `https://chat.kimtoma.com/admin.html`
+- **Layout**:
+  - Left sidebar navigation (Dashboard / System Prompt)
+  - Responsive design with mobile hamburger menu
+  - shadcn/ui design system matching chat.kimtoma.com
   - HSL color variables (--primary: 211 100% 50% = #0080ff)
-  - Modern card-based layout with proper border-radius
-  - Button styles: primary, secondary, ghost, outline, destructive
-  - SVG icons replacing emoji icons
-  - Enhanced modal with backdrop blur effect
-  - Improved table design with hover states
-  - Loading spinner animation
-  - Better responsive design for mobile
-  - Proper dark/light theme toggle with icon switch
+- **Dashboard Page**:
+  - Stats cards (total messages, sessions, daily usage with percentage)
+  - Recent conversations table with session details
+  - Click-to-copy Session ID
+  - Conversation replay modal
+- **System Prompt Page**:
+  - Full-page editor for AI persona configuration
+  - Real-time save to D1 database
+  - Character count display
 
-#### 2. Email Alerts for Quota Warnings
+#### 2. System Prompt Management
+- **Storage**: D1 `settings` table (key-value store)
+- **API Endpoints**:
+  - `GET /admin/system-prompt` - Retrieve current prompt
+  - `PUT /admin/system-prompt` - Update prompt
+- **Features**:
+  - Dynamic system prompt loading per chat request
+  - Prevents hallucination by centralizing AI persona config
+  - Updated with correct user info from about.md
+
+#### 3. Email Alerts for Quota Warnings
 - **Service**: Resend (free tier: 3,000 emails/month)
 - **Thresholds**: 50%, 80%, 95% of daily write limit
 - **Features**:
@@ -47,24 +61,20 @@
   - Auto-cleanup for data older than 30 days
   - CORS enabled for web access
 
-#### 2. Admin Dashboard
+#### 2. Admin Dashboard (Initial Version)
 - **Location**: `/chat/admin.html`
 - **URL**: `https://chat.kimtoma.com/admin.html`
 - **Features**:
-  - 📊 Real-time statistics (messages, sessions, daily usage)
-  - 📝 Conversation logs viewer with pagination
-  - 🔍 Filter by Session ID
-  - 🔍 Filter by Content (keyword search)
-  - 📥 Export to CSV (Google Sheets compatible)
-  - 💬 Conversation Replay (chat-style modal)
-  - 📈 Analytics Dashboard:
-    - Daily messages chart (14 days)
-    - Hourly activity distribution
-    - Top users by message count
-  - 📋 Click-to-copy Session ID
-  - 🗑️ Cleanup old data (30+ days)
-  - 🔐 Token-based authentication
-  - 🌓 Dark/Light theme
+  - Real-time statistics (messages, sessions, daily usage)
+  - Conversation logs viewer with pagination
+  - Filter by Session ID and Content (keyword search)
+  - Export to CSV (Google Sheets compatible)
+  - Conversation Replay (chat-style modal)
+  - Click-to-copy Session ID
+  - Cleanup old data (30+ days)
+  - Token-based authentication
+  - Dark/Light theme
+- **Note**: Redesigned with sidebar navigation on 2026-01-29
 
 #### 3. Chat Client
 - **Location**: `/chat-app/`
@@ -90,6 +100,12 @@ chat_messages (id, session_id, role, content, timestamp, token_count)
 
 -- Usage: Track daily API usage for limits
 daily_usage (date, write_count, read_count, created_at)
+
+-- Settings: Key-value store for system config (added 2026-01-29)
+settings (key TEXT PRIMARY KEY, value TEXT, updated_at INTEGER)
+
+-- Alert Logs: Prevent duplicate email alerts (added 2026-01-29)
+alert_logs (id, alert_key TEXT UNIQUE, threshold INTEGER, sent_at INTEGER)
 ```
 
 ### 🔒 Security
@@ -129,6 +145,8 @@ daily_usage (date, write_count, read_count, created_at)
 ## Future Enhancements
 
 - [x] ~~Email alerts for quota warnings~~ (Completed 2026-01-29)
+- [x] ~~System prompt management~~ (Completed 2026-01-29)
+- [x] ~~Admin sidebar navigation~~ (Completed 2026-01-29)
 - [ ] Sentiment analysis on conversations
 - [ ] Conversation statistics per session
 - [ ] Advanced filtering (date range, role)
@@ -137,4 +155,4 @@ daily_usage (date, write_count, read_count, created_at)
 ---
 
 **Last Updated**: 2026-01-29
-**Status**: In Progress
+**Status**: Active
