@@ -1,0 +1,18 @@
+name = "gemini-proxy-with-logging"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "chat-logs-db"
+database_id = "YOUR_DATABASE_ID_HERE"  # Replace after creating D1 database
+
+# Environment variables (set via dashboard or wrangler secret)
+# GEMINI_API_KEY = "your-api-key"  # Set via: wrangler secret put GEMINI_API_KEY
+# ADMIN_TOKEN = "your-admin-token"  # Set via: wrangler secret put ADMIN_TOKEN
+
+# Routes (update after deployment)
+# routes = [
+#   { pattern = "gemini-proxy.kimtoma.workers.dev/*", zone_name = "kimtoma.com" }
+# ]

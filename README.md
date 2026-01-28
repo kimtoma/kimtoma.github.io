@@ -18,6 +18,7 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 |-----|------|
 | [kimtoma.com](https://kimtoma.com) | 개인 블로그 |
 | [chat.kimtoma.com](https://chat.kimtoma.com) | AI 챗봇 (Gemini 기반) |
+| [chat.kimtoma.com/admin.html](https://chat.kimtoma.com/admin.html) | 챗봇 관리자 대시보드 |
 
 ### 주요 프로젝트
 
@@ -38,7 +39,9 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 - React + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
 - Cloudflare Workers (Gemini API 프록시)
+- Cloudflare D1 (대화 로그 저장)
 - iMessage 스타일 UI + 타이핑 효과
+- 관리자 대시보드 (로그 조회 및 분석)
 
 ### 로컬 실행
 
@@ -73,6 +76,7 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 |-----|-------------|
 | [kimtoma.com](https://kimtoma.com) | Personal blog |
 | [chat.kimtoma.com](https://chat.kimtoma.com) | AI Chatbot (Gemini-powered) |
+| [chat.kimtoma.com/admin.html](https://chat.kimtoma.com/admin.html) | Chatbot admin dashboard |
 
 ### Featured Projects
 
@@ -93,7 +97,9 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 - React + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
 - Cloudflare Workers (Gemini API proxy)
+- Cloudflare D1 (conversation logging)
 - iMessage-style UI + typing effect
+- Admin dashboard (logs viewer & analytics)
 
 ### Local Development
 

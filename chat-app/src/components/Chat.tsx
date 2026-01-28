@@ -10,8 +10,11 @@ interface Message {
   isTyping?: boolean
 }
 
+// TODO: Update to your deployed Worker URL after deployment
+// const API_ENDPOINT = 'https://gemini-proxy-with-logging.YOUR_SUBDOMAIN.workers.dev/chat'
 const API_ENDPOINT = 'https://gemini-proxy.kimtoma.workers.dev/chat'
 const STORAGE_KEY = 'chat_messages'
+const SESSION_KEY = 'chat_session_id'
 
 // Configure marked
 marked.setOptions({
@@ -39,6 +42,7 @@ export function Chat() {
   const [isTyping, setIsTyping] = useState(false)
   const [isDark, setIsDark] = useState(true)
   const [typingContent, setTypingContent] = useState('')
+  const [sessionId, setSessionId] = useState<string>('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const typingRef = useRef<boolean>(false)
@@ -55,6 +59,14 @@ export function Chat() {
         console.error('Failed to parse saved messages', e)
       }
     }
+
+    // Load or create session ID
+    let storedSessionId = localStorage.getItem(SESSION_KEY)
+    if (!storedSessionId) {
+      storedSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      localStorage.setItem(SESSION_KEY, storedSessionId)
+    }
+    setSessionId(storedSessionId)
 
     // Load theme preference
     const savedTheme = localStorage.getItem('theme')
@@ -146,6 +158,7 @@ export function Chat() {
         body: JSON.stringify({
           message: userMessage.content,
           history: messages,
+          sessionId: sessionId,
         }),
       })
 
@@ -153,6 +166,12 @@ export function Chat() {
 
       if (data.error) {
         throw new Error(data.error)
+      }
+
+      // Update session ID if returned from server
+      if (data.sessionId && data.sessionId !== sessionId) {
+        setSessionId(data.sessionId)
+        localStorage.setItem(SESSION_KEY, data.sessionId)
       }
 
       setIsLoading(false)
@@ -178,6 +197,10 @@ export function Chat() {
     setTypingContent('')
     setMessages([])
     localStorage.removeItem(STORAGE_KEY)
+    // Generate new session ID
+    const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    setSessionId(newSessionId)
+    localStorage.setItem(SESSION_KEY, newSessionId)
   }
 
   const renderMarkdown = (content: string) => {

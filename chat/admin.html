@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Admin - kimtoma.com</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+  <style>
+    :root[data-theme="dark"] {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2a2a2a;
+      --bg-tertiary: #3a3a3a;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --border-color: #404040;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+
+    :root[data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f3f4f6;
+      --bg-tertiary: #e5e7eb;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border-color: #d1d5db;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .theme-toggle {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      font-size: 18px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 5px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: 4px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+
+    .progress-fill.warning {
+      background: var(--warning);
+    }
+
+    .progress-fill.danger {
+      background: var(--danger);
+    }
+
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow-x: auto;
+    }
+
+    .log-table th {
+      text-align: left;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-bottom: 2px solid var(--border-color);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .log-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .log-table tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .role-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .role-user {
+      background: var(--accent);
+      color: white;
+    }
+
+    .role-ai {
+      background: var(--success);
+      color: white;
+    }
+
+    .content-preview {
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pagination {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+    }
+
+    .error {
+      background: var(--danger);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .success {
+      background: var(--success);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .auth-form {
+      max-width: 400px;
+      margin: 100px auto;
+      background: var(--bg-secondary);
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .auth-form h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+
+      .log-table {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="authSection" class="auth-form" style="display: none;">
+    <h2>🔐 Admin Login</h2>
+    <div class="form-group">
+      <label>API Endpoint</label>
+      <input type="text" id="apiEndpoint" value="https://gemini-proxy-with-logging.YOUR_SUBDOMAIN.workers.dev" placeholder="Worker URL">
+    </div>
+    <div class="form-group">
+      <label>Admin Token</label>
+      <input type="password" id="adminToken" placeholder="Enter admin token">
+    </div>
+    <button class="btn-primary" onclick="login()" style="width: 100%;">Login</button>
+    <div id="authError" style="margin-top: 15px; display: none;"></div>
+  </div>
+
+  <div id="mainSection" style="display: none;">
+    <div class="container">
+      <header>
+        <h1>📊 Chat Admin Dashboard</h1>
+        <div class="header-actions">
+          <button class="btn-secondary" onclick="refreshData()">🔄 Refresh</button>
+          <button class="btn-danger" onclick="cleanup()">🗑️ Cleanup Old Data</button>
+          <button class="theme-toggle" onclick="toggleTheme()">
+            <span class="theme-icon">🌞</span>
+          </button>
+          <button class="btn-secondary" onclick="logout()">Logout</button>
+        </div>
+      </header>
+
+      <div id="errorMessage" style="display: none;"></div>
+      <div id="successMessage" style="display: none;"></div>
+
+      <!-- Statistics -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-label">Total Messages</div>
+          <div class="stat-value" id="totalMessages">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Sessions</div>
+          <div class="stat-value" id="totalSessions">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Today's Writes</div>
+          <div class="stat-value" id="todayWrites">-</div>
+          <div class="stat-sub">
+            Limit: <span id="writeLimit">-</span>
+            (<span id="writePercentage">-</span>%)
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="writeProgress" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Today's Reads</div>
+          <div class="stat-value" id="todayReads">-</div>
+          <div class="stat-sub">Limit: <span id="readLimit">-</span></div>
+        </div>
+      </div>
+
+      <!-- Logs Section -->
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">📝 Conversation Logs</h2>
+        </div>
+
+        <div class="filters">
+          <input type="text" id="sessionFilter" placeholder="Session ID" style="min-width: 300px;">
+          <input type="number" id="limitFilter" value="50" min="10" max="500" style="width: 100px;" placeholder="Limit">
+          <button class="btn-primary" onclick="loadLogs()">Search</button>
+        </div>
+
+        <div id="logsContainer">
+          <div class="loading">Loading logs...</div>
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+          <button class="btn-secondary" onclick="previousPage()">← Previous</button>
+          <span style="padding: 10px;">Page <span id="currentPage">1</span></span>
+          <button class="btn-secondary" onclick="nextPage()">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script data-cfasync="false">
+    let apiEndpoint = '';
+    let adminToken = '';
+    let currentPage = 1;
+    let pageSize = 50;
+
+    // Initialize
+    (function() {
+      const savedEndpoint = localStorage.getItem('admin_endpoint');
+      const savedToken = localStorage.getItem('admin_token');
+
+      if (savedEndpoint && savedToken) {
+        apiEndpoint = savedEndpoint;
+        adminToken = savedToken;
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainSection').style.display = 'block';
+        loadData();
+      } else {
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('apiEndpoint').value = savedEndpoint || '';
+      }
+
+      setupTheme();
+    })();
+
+    function login() {
+      const endpoint = document.getElementById('apiEndpoint').value.trim();
+      const token = document.getElementById('adminToken').value.trim();
+
+      if (!endpoint || !token) {
+        showAuthError('Please enter both API endpoint and admin token');
+        return;
+      }
+
+      apiEndpoint = endpoint;
+      adminToken = token;
+
+      // Save to localStorage
+      localStorage.setItem('admin_endpoint', apiEndpoint);
+      localStorage.setItem('admin_token', adminToken);
+
+      document.getElementById('authSection').style.display = 'none';
+      document.getElementById('mainSection').style.display = 'block';
+
+      loadData();
+    }
+
+    function logout() {
+      localStorage.removeItem('admin_token');
+      location.reload();
+    }
+
+    function showAuthError(message) {
+      const errorEl = document.getElementById('authError');
+      errorEl.className = 'error';
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+    }
+
+    async function loadData() {
+      await Promise.all([loadStats(), loadLogs()]);
+    }
+
+    async function loadStats() {
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/stats`, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            logout();
+            return;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const stats = await response.json();
+
+        document.getElementById('totalMessages').textContent = stats.total_messages.toLocaleString();
+        document.getElementById('totalSessions').textContent = stats.total_sessions.toLocaleString();
+        document.getElementById('todayWrites').textContent = stats.today_writes.toLocaleString();
+        document.getElementById('todayReads').textContent = stats.today_reads.toLocaleString();
+        document.getElementById('writeLimit').textContent = stats.daily_write_limit.toLocaleString();
+        document.getElementById('readLimit').textContent = stats.daily_read_limit.toLocaleString();
+        document.getElementById('writePercentage').textContent = stats.write_limit_percentage;
+
+        const percentage = parseFloat(stats.write_limit_percentage);
+        const progressEl = document.getElementById('writeProgress');
+        progressEl.style.width = `${Math.min(percentage, 100)}%`;
+        progressEl.className = 'progress-fill';
+        if (percentage > 80) progressEl.classList.add('danger');
+        else if (percentage > 50) progressEl.classList.add('warning');
+
+      } catch (error) {
+        showError('Failed to load statistics: ' + error.message);
+      }
+    }
+
+    async function loadLogs() {
+      const sessionId = document.getElementById('sessionFilter').value.trim();
+      const limit = parseInt(document.getElementById('limitFilter').value) || 50;
+      pageSize = limit;
+      const offset = (currentPage - 1) * pageSize;
+
+      try {
+        let url = `${apiEndpoint}/admin/logs?limit=${limit}&offset=${offset}`;
+        if (sessionId) {
+          url += `&session=${encodeURIComponent(sessionId)}`;
+        }
+
+        const response = await fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            logout();
+            return;
+          }
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderLogs(data.logs);
+
+        document.getElementById('currentPage').textContent = currentPage;
+        document.getElementById('pagination').style.display = data.logs.length > 0 ? 'flex' : 'none';
+
+      } catch (error) {
+        showError('Failed to load logs: ' + error.message);
+      }
+    }
+
+    function renderLogs(logs) {
+      const container = document.getElementById('logsContainer');
+
+      if (!logs || logs.length === 0) {
+        container.innerHTML = '<div class="loading">No logs found</div>';
+        return;
+      }
+
+      const table = document.createElement('table');
+      table.className = 'log-table';
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Session ID</th>
+            <th>Role</th>
+            <th>Content</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${logs.map(log => `
+            <tr>
+              <td>${new Date(log.timestamp).toLocaleString()}</td>
+              <td><code>${log.session_id.substring(0, 20)}...</code></td>
+              <td><span class="role-badge role-${log.role}">${log.role.toUpperCase()}</span></td>
+              <td class="content-preview" title="${escapeHtml(log.content)}">${escapeHtml(log.content)}</td>
+              <td>${log.user_ip}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+
+      container.innerHTML = '';
+      container.appendChild(table);
+    }
+
+    function nextPage() {
+      currentPage++;
+      loadLogs();
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        loadLogs();
+      }
+    }
+
+    function refreshData() {
+      currentPage = 1;
+      loadData();
+    }
+
+    async function cleanup() {
+      if (!confirm('Delete all messages older than 30 days?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiEndpoint}/admin/cleanup`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        showSuccess(`Cleanup completed: ${result.deleted_messages} messages deleted`);
+        loadData();
+
+      } catch (error) {
+        showError('Cleanup failed: ' + error.message);
+      }
+    }
+
+    function showError(message) {
+      const el = document.getElementById('errorMessage');
+      el.className = 'error';
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    function showSuccess(message) {
+      const el = document.getElementById('successMessage');
+      el.className = 'success';
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Theme management
+    function setupTheme() {
+      const storedTheme = localStorage.getItem('theme') || 'dark';
+      setTheme(storedTheme);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      updateThemeIcon(theme);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.querySelector('.theme-icon');
+      if (icon) {
+        icon.textContent = theme === 'dark' ? '🌞' : '🌚';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    }
+  </script>
+</body>
+</html>
