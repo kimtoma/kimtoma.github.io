@@ -7,6 +7,7 @@ export interface Env {
   DB: D1Database;
   GEMINI_API_KEY: string;
   ADMIN_TOKEN: string;
+  RESEND_API_KEY: string;
 }
 
 // Free tier limits
@@ -15,6 +16,15 @@ const LIMITS = {
   DAILY_READS: 5000000,
   MAX_MESSAGES: 100000, // Total messages to keep
   SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 hours
+};
+
+// Email alert configuration
+// Note: Resend free tier only allows sending to account owner's email
+// To add more recipients, verify domain at resend.com/domains
+const ALERT_CONFIG = {
+  EMAILS: ['kimtoma@gmail.com'], // Add 'kyungsoo.kim@kt.com' after domain verification
+  THRESHOLDS: [50, 80, 95], // Percentage thresholds for alerts
+  FROM_EMAIL: 'kimtoma Chat <onboarding@resend.dev>', // Use Resend's default sender (free tier)
 };
 
 // System prompt for kimtoma persona
@@ -83,6 +93,10 @@ export default {
 
       if (url.pathname === '/admin/analytics' && request.method === 'GET') {
         return await handleAnalytics(request, env);
+      }
+
+      if (url.pathname === '/admin/test-alert' && request.method === 'POST') {
+        return await handleTestAlert(request, env);
       }
 
       if (url.pathname === '/health') {
@@ -296,6 +310,49 @@ async function handleCleanup(request: Request, env: Env): Promise<Response> {
 }
 
 /**
+ * Handle test alert (for testing email delivery)
+ */
+async function handleTestAlert(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  if (!env.RESEND_API_KEY) {
+    return jsonResponse({ error: 'RESEND_API_KEY not configured' }, 500);
+  }
+
+  const subject = '✅ Test Alert from chat.kimtoma.com';
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #10b981;">✅ Test Alert</h2>
+      <p>This is a test email to verify that quota alerts are working correctly.</p>
+      <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+      <p><strong>Recipients:</strong> ${ALERT_CONFIG.EMAILS.join(', ')}</p>
+      <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+      <p style="color: #9ca3af; font-size: 12px;">
+        <a href="https://chat.kimtoma.com/admin.html" style="color: #3b82f6;">View Admin Dashboard</a>
+      </p>
+    </div>
+  `;
+
+  const result = await sendEmail(env, subject, html);
+
+  if (result.success) {
+    return jsonResponse({
+      success: true,
+      message: 'Test alert sent successfully',
+      recipients: ALERT_CONFIG.EMAILS,
+    });
+  } else {
+    return jsonResponse({
+      success: false,
+      error: result.error || 'Failed to send test alert'
+    }, 500);
+  }
+}
+
+/**
  * Handle analytics data
  */
 async function handleAnalytics(request: Request, env: Env): Promise<Response> {
@@ -457,7 +514,7 @@ async function checkWriteLimit(env: Env): Promise<boolean> {
 }
 
 /**
- * Increment daily write count
+ * Increment daily write count and check for alerts
  */
 async function incrementWriteCount(env: Env): Promise<void> {
   const today = getTodayDate();
@@ -469,6 +526,119 @@ async function incrementWriteCount(env: Env): Promise<void> {
     ON CONFLICT(date) DO UPDATE SET
       write_count = write_count + 1
   `).bind(today, now).run();
+
+  // Check if we need to send an alert (non-blocking)
+  checkAndSendAlert(env, today).catch(console.error);
+}
+
+/**
+ * Check quota and send alert if threshold reached
+ */
+async function checkAndSendAlert(env: Env, date: string): Promise<void> {
+  if (!env.RESEND_API_KEY) return;
+
+  const usage = await env.DB.prepare(
+    'SELECT write_count FROM daily_usage WHERE date = ?'
+  ).bind(date).first() as any;
+
+  const currentWrites = usage?.write_count || 0;
+  const percentage = (currentWrites / LIMITS.DAILY_WRITES) * 100;
+
+  // Find the highest threshold that has been crossed
+  const crossedThreshold = ALERT_CONFIG.THRESHOLDS
+    .filter(t => percentage >= t)
+    .sort((a, b) => b - a)[0];
+
+  if (!crossedThreshold) return;
+
+  // Check if we already sent an alert for this threshold today
+  const alertKey = `${date}_${crossedThreshold}`;
+  const existingAlert = await env.DB.prepare(
+    'SELECT id FROM alert_logs WHERE alert_key = ?'
+  ).bind(alertKey).first();
+
+  if (existingAlert) return;
+
+  // Send alert email
+  const subject = `⚠️ Chat API Quota Alert: ${crossedThreshold}% reached`;
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: ${crossedThreshold >= 95 ? '#ef4444' : crossedThreshold >= 80 ? '#f59e0b' : '#3b82f6'};">
+        ${crossedThreshold >= 95 ? '🚨' : crossedThreshold >= 80 ? '⚠️' : 'ℹ️'} Quota Alert
+      </h2>
+      <p>Your chat.kimtoma.com API usage has reached <strong>${crossedThreshold}%</strong> of the daily limit.</p>
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;">Date</td>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>${date}</strong></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;">Current Writes</td>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>${currentWrites.toLocaleString()}</strong></td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;">Daily Limit</td>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;">${LIMITS.DAILY_WRITES.toLocaleString()}</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;">Usage</td>
+          <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>${percentage.toFixed(2)}%</strong></td>
+        </tr>
+      </table>
+      <p style="color: #6b7280; font-size: 14px;">
+        ${crossedThreshold >= 95
+          ? 'The API will stop accepting new messages when the limit is reached.'
+          : 'You will receive another alert if usage continues to increase.'}
+      </p>
+      <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+      <p style="color: #9ca3af; font-size: 12px;">
+        <a href="https://chat.kimtoma.com/admin.html" style="color: #3b82f6;">View Admin Dashboard</a>
+      </p>
+    </div>
+  `;
+
+  const result = await sendEmail(env, subject, html);
+
+  if (result.success) {
+    // Log that we sent this alert
+    await env.DB.prepare(
+      'INSERT INTO alert_logs (alert_key, threshold, sent_at) VALUES (?, ?, ?)'
+    ).bind(alertKey, crossedThreshold, Date.now()).run();
+  }
+}
+
+/**
+ * Send email via Resend API
+ */
+async function sendEmail(env: Env, subject: string, html: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: ALERT_CONFIG.FROM_EMAIL,
+        to: ALERT_CONFIG.EMAILS,
+        subject,
+        html,
+      }),
+    });
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error('Resend API error:', responseText);
+      return { success: false, error: responseText };
+    }
+
+    console.log('Alert email sent successfully:', responseText);
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to send email:', error);
+    return { success: false, error: (error as Error).message };
+  }
 }
 
 /**
