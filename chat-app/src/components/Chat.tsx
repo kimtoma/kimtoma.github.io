@@ -284,9 +284,11 @@ export function Chat() {
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground font-semibold">
-            K
-          </div>
+          <img
+            src="https://github.com/kimtoma.png"
+            alt="kimtoma"
+            className="w-10 h-10 rounded-full"
+          />
           <div>
             <h1 className="font-semibold text-foreground">kimtoma</h1>
             <p className="text-xs text-muted-foreground">
@@ -346,54 +348,58 @@ export function Chat() {
                     className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
                   />
                 )}
-                <div className="flex flex-col">
+                {message.role === 'user' ? (
                   <div
-                    className={cn(
-                      message.role === 'user' ? 'bubble-user' : 'bubble-assistant',
-                      'markdown-content'
-                    )}
+                    className="bubble-user markdown-content"
                     dangerouslySetInnerHTML={renderMarkdown(message.content)}
                   />
-                {message.role === 'assistant' && message.id && (
-                  <div className="flex items-center gap-1 mt-1 ml-1">
-                    <button
-                      onClick={() => submitFeedback(message.id!, 'like')}
-                      className={cn(
-                        "p-1.5 rounded-md transition-colors",
-                        feedback[message.id] === 'like'
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                      title="좋아요"
-                    >
-                      <ThumbsUp className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => submitFeedback(message.id!, 'dislike')}
-                      className={cn(
-                        "p-1.5 rounded-md transition-colors",
-                        feedback[message.id] === 'dislike'
-                          ? "text-destructive bg-destructive/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                      title="별로에요"
-                    >
-                      <ThumbsDown className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => copyToClipboard(message.content, index)}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                      title="복사"
-                    >
-                      {copiedIndex === index ? (
-                        <Check className="h-3.5 w-3.5 text-primary" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5" />
-                      )}
-                    </button>
+                ) : (
+                  <div className="flex flex-col max-w-[85%]">
+                    <div
+                      className="bubble-assistant markdown-content"
+                      dangerouslySetInnerHTML={renderMarkdown(message.content)}
+                    />
+                    {message.id && (
+                      <div className="flex items-center gap-1 mt-1 ml-1">
+                        <button
+                          onClick={() => submitFeedback(message.id!, 'like')}
+                          className={cn(
+                            "p-1.5 rounded-md transition-colors",
+                            feedback[message.id] === 'like'
+                              ? "text-primary bg-primary/10"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          )}
+                          title="좋아요"
+                        >
+                          <ThumbsUp className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => submitFeedback(message.id!, 'dislike')}
+                          className={cn(
+                            "p-1.5 rounded-md transition-colors",
+                            feedback[message.id] === 'dislike'
+                              ? "text-destructive bg-destructive/10"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          )}
+                          title="별로에요"
+                        >
+                          <ThumbsDown className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => copyToClipboard(message.content, index)}
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                          title="복사"
+                        >
+                          {copiedIndex === index ? (
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
-                </div>
               </div>
             ))}
 
