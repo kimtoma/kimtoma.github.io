@@ -362,7 +362,21 @@ async function getSystemPrompt(env: Env): Promise<string> {
     'SELECT value FROM settings WHERE key = ?'
   ).bind('system_prompt').first() as any;
 
-  return result?.value || DEFAULT_SYSTEM_PROMPT;
+  const basePrompt = result?.value || DEFAULT_SYSTEM_PROMPT;
+
+  // Add current date context
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+    timeZone: 'Asia/Seoul'
+  });
+
+  const dateContext = `## 현재 날짜\n- 오늘: ${dateStr}\n- 이 정보를 바탕으로 나이, 개월 수 등을 정확하게 계산해서 답변하세요.\n\n`;
+
+  return dateContext + basePrompt;
 }
 
 /**
