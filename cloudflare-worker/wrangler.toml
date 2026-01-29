@@ -8,6 +8,15 @@ binding = "DB"
 database_name = "chat-logs-db"
 database_id = "3c8c9e4a-5733-48fd-b7f2-e4a97bb4f9fd"
 
+# Vectorize for blog RAG
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "blog-posts"
+
+# Workers AI for embeddings
+[ai]
+binding = "AI"
+
 # Environment variables (set via dashboard or wrangler secret)
 # GEMINI_API_KEY = "your-api-key"  # Set via: wrangler secret put GEMINI_API_KEY
 # ADMIN_TOKEN = "your-admin-token"  # Set via: wrangler secret put ADMIN_TOKEN

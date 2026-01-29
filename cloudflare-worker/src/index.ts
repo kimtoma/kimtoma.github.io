@@ -8,6 +8,8 @@ export interface Env {
   GEMINI_API_KEY: string;
   ADMIN_TOKEN: string;
   RESEND_API_KEY: string;
+  VECTORIZE: VectorizeIndex;
+  AI: Ai;
 }
 
 // Free tier limits
@@ -113,6 +115,15 @@ export default {
         return await handleGetFeedback(request, env);
       }
 
+      // RAG - Blog indexing
+      if (url.pathname === '/admin/index-blog' && request.method === 'POST') {
+        return await handleIndexBlog(request, env);
+      }
+
+      if (url.pathname === '/admin/rag-stats' && request.method === 'GET') {
+        return await handleRagStats(request, env);
+      }
+
       if (url.pathname === '/health') {
         return jsonResponse({ status: 'ok', timestamp: Date.now() });
       }
@@ -163,9 +174,28 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
     // Save user message to DB
     await saveMessage(env, sessionId, 'user', body.message, timestamp, userIp, userAgent);
 
-    // Get system prompt and call Gemini API
+    // Get system prompt
     const systemPrompt = await getSystemPrompt(env);
-    const geminiResponse = await callGeminiAPI(env, body.message, body.history || [], systemPrompt);
+
+    // RAG: Search for relevant blog context
+    let ragContext = '';
+    try {
+      if (env.VECTORIZE && env.AI) {
+        ragContext = await searchBlogContext(env, body.message);
+        console.log('RAG context length:', ragContext.length);
+      }
+    } catch (e) {
+      console.error('RAG search error:', e);
+      // Continue without RAG on error
+    }
+
+    // Combine system prompt with RAG context
+    const enhancedPrompt = ragContext
+      ? `${systemPrompt}\n\n## 참고할 수 있는 블로그 정보:\n${ragContext}\n\n위 정보가 질문과 관련있다면 참고해서 답변하세요. 관련 없다면 무시해도 됩니다.`
+      : systemPrompt;
+
+    // Call Gemini API with enhanced prompt
+    const geminiResponse = await callGeminiAPI(env, body.message, body.history || [], enhancedPrompt);
 
     if (geminiResponse.error) {
       return jsonResponse({ error: geminiResponse.error }, 500);
@@ -937,8 +967,10 @@ async function callGeminiAPI(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Gemini API error:', errorText);
-      throw new Error(`Gemini API error: ${response.status}`);
+      console.error('Gemini API error:', response.status, errorText);
+      console.error('System prompt length:', systemPrompt.length);
+      console.error('Contents count:', contents.length);
+      throw new Error(`Gemini API error: ${response.status} - ${errorText.substring(0, 200)}`);
     }
 
     const data = await response.json() as any;
@@ -1167,4 +1199,220 @@ function jsonResponse(data: any, status = 200): Response {
       ...CORS_HEADERS,
     },
   });
+}
+
+// ============================================
+// RAG Functions
+// ============================================
+
+/**
+ * Search blog context using Vectorize
+ */
+async function searchBlogContext(env: Env, query: string): Promise<string> {
+  try {
+    // Generate embedding for the query using Workers AI
+    const embedding = await env.AI.run('@cf/baai/bge-base-en-v1.5', {
+      text: query,
+    });
+
+    if (!embedding.data?.[0]) {
+      console.error('Failed to generate query embedding');
+      return '';
+    }
+
+    // Search Vectorize for similar content
+    const results = await env.VECTORIZE.query(embedding.data[0], {
+      topK: 3,
+      returnMetadata: 'all',
+    });
+
+    if (!results.matches || results.matches.length === 0) {
+      return '';
+    }
+
+    // Format results as context
+    const context = results.matches
+      .filter(match => match.score > 0.5) // Only include relevant results
+      .map(match => {
+        const meta = match.metadata as any;
+        return `### ${meta?.title || 'Blog Post'}\n${meta?.content || ''}`;
+      })
+      .join('\n\n');
+
+    return context;
+  } catch (error) {
+    console.error('searchBlogContext error:', error);
+    return '';
+  }
+}
+
+/**
+ * Handle blog indexing (batch processing to avoid subrequest limits)
+ */
+async function handleIndexBlog(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    const body = await request.json() as { posts?: BlogPost[]; llms_content?: string; batch_index?: number };
+    const batchIndex = body.batch_index || 0;
+    const BATCH_SIZE = 5; // Process 5 items per request to stay under subrequest limit
+
+    if (!body.posts && !body.llms_content) {
+      return jsonResponse({ error: 'posts array or llms_content is required' }, 400);
+    }
+
+    // Prepare all text chunks with metadata
+    const allChunks: { id: string; text: string; metadata: any }[] = [];
+
+    // Process llms_content (for profile/about info)
+    if (body.llms_content && batchIndex === 0) {
+      const chunks = chunkText(body.llms_content, 500);
+      chunks.forEach((chunk, i) => {
+        allChunks.push({
+          id: `llms_${i}`,
+          text: chunk,
+          metadata: {
+            type: 'profile',
+            title: 'About kimtoma',
+            content: chunk,
+            indexed_at: Date.now(),
+          },
+        });
+      });
+    }
+
+    // Process blog posts
+    if (body.posts) {
+      for (const post of body.posts) {
+        const chunks = chunkText(post.content, 500);
+        chunks.forEach((chunk, i) => {
+          allChunks.push({
+            id: `${post.slug}_${i}`,
+            text: `${post.title}\n\n${chunk}`,
+            metadata: {
+              type: 'blog',
+              title: post.title,
+              slug: post.slug,
+              date: post.date,
+              content: chunk,
+              chunk_index: i,
+              indexed_at: Date.now(),
+            },
+          });
+        });
+      }
+    }
+
+    // Get the batch to process
+    const startIdx = batchIndex * BATCH_SIZE;
+    const batchChunks = allChunks.slice(startIdx, startIdx + BATCH_SIZE);
+
+    if (batchChunks.length === 0) {
+      return jsonResponse({
+        success: true,
+        message: 'All batches processed',
+        done: true,
+        total_chunks: allChunks.length,
+      });
+    }
+
+    // Generate embeddings for this batch (use batch API)
+    const texts = batchChunks.map(c => c.text);
+    const embeddings = await env.AI.run('@cf/baai/bge-base-en-v1.5', {
+      text: texts,
+    });
+
+    if (!embeddings.data || embeddings.data.length === 0) {
+      return jsonResponse({ error: 'Failed to generate embeddings' }, 500);
+    }
+
+    // Create vectors
+    const vectors: VectorizeVector[] = batchChunks.map((chunk, i) => ({
+      id: chunk.id,
+      values: embeddings.data[i],
+      metadata: chunk.metadata,
+    }));
+
+    // Upsert to Vectorize
+    await env.VECTORIZE.upsert(vectors);
+
+    const hasMore = startIdx + BATCH_SIZE < allChunks.length;
+
+    return jsonResponse({
+      success: true,
+      message: `Indexed batch ${batchIndex + 1}`,
+      batch_index: batchIndex,
+      indexed_count: vectors.length,
+      total_chunks: allChunks.length,
+      has_more: hasMore,
+      next_batch: hasMore ? batchIndex + 1 : null,
+    });
+  } catch (error) {
+    console.error('Index blog error:', error);
+    return jsonResponse({ error: (error as Error).message }, 500);
+  }
+}
+
+/**
+ * Handle RAG stats
+ */
+async function handleRagStats(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  try {
+    // Get index info
+    const described = await env.VECTORIZE.describe();
+
+    return jsonResponse({
+      index_name: 'blog-posts',
+      vector_count: described.vectorCount,
+      dimensions: described.dimensions,
+    });
+  } catch (error) {
+    console.error('RAG stats error:', error);
+    return jsonResponse({ error: (error as Error).message }, 500);
+  }
+}
+
+/**
+ * Split text into chunks
+ */
+function chunkText(text: string, maxLength: number): string[] {
+  const chunks: string[] = [];
+  const paragraphs = text.split(/\n\n+/);
+
+  let currentChunk = '';
+  for (const para of paragraphs) {
+    if ((currentChunk + para).length > maxLength && currentChunk) {
+      chunks.push(currentChunk.trim());
+      currentChunk = para;
+    } else {
+      currentChunk += (currentChunk ? '\n\n' : '') + para;
+    }
+  }
+
+  if (currentChunk.trim()) {
+    chunks.push(currentChunk.trim());
+  }
+
+  return chunks;
+}
+
+interface BlogPost {
+  title: string;
+  slug: string;
+  date: string;
+  content: string;
+}
+
+interface VectorizeVector {
+  id: string;
+  values: number[];
+  metadata?: Record<string, any>;
 }
