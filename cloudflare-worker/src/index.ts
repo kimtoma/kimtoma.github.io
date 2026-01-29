@@ -961,6 +961,10 @@ async function callGeminiAPI(
           systemInstruction: {
             parts: [{ text: systemPrompt }],
           },
+          generationConfig: {
+            maxOutputTokens: 500,
+            temperature: 0.8,
+          },
         }),
       }
     );
