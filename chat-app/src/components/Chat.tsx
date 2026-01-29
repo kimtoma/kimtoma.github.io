@@ -428,7 +428,11 @@ export function Chat() {
 
             {/* Typing effect */}
             {isTyping && typingContent && (() => {
-              const paragraphs = typingContent.split(/\n\n+/).filter(p => p.trim())
+              const paragraphs = typingContent.split(/\n\n+/)
+              const completedParagraphs = paragraphs.slice(0, -1).filter(p => p.trim())
+              const currentParagraph = paragraphs[paragraphs.length - 1]
+              const isTypingNewParagraph = typingContent.endsWith('\n\n')
+
               return (
                 <div className="flex justify-start gap-2">
                   <img
@@ -437,13 +441,25 @@ export function Chat() {
                     className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
                   />
                   <div className="flex flex-col gap-1 max-w-[85%]">
-                    {paragraphs.map((paragraph, pIndex) => (
+                    {/* Completed paragraphs */}
+                    {completedParagraphs.map((paragraph, pIndex) => (
                       <div
                         key={pIndex}
                         className="bubble-assistant markdown-content"
                         dangerouslySetInnerHTML={renderMarkdown(paragraph)}
                       />
                     ))}
+                    {/* Current typing paragraph or waiting indicator */}
+                    {isTypingNewParagraph ? (
+                      <div className="bubble-assistant">
+                        <span className="inline-block w-2 h-4 bg-foreground/70 animate-pulse" />
+                      </div>
+                    ) : currentParagraph.trim() ? (
+                      <div
+                        className="bubble-assistant markdown-content"
+                        dangerouslySetInnerHTML={renderMarkdown(currentParagraph)}
+                      />
+                    ) : null}
                   </div>
                 </div>
               )
