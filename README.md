@@ -48,6 +48,10 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 - 감정 분석 (Gemini 기반)
 - 이메일 알림 (Resend API)
 
+**Responsible AI**
+- AI 응답 신뢰성 안내 문구 표시
+- 사용자에게 응답 재확인 권장
+
 ### 로컬 실행
 
 ```bash
@@ -110,6 +114,10 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 - System prompt management
 - Sentiment analysis (Gemini-powered)
 - Email alerts (Resend API)
+
+**Responsible AI**
+- AI response reliability disclaimer
+- Encourages users to verify responses
 
 ### Local Development
 
