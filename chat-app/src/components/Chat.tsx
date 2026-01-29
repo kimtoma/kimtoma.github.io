@@ -324,6 +324,9 @@ export function Chat() {
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground text-center mt-2">
+          kimtoma는 AI이며 실수할 수 있어요. 응답을 다시 한번 확인해주세요.
+        </p>
       </div>
     </div>
   )
