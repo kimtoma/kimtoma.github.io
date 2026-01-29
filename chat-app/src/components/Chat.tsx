@@ -333,32 +333,37 @@ export function Chat() {
           </div>
         ) : (
           <div className="space-y-3">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "flex",
-                  message.role === 'user' ? 'justify-end' : 'justify-start gap-2'
-                )}
-              >
-                {message.role === 'assistant' && (
+            {messages.map((message, index) => {
+              // User message - single bubble
+              if (message.role === 'user') {
+                return (
+                  <div key={index} className="flex justify-end">
+                    <div
+                      className="bubble-user markdown-content"
+                      dangerouslySetInnerHTML={renderMarkdown(message.content)}
+                    />
+                  </div>
+                )
+              }
+
+              // Assistant message - split by paragraphs
+              const paragraphs = message.content.split(/\n\n+/).filter(p => p.trim())
+
+              return (
+                <div key={index} className="flex justify-start gap-2">
                   <img
                     src="https://github.com/kimtoma.png"
                     alt="kimtoma"
                     className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
                   />
-                )}
-                {message.role === 'user' ? (
-                  <div
-                    className="bubble-user markdown-content"
-                    dangerouslySetInnerHTML={renderMarkdown(message.content)}
-                  />
-                ) : (
-                  <div className="flex flex-col max-w-[85%]">
-                    <div
-                      className="bubble-assistant markdown-content"
-                      dangerouslySetInnerHTML={renderMarkdown(message.content)}
-                    />
+                  <div className="flex flex-col gap-1 max-w-[85%]">
+                    {paragraphs.map((paragraph, pIndex) => (
+                      <div
+                        key={pIndex}
+                        className="bubble-assistant markdown-content"
+                        dangerouslySetInnerHTML={renderMarkdown(paragraph)}
+                      />
+                    ))}
                     {message.id && (
                       <div className="flex items-center gap-1 mt-1 ml-1">
                         <button
@@ -399,9 +404,9 @@ export function Chat() {
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              )
+            })}
 
             {/* Loading indicator */}
             {isLoading && (
@@ -422,19 +427,27 @@ export function Chat() {
             )}
 
             {/* Typing effect */}
-            {isTyping && typingContent && (
-              <div className="flex justify-start gap-2">
-                <img
-                  src="https://github.com/kimtoma.png"
-                  alt="kimtoma"
-                  className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
-                />
-                <div
-                  className="bubble-assistant markdown-content max-w-[85%]"
-                  dangerouslySetInnerHTML={renderMarkdown(typingContent)}
-                />
-              </div>
-            )}
+            {isTyping && typingContent && (() => {
+              const paragraphs = typingContent.split(/\n\n+/).filter(p => p.trim())
+              return (
+                <div className="flex justify-start gap-2">
+                  <img
+                    src="https://github.com/kimtoma.png"
+                    alt="kimtoma"
+                    className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+                  />
+                  <div className="flex flex-col gap-1 max-w-[85%]">
+                    {paragraphs.map((paragraph, pIndex) => (
+                      <div
+                        key={pIndex}
+                        className="bubble-assistant markdown-content"
+                        dangerouslySetInnerHTML={renderMarkdown(paragraph)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
 
             <div ref={messagesEndRef} />
           </div>
