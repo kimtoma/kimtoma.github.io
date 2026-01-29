@@ -1,6 +1,49 @@
 # Development Progress
 
+## 2026-01-29: Blog RAG, Feedback Feature & UI Improvements
+
+### ✅ Completed (Session 2)
+
+#### 1. User Feedback Feature (Like/Dislike)
+- **Chat UI**: Added thumbs up/down buttons on AI responses
+- **Copy Button**: One-click copy AI responses to clipboard
+- **API Endpoints**:
+  - `POST /feedback` - Submit feedback (like/dislike)
+  - `GET /admin/feedback` - View feedback stats and list
+- **Admin Dashboard**: New Feedback page with stats and table
+- **Storage**: D1 `message_feedback` table
+
+#### 2. Blog RAG (Retrieval-Augmented Generation)
+- **Purpose**: AI references blog posts and profile info for personalized answers
+- **Infrastructure**:
+  - Cloudflare Vectorize (vector database, free tier)
+  - Cloudflare Workers AI (bge-base-en-v1.5 embeddings)
+- **Indexed Content**:
+  - 27 blog posts from `_posts/`
+  - Profile info from `llms-full.txt`
+  - 149 vector chunks total
+- **API Endpoints**:
+  - `POST /admin/index-blog` - Index blog posts (batch processing)
+  - `GET /admin/rag-stats` - View vector index stats
+- **Indexing Script**: `cloudflare-worker/scripts/index-blog.js`
+
+#### 3. GitHub Profile Image Integration
+- **Header**: Profile image in top-left corner
+- **Empty State**: Profile image on welcome screen
+- **AI Responses**: Profile thumbnail next to each response
+- **Loading/Typing States**: Consistent profile image display
+- **Source**: `https://github.com/kimtoma.png`
+
+#### 4. Asset Path Fix
+- Changed from absolute (`/assets/`) to relative (`./assets/`) paths
+- Fixed white screen issue on `kimtoma.com/chat/`
+- Updated `vite.config.ts` with `base: './'`
+
+---
+
 ## 2026-01-29: Admin Dashboard Redesign & System Prompt Management
+
+### ✅ Completed (Session 1)
 
 ### ✅ Completed
 
@@ -126,6 +169,9 @@ alert_logs (id, alert_key TEXT UNIQUE, threshold INTEGER, sent_at INTEGER)
 
 -- Session Sentiment: AI-analyzed conversation mood (added 2026-01-29)
 session_sentiment (id, session_id TEXT UNIQUE, sentiment TEXT, sentiment_score REAL, summary TEXT, topics TEXT, analyzed_at INTEGER)
+
+-- Message Feedback: User feedback on AI responses (added 2026-01-29)
+message_feedback (id, message_id INTEGER, session_id TEXT, feedback TEXT, comment TEXT, created_at INTEGER, UNIQUE(message_id, session_id))
 ```
 
 ### 🔒 Security
@@ -168,6 +214,10 @@ session_sentiment (id, session_id TEXT UNIQUE, sentiment TEXT, sentiment_score R
 - [x] ~~System prompt management~~ (Completed 2026-01-29)
 - [x] ~~Admin sidebar navigation~~ (Completed 2026-01-29)
 - [x] ~~Sentiment analysis on conversations~~ (Completed 2026-01-29)
+- [x] ~~User feedback (like/dislike)~~ (Completed 2026-01-29)
+- [x] ~~Blog RAG for personalized answers~~ (Completed 2026-01-29)
+- [x] ~~GitHub profile image integration~~ (Completed 2026-01-29)
+- [ ] SNS integration (X/Twitter, LinkedIn)
 - [ ] Conversation statistics per session
 - [ ] Advanced filtering (date range, role)
 - [ ] Multi-language support for admin panel

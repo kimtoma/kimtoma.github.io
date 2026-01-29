@@ -40,7 +40,9 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 - Tailwind CSS + shadcn/ui
 - Cloudflare Workers (Gemini API 프록시)
 - Cloudflare D1 (대화 로그 저장)
+- Cloudflare Vectorize + Workers AI (블로그 RAG)
 - iMessage 스타일 UI + 타이핑 효과
+- 피드백 기능 (좋아요/싫어요)
 
 **관리자 대시보드**
 - 대화 로그 조회 및 분석
@@ -107,7 +109,9 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 - Tailwind CSS + shadcn/ui
 - Cloudflare Workers (Gemini API proxy)
 - Cloudflare D1 (conversation logging)
+- Cloudflare Vectorize + Workers AI (Blog RAG)
 - iMessage-style UI + typing effect
+- Feedback feature (like/dislike)
 
 **Admin Dashboard**
 - Conversation logs viewer & analytics
