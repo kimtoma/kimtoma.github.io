@@ -452,6 +452,12 @@
           </svg>
           Sentiment
         </div>
+        <div class="nav-item" onclick="showPage('feedback')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+          Feedback
+        </div>
       </nav>
       <div class="sidebar-footer">
         <div class="nav-item" onclick="logout()">
@@ -599,6 +605,48 @@
             </div>
           </div>
         </div>
+
+        <!-- Feedback Page -->
+        <div id="page-feedback" class="page">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Total Feedback</div>
+              <div class="stat-value" id="feedbackTotal">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Like Rate</div>
+              <div class="stat-value" id="feedbackLikeRate">-</div>
+              <div class="stat-sub">%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Likes</div>
+              <div class="stat-value" id="feedbackLikes" style="color: hsl(142 76% 36%);">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Dislikes</div>
+              <div class="stat-value" id="feedbackDislikes" style="color: hsl(var(--destructive));">-</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">User Feedback</h2>
+                <p class="card-description">Like/Dislike ratings on AI responses</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <select id="feedbackFilter" onchange="loadFeedback()" style="padding: 6px 12px; font-size: 13px; border-radius: var(--radius); min-width: 120px;">
+                  <option value="">All</option>
+                  <option value="like">Likes only</option>
+                  <option value="dislike">Dislikes only</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-content">
+              <div id="feedbackContainer"><div class="loading"><div class="loading-spinner"></div>Loading...</div></div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -631,9 +679,10 @@
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById('page-' + page).classList.add('active');
       event.currentTarget.classList.add('active');
-      const titles = { dashboard: 'Dashboard', prompt: 'System Prompt', sentiment: 'Sentiment Analysis' };
+      const titles = { dashboard: 'Dashboard', prompt: 'System Prompt', sentiment: 'Sentiment Analysis', feedback: 'User Feedback' };
       document.getElementById('pageTitle').textContent = titles[page] || page;
       if (page === 'sentiment') loadSentiment();
+      if (page === 'feedback') loadFeedback();
     }
 
     function login() {
@@ -879,6 +928,42 @@
         await loadSentiment();
       } catch (e) { showError('Analysis failed: ' + e.message); }
       finally { btn.disabled = false; btn.textContent = 'Analyze New Sessions'; }
+    }
+
+    // Feedback Functions
+    async function loadFeedback() {
+      try {
+        const filter = document.getElementById('feedbackFilter').value;
+        let url = `${apiEndpoint}/admin/feedback`;
+        if (filter) url += `?filter=${filter}`;
+        const res = await fetch(url, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        document.getElementById('feedbackTotal').textContent = data.stats.total || 0;
+        document.getElementById('feedbackLikeRate').textContent = data.stats.like_rate || 0;
+        document.getElementById('feedbackLikes').textContent = data.stats.likes || 0;
+        document.getElementById('feedbackDislikes').textContent = data.stats.dislikes || 0;
+
+        renderFeedbackTable(data.feedback || []);
+      } catch (e) { showError('Failed to load feedback: ' + e.message); }
+    }
+
+    function renderFeedbackTable(feedback) {
+      const container = document.getElementById('feedbackContainer');
+      if (!feedback || feedback.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No feedback yet</p></div>';
+        return;
+      }
+      container.innerHTML = `<div class="table-container"><table>
+        <thead><tr><th>Time</th><th>Session</th><th>Feedback</th><th>AI Response</th></tr></thead>
+        <tbody>${feedback.map(f => `<tr>
+          <td style="white-space:nowrap;font-size:12px;">${new Date(f.created_at).toLocaleString()}</td>
+          <td><span class="session-id" onclick="copySessionId('${f.session_id}',this)">${f.session_id.substring(8,22)}...</span></td>
+          <td><span class="badge badge-${f.feedback === 'like' ? 'positive' : 'negative'}">${f.feedback === 'like' ? '👍 Like' : '👎 Dislike'}</span></td>
+          <td class="content-preview" title="${escapeHtml(f.message_content || '')}">${escapeHtml(f.message_content || '-')}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
     }
   </script>
 </body>

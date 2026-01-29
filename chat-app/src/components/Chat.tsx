@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Trash2, Moon, Sun } from 'lucide-react'
+import { Send, Trash2, Moon, Sun, ThumbsUp, ThumbsDown, Copy, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { marked } from 'marked'
@@ -8,12 +8,20 @@ interface Message {
   role: 'user' | 'assistant'
   content: string
   isTyping?: boolean
+  id?: number
+}
+
+interface FeedbackState {
+  [key: number]: 'like' | 'dislike' | null
 }
 
 // Cloudflare Worker with D1 logging
-const API_ENDPOINT = 'https://gemini-proxy-with-logging.kimtoma.workers.dev/chat'
+const API_BASE = 'https://gemini-proxy-with-logging.kimtoma.workers.dev'
+const API_ENDPOINT = `${API_BASE}/chat`
+const FEEDBACK_ENDPOINT = `${API_BASE}/feedback`
 const STORAGE_KEY = 'chat_messages'
 const SESSION_KEY = 'chat_session_id'
+const FEEDBACK_KEY = 'chat_feedback'
 
 // Configure marked
 marked.setOptions({
@@ -42,9 +50,12 @@ export function Chat() {
   const [isDark, setIsDark] = useState(true)
   const [typingContent, setTypingContent] = useState('')
   const [sessionId, setSessionId] = useState<string>('')
+  const [feedback, setFeedback] = useState<FeedbackState>({})
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const typingRef = useRef<boolean>(false)
+  const messageIdCounter = useRef<number>(0)
 
   // Load messages from localStorage
   useEffect(() => {
@@ -52,8 +63,16 @@ export function Chat() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
-        // Remove any typing flags from saved messages
-        setMessages(parsed.map((m: Message) => ({ ...m, isTyping: false })))
+        // Remove any typing flags from saved messages, ensure IDs
+        const loadedMessages = parsed.map((m: Message, i: number) => ({
+          ...m,
+          isTyping: false,
+          id: m.id || i + 1
+        }))
+        setMessages(loadedMessages)
+        // Set counter to max ID + 1
+        const maxId = Math.max(...loadedMessages.map((m: Message) => m.id || 0), 0)
+        messageIdCounter.current = maxId
       } catch (e) {
         console.error('Failed to parse saved messages', e)
       }
@@ -67,6 +86,16 @@ export function Chat() {
     }
     setSessionId(storedSessionId)
 
+    // Load feedback
+    const savedFeedback = localStorage.getItem(FEEDBACK_KEY)
+    if (savedFeedback) {
+      try {
+        setFeedback(JSON.parse(savedFeedback))
+      } catch (e) {
+        console.error('Failed to parse saved feedback', e)
+      }
+    }
+
     // Load theme preference
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme) {
@@ -78,9 +107,14 @@ export function Chat() {
 
   // Save messages to localStorage (exclude typing state)
   useEffect(() => {
-    const toSave = messages.map(m => ({ role: m.role, content: m.content }))
+    const toSave = messages.map(m => ({ role: m.role, content: m.content, id: m.id }))
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
   }, [messages])
+
+  // Save feedback to localStorage
+  useEffect(() => {
+    localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedback))
+  }, [feedback])
 
   // Apply theme
   useEffect(() => {
@@ -122,7 +156,8 @@ export function Chat() {
 
     // Typing complete - add full message
     if (typingRef.current) {
-      setMessages(prev => [...prev, { role: 'assistant', content: fullContent }])
+      messageIdCounter.current += 1
+      setMessages(prev => [...prev, { role: 'assistant', content: fullContent, id: messageIdCounter.current }])
     }
 
     setIsTyping(false)
@@ -140,7 +175,8 @@ export function Chat() {
   const sendMessage = async () => {
     if (!input.trim() || isLoading || isTyping) return
 
-    const userMessage: Message = { role: 'user', content: input.trim() }
+    messageIdCounter.current += 1
+    const userMessage: Message = { role: 'user', content: input.trim(), id: messageIdCounter.current }
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
@@ -195,11 +231,48 @@ export function Chat() {
     setIsTyping(false)
     setTypingContent('')
     setMessages([])
+    setFeedback({})
+    messageIdCounter.current = 0
     localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(FEEDBACK_KEY)
     // Generate new session ID
     const newSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     setSessionId(newSessionId)
     localStorage.setItem(SESSION_KEY, newSessionId)
+  }
+
+  const submitFeedback = async (messageId: number, type: 'like' | 'dislike') => {
+    // If already same feedback, remove it
+    if (feedback[messageId] === type) {
+      setFeedback(prev => ({ ...prev, [messageId]: null }))
+      return
+    }
+
+    setFeedback(prev => ({ ...prev, [messageId]: type }))
+
+    try {
+      await fetch(FEEDBACK_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message_id: messageId,
+          session_id: sessionId,
+          feedback: type,
+        }),
+      })
+    } catch (e) {
+      console.error('Failed to submit feedback', e)
+    }
+  }
+
+  const copyToClipboard = async (content: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(content)
+      setCopiedIndex(index)
+      setTimeout(() => setCopiedIndex(null), 2000)
+    } catch (e) {
+      console.error('Failed to copy', e)
+    }
   }
 
   const renderMarkdown = (content: string) => {
@@ -260,8 +333,8 @@ export function Chat() {
               <div
                 key={index}
                 className={cn(
-                  "flex",
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                  "flex flex-col",
+                  message.role === 'user' ? 'items-end' : 'items-start'
                 )}
               >
                 <div
@@ -271,6 +344,45 @@ export function Chat() {
                   )}
                   dangerouslySetInnerHTML={renderMarkdown(message.content)}
                 />
+                {message.role === 'assistant' && message.id && (
+                  <div className="flex items-center gap-1 mt-1 ml-1">
+                    <button
+                      onClick={() => submitFeedback(message.id!, 'like')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        feedback[message.id] === 'like'
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                      title="좋아요"
+                    >
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => submitFeedback(message.id!, 'dislike')}
+                      className={cn(
+                        "p-1.5 rounded-md transition-colors",
+                        feedback[message.id] === 'dislike'
+                          ? "text-destructive bg-destructive/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                      title="별로에요"
+                    >
+                      <ThumbsDown className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => copyToClipboard(message.content, index)}
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      title="복사"
+                    >
+                      {copiedIndex === index ? (
+                        <Check className="h-3.5 w-3.5 text-primary" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
 

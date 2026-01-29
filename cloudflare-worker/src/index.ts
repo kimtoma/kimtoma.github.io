@@ -104,6 +104,15 @@ export default {
         return await handleAnalyzeSentiment(request, env);
       }
 
+      // Feedback
+      if (url.pathname === '/feedback' && request.method === 'POST') {
+        return await handleSubmitFeedback(request, env);
+      }
+
+      if (url.pathname === '/admin/feedback' && request.method === 'GET') {
+        return await handleGetFeedback(request, env);
+      }
+
       if (url.pathname === '/health') {
         return jsonResponse({ status: 'ok', timestamp: Date.now() });
       }
@@ -468,6 +477,111 @@ async function handleClearMemory(request: Request, env: Env): Promise<Response> 
       deleted_sessions: sessResult.meta.changes,
     });
   }
+}
+
+/**
+ * Handle submit feedback (like/dislike)
+ */
+async function handleSubmitFeedback(request: Request, env: Env): Promise<Response> {
+  try {
+    const body = await request.json() as {
+      message_id: number;
+      session_id: string;
+      feedback: 'like' | 'dislike';
+      comment?: string;
+    };
+
+    if (!body.message_id || !body.session_id || !body.feedback) {
+      return jsonResponse({ error: 'message_id, session_id, and feedback are required' }, 400);
+    }
+
+    if (!['like', 'dislike'].includes(body.feedback)) {
+      return jsonResponse({ error: 'feedback must be "like" or "dislike"' }, 400);
+    }
+
+    const now = Date.now();
+    await env.DB.prepare(`
+      INSERT INTO message_feedback (message_id, session_id, feedback, comment, created_at)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(message_id, session_id) DO UPDATE SET
+        feedback = excluded.feedback,
+        comment = excluded.comment,
+        created_at = excluded.created_at
+    `).bind(body.message_id, body.session_id, body.feedback, body.comment || null, now).run();
+
+    await incrementWriteCount(env);
+
+    return jsonResponse({
+      success: true,
+      message: 'Feedback submitted',
+    });
+  } catch (error) {
+    console.error('Feedback error:', error);
+    return jsonResponse({ error: (error as Error).message }, 500);
+  }
+}
+
+/**
+ * Handle get feedback data (admin)
+ */
+async function handleGetFeedback(request: Request, env: Env): Promise<Response> {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || authHeader !== `Bearer ${env.ADMIN_TOKEN}`) {
+    return jsonResponse({ error: 'Unauthorized' }, 401);
+  }
+
+  await incrementReadCount(env);
+
+  const url = new URL(request.url);
+  const filter = url.searchParams.get('filter'); // 'like', 'dislike', or null for all
+
+  // Get feedback stats
+  const stats = await env.DB.prepare(`
+    SELECT
+      feedback,
+      COUNT(*) as count
+    FROM message_feedback
+    GROUP BY feedback
+  `).all();
+
+  // Get recent feedback with message content
+  let feedbackQuery = `
+    SELECT
+      f.id,
+      f.message_id,
+      f.session_id,
+      f.feedback,
+      f.comment,
+      f.created_at,
+      m.content as message_content,
+      m.timestamp as message_timestamp
+    FROM message_feedback f
+    JOIN chat_messages m ON f.message_id = m.id
+  `;
+
+  const params: any[] = [];
+  if (filter && ['like', 'dislike'].includes(filter)) {
+    feedbackQuery += ` WHERE f.feedback = ?`;
+    params.push(filter);
+  }
+
+  feedbackQuery += ` ORDER BY f.created_at DESC LIMIT 100`;
+
+  const feedback = await env.DB.prepare(feedbackQuery).bind(...params).all();
+
+  const likeCount = (stats.results?.find((s: any) => s.feedback === 'like') as any)?.count || 0;
+  const dislikeCount = (stats.results?.find((s: any) => s.feedback === 'dislike') as any)?.count || 0;
+  const total = likeCount + dislikeCount;
+
+  return jsonResponse({
+    stats: {
+      total,
+      likes: likeCount,
+      dislikes: dislikeCount,
+      like_rate: total > 0 ? ((likeCount / total) * 100).toFixed(1) : 0,
+    },
+    feedback: feedback.results,
+  });
 }
 
 /**
