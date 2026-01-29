@@ -405,7 +405,12 @@ export function Chat() {
 
             {/* Loading indicator */}
             {isLoading && (
-              <div className="flex justify-start">
+              <div className="flex justify-start gap-2">
+                <img
+                  src="https://github.com/kimtoma.png"
+                  alt="kimtoma"
+                  className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+                />
                 <div className="bubble-assistant">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -418,9 +423,14 @@ export function Chat() {
 
             {/* Typing effect */}
             {isTyping && typingContent && (
-              <div className="flex justify-start">
+              <div className="flex justify-start gap-2">
+                <img
+                  src="https://github.com/kimtoma.png"
+                  alt="kimtoma"
+                  className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+                />
                 <div
-                  className="bubble-assistant markdown-content"
+                  className="bubble-assistant markdown-content max-w-[85%]"
                   dangerouslySetInnerHTML={renderMarkdown(typingContent)}
                 />
               </div>
