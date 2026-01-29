@@ -346,8 +346,23 @@ export function Chat() {
                 )
               }
 
-              // Assistant message - split by paragraphs
-              const paragraphs = message.content.split(/\n\n+/).filter(p => p.trim())
+              // Assistant message - split by paragraphs (smart grouping)
+              const rawParagraphs = message.content.split(/\n\n+/).filter(p => p.trim())
+
+              // Group short paragraphs together (min 100 chars per bubble)
+              const paragraphs: string[] = []
+              let currentGroup = ''
+              for (const p of rawParagraphs) {
+                if (currentGroup.length === 0) {
+                  currentGroup = p
+                } else if (currentGroup.length + p.length < 100) {
+                  currentGroup += '\n\n' + p
+                } else {
+                  paragraphs.push(currentGroup)
+                  currentGroup = p
+                }
+              }
+              if (currentGroup) paragraphs.push(currentGroup)
 
               return (
                 <div key={index} className="flex justify-start gap-2">
@@ -426,44 +441,22 @@ export function Chat() {
               </div>
             )}
 
-            {/* Typing effect */}
-            {isTyping && typingContent && (() => {
-              const paragraphs = typingContent.split(/\n\n+/)
-              const completedParagraphs = paragraphs.slice(0, -1).filter(p => p.trim())
-              const currentParagraph = paragraphs[paragraphs.length - 1]
-              const isTypingNewParagraph = typingContent.endsWith('\n\n')
-
-              return (
-                <div className="flex justify-start gap-2">
-                  <img
-                    src="https://github.com/kimtoma.png"
-                    alt="kimtoma"
-                    className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+            {/* Typing effect - single bubble during typing */}
+            {isTyping && typingContent && (
+              <div className="flex justify-start gap-2">
+                <img
+                  src="https://github.com/kimtoma.png"
+                  alt="kimtoma"
+                  className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+                />
+                <div className="flex flex-col gap-1 max-w-[85%]">
+                  <div
+                    className="bubble-assistant markdown-content"
+                    dangerouslySetInnerHTML={renderMarkdown(typingContent)}
                   />
-                  <div className="flex flex-col gap-1 max-w-[85%]">
-                    {/* Completed paragraphs */}
-                    {completedParagraphs.map((paragraph, pIndex) => (
-                      <div
-                        key={pIndex}
-                        className="bubble-assistant markdown-content"
-                        dangerouslySetInnerHTML={renderMarkdown(paragraph)}
-                      />
-                    ))}
-                    {/* Current typing paragraph or waiting indicator */}
-                    {isTypingNewParagraph ? (
-                      <div className="bubble-assistant">
-                        <span className="inline-block w-2 h-4 bg-foreground/70 animate-pulse" />
-                      </div>
-                    ) : currentParagraph.trim() ? (
-                      <div
-                        className="bubble-assistant markdown-content"
-                        dangerouslySetInnerHTML={renderMarkdown(currentParagraph)}
-                      />
-                    ) : null}
-                  </div>
                 </div>
-              )
-            })()}
+              </div>
+            )}
 
             <div ref={messagesEndRef} />
           </div>
