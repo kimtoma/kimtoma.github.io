@@ -41,7 +41,12 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 - Cloudflare Workers (Gemini API 프록시)
 - Cloudflare D1 (대화 로그 저장)
 - iMessage 스타일 UI + 타이핑 효과
-- 관리자 대시보드 (로그 조회 및 분석)
+
+**관리자 대시보드**
+- 대화 로그 조회 및 분석
+- 시스템 프롬프트 관리
+- 감정 분석 (Gemini 기반)
+- 이메일 알림 (Resend API)
 
 ### 로컬 실행
 
@@ -99,7 +104,12 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 - Cloudflare Workers (Gemini API proxy)
 - Cloudflare D1 (conversation logging)
 - iMessage-style UI + typing effect
-- Admin dashboard (logs viewer & analytics)
+
+**Admin Dashboard**
+- Conversation logs viewer & analytics
+- System prompt management
+- Sentiment analysis (Gemini-powered)
+- Email alerts (Resend API)
 
 ### Local Development
 
