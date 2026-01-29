@@ -318,9 +318,11 @@ export function Chat() {
       <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4 pb-24">
         {messages.length === 0 && !isTyping ? (
           <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">
-              K
-            </div>
+            <img
+              src="https://github.com/kimtoma.png"
+              alt="kimtoma"
+              className="w-16 h-16 rounded-full mb-4 border-2 border-primary/20"
+            />
             <h2 className="text-lg font-medium text-foreground mb-2">kimtoma에게 물어보세요</h2>
             <p className="text-sm max-w-xs">
               AI 에이전트, UX 디자인, 서비스 기획 등<br />
@@ -333,17 +335,25 @@ export function Chat() {
               <div
                 key={index}
                 className={cn(
-                  "flex flex-col",
-                  message.role === 'user' ? 'items-end' : 'items-start'
+                  "flex",
+                  message.role === 'user' ? 'justify-end' : 'justify-start gap-2'
                 )}
               >
-                <div
-                  className={cn(
-                    message.role === 'user' ? 'bubble-user' : 'bubble-assistant',
-                    'markdown-content'
-                  )}
-                  dangerouslySetInnerHTML={renderMarkdown(message.content)}
-                />
+                {message.role === 'assistant' && (
+                  <img
+                    src="https://github.com/kimtoma.png"
+                    alt="kimtoma"
+                    className="w-8 h-8 rounded-full flex-shrink-0 mt-1"
+                  />
+                )}
+                <div className="flex flex-col">
+                  <div
+                    className={cn(
+                      message.role === 'user' ? 'bubble-user' : 'bubble-assistant',
+                      'markdown-content'
+                    )}
+                    dangerouslySetInnerHTML={renderMarkdown(message.content)}
+                  />
                 {message.role === 'assistant' && message.id && (
                   <div className="flex items-center gap-1 mt-1 ml-1">
                     <button
@@ -383,6 +393,7 @@ export function Chat() {
                     </button>
                   </div>
                 )}
+                </div>
               </div>
             ))}
 
