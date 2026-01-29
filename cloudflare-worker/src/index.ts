@@ -191,7 +191,7 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
 
     // Combine system prompt with RAG context
     const enhancedPrompt = ragContext
-      ? `${systemPrompt}\n\n## 참고할 수 있는 블로그 정보:\n${ragContext}\n\n위 정보가 질문과 관련있다면 참고해서 답변하고, 📎로 표시된 관련 글 링크가 있으면 답변 마지막에 "[관련 글](URL)" 형식으로 작게 포함해주세요.`
+      ? `${systemPrompt}\n\n## 참고할 수 있는 블로그 정보:\n${ragContext}\n\n위 정보가 질문과 관련있다면 참고해서 답변하고, 📎로 표시된 관련 글이 있으면 답변 마지막에 그대로 포함해주세요 (예: 📎 [글 제목](URL) ↗).`
       : systemPrompt;
 
     // Call Gemini API with enhanced prompt
@@ -1259,7 +1259,7 @@ async function searchBlogContext(env: Env, query: string): Promise<string> {
         if (meta?.type === 'blog' && meta?.slug && meta?.date) {
           const [year, month, day] = meta.date.split('-');
           const url = `https://kimtoma.com/${year}/${month}/${day}/${meta.slug}/`;
-          result += `\n📎 관련 글: ${url}`;
+          result += `\n📎 관련 글: [${meta.title}](${url}) ↗`;
         }
 
         return result;
