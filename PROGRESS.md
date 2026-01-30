@@ -1,5 +1,82 @@
 # Development Progress
 
+## 2026-01-30: Social Media Integration
+
+### ✅ Completed
+
+#### 1. GitHub Activity Integration
+- **API**: GitHub REST API (Commits API)
+- **Authentication**: Personal Access Token (avoids rate limits)
+- **Features**:
+  - Fetches recent commits from public repositories
+  - Shows commit message, date, and repository name
+  - 1-hour caching in D1 settings table
+- **Format**: `📎 [커밋 메시지](URL) ↗`
+- **Debug Endpoint**: `GET /debug/github`
+
+#### 2. Strava Activity Integration
+- **API**: Strava API v3 with OAuth 2.0
+- **Authentication Flow**:
+  - `GET /strava/auth` - Redirect to Strava authorization
+  - `GET /strava/callback` - Handle OAuth callback, store tokens
+- **Features**:
+  - Fetches recent activities (runs, rides, walks, etc.)
+  - Shows activity name, type, distance, duration
+  - Auto token refresh when expired
+  - Links to Strava activity pages
+- **Format**: `📎 [활동명](URL) ↗ (거리, 시간)`
+- **Storage**: D1 settings table (access_token, refresh_token, athlete_id)
+
+#### 3. YouTube Activity Integration
+- **API**: YouTube Data API v3
+- **Authentication**: API Key
+- **Features**:
+  - Fetches recent uploads from channel
+  - Shows video title and upload date
+  - 1-hour caching in D1 settings table
+- **Channel**: 김경수 원본 박물관 (UCJqcDKuaF5Swqzb3d6YnJIA)
+- **Format**: `🎬 📎 [영상 제목](URL) ↗`
+- **Debug Endpoint**: `GET /debug/youtube`
+
+#### 4. Environment Variables
+New secrets added to Cloudflare Worker:
+- `GITHUB_TOKEN` - GitHub Personal Access Token
+- `STRAVA_CLIENT_ID` - Strava OAuth App Client ID
+- `STRAVA_CLIENT_SECRET` - Strava OAuth App Client Secret
+- `YOUTUBE_API_KEY` - YouTube Data API Key
+
+---
+
+## 2026-01-29: Chat UX Improvements & Smart Features
+
+### ✅ Completed (Session 3)
+
+#### 1. Smart Chat Bubble Splitting
+- **Paragraph Grouping**: Short paragraphs grouped together (min 100 chars per bubble)
+- **Natural Flow**: Single bubble during typing, split after completion
+- **Better Readability**: Long responses split into digestible chunks
+
+#### 2. Dynamic Date Context
+- **Auto-injection**: Current date added to system prompt (Korean timezone)
+- **Accurate Calculations**: AI can calculate ages, months correctly
+- **Format**: "2026년 1월 29일 수요일"
+
+#### 3. Response Quality Control
+- **Length Limit**: `maxOutputTokens: 500` for concise answers
+- **No Self-questioning**: AI prohibited from asking follow-up questions
+- **Style**: 2-3 sentences, to the point
+
+#### 4. Blog Link Integration
+- **Related Posts**: AI includes relevant blog links in responses
+- **Format**: `📎 [글 제목](URL) ↗`
+- **Separate Bubble**: Links displayed in distinct bubble for clarity
+
+#### 5. Family Info in System Prompt
+- Added spouse and child information
+- AI can answer personal questions accurately
+
+---
+
 ## 2026-01-29: Blog RAG, Feedback Feature & UI Improvements
 
 ### ✅ Completed (Session 2)
@@ -217,12 +294,15 @@ message_feedback (id, message_id INTEGER, session_id TEXT, feedback TEXT, commen
 - [x] ~~User feedback (like/dislike)~~ (Completed 2026-01-29)
 - [x] ~~Blog RAG for personalized answers~~ (Completed 2026-01-29)
 - [x] ~~GitHub profile image integration~~ (Completed 2026-01-29)
-- [ ] SNS integration (X/Twitter, LinkedIn)
+- [x] ~~Smart chat bubble splitting~~ (Completed 2026-01-29)
+- [x] ~~Dynamic date context for AI~~ (Completed 2026-01-29)
+- [x] ~~Blog post links in responses~~ (Completed 2026-01-29)
+- [x] ~~SNS integration~~ (GitHub, Strava, YouTube - Completed 2026-01-30)
 - [ ] Conversation statistics per session
 - [ ] Advanced filtering (date range, role)
 - [ ] Multi-language support for admin panel
 
 ---
 
-**Last Updated**: 2026-01-29
+**Last Updated**: 2026-01-30
 **Status**: Active

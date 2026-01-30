@@ -4,12 +4,14 @@ Cloudflare Worker that proxies Gemini API requests and logs all conversations to
 
 ## Features
 
-- ✅ Gemini API proxy
+- ✅ Gemini API proxy (gemini-2.0-flash model)
 - ✅ D1 database logging (conversations, sessions, usage)
 - ✅ Free tier limits enforced (100K writes/day, 5M reads/day)
 - ✅ Admin API for viewing logs and statistics
 - ✅ Automatic cleanup of old data
 - ✅ CORS enabled
+- ✅ Blog RAG (Vectorize + Workers AI embeddings)
+- ✅ Social Media Integration (GitHub, Strava, YouTube)
 
 ## Free Tier Limits
 
@@ -64,6 +66,12 @@ npx wrangler secret put GEMINI_API_KEY
 # Set admin token (generate a random secure token)
 npx wrangler secret put ADMIN_TOKEN
 # Enter a secure random token (e.g., use `openssl rand -hex 32`)
+
+# Social Media Integration (optional)
+npx wrangler secret put GITHUB_TOKEN        # GitHub Personal Access Token
+npx wrangler secret put STRAVA_CLIENT_ID    # Strava OAuth App Client ID
+npx wrangler secret put STRAVA_CLIENT_SECRET # Strava OAuth App Client Secret
+npx wrangler secret put YOUTUBE_API_KEY     # YouTube Data API v3 Key
 ```
 
 ### 6. Deploy to Cloudflare
@@ -150,6 +158,39 @@ Response:
   "message": "Cleanup completed successfully"
 }
 ```
+
+### Strava OAuth Endpoints
+
+**GET** `/strava/auth` - Redirect to Strava authorization page
+
+**GET** `/strava/callback` - Handle OAuth callback, stores tokens in D1
+
+### Debug Endpoints
+
+**GET** `/debug/github` - Test GitHub API connection and view cached data
+
+**GET** `/debug/youtube` - Test YouTube API connection and view cached data
+
+## Social Media Integration
+
+The worker fetches recent activity from connected social accounts and includes them in AI responses.
+
+### GitHub
+- Fetches recent commits from public repositories
+- Requires `GITHUB_TOKEN` (Personal Access Token)
+- Caches results for 1 hour
+
+### Strava
+- Fetches recent activities (runs, rides, etc.)
+- Requires OAuth authentication via `/strava/auth`
+- Auto-refreshes tokens when expired
+- Stores `access_token`, `refresh_token`, `athlete_id` in D1
+
+### YouTube
+- Fetches recent uploads from configured channel
+- Requires `YOUTUBE_API_KEY` (Data API v3)
+- Caches results for 1 hour
+- Channel ID configured in code: `UCJqcDKuaF5Swqzb3d6YnJIA`
 
 ## Database Schema
 

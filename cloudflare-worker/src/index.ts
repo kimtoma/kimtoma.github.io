@@ -10,6 +10,10 @@ export interface Env {
   RESEND_API_KEY: string;
   VECTORIZE: VectorizeIndex;
   AI: Ai;
+  STRAVA_CLIENT_ID: string;
+  STRAVA_CLIENT_SECRET: string;
+  GITHUB_TOKEN: string;
+  YOUTUBE_API_KEY: string;
 }
 
 // Free tier limits
@@ -124,8 +128,51 @@ export default {
         return await handleRagStats(request, env);
       }
 
+      // Strava OAuth
+      if (url.pathname === '/strava/auth' && request.method === 'GET') {
+        return handleStravaAuth(request, env);
+      }
+
+      if (url.pathname === '/strava/callback' && request.method === 'GET') {
+        return await handleStravaCallback(request, env);
+      }
+
       if (url.pathname === '/health') {
         return jsonResponse({ status: 'ok', timestamp: Date.now() });
+      }
+
+      // Debug endpoint for GitHub
+      if (url.pathname === '/debug/github' && request.method === 'GET') {
+        try {
+          const activity = await getGitHubActivity(env);
+          return jsonResponse({
+            success: true,
+            activity_length: activity.length,
+            activity_preview: activity.substring(0, 500)
+          });
+        } catch (e) {
+          return jsonResponse({ success: false, error: (e as Error).message });
+        }
+      }
+
+      // Debug endpoint for YouTube
+      if (url.pathname === '/debug/youtube' && request.method === 'GET') {
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${env.YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet&order=date&maxResults=3&type=video`
+          );
+          const data = await response.json();
+          const activity = await getYouTubeActivity(env);
+          return jsonResponse({
+            success: true,
+            api_status: response.status,
+            api_response: data,
+            activity_length: activity.length,
+            activity_preview: activity.substring(0, 500)
+          });
+        } catch (e) {
+          return jsonResponse({ success: false, error: (e as Error).message });
+        }
       }
 
       return jsonResponse({ error: 'Not found' }, 404);
@@ -189,23 +236,52 @@ async function handleChat(request: Request, env: Env): Promise<Response> {
       // Continue without RAG on error
     }
 
-    // Combine system prompt with RAG context
-    const enhancedPrompt = ragContext
-      ? `${systemPrompt}\n\n## 참고할 수 있는 블로그 정보:\n${ragContext}\n\n위 정보가 질문과 관련있다면 참고해서 답변하고, 📎로 표시된 관련 글이 있으면 답변 마지막에 빈 줄을 넣고 별도 문단으로 포함해주세요.\n예시:\n답변 내용...\n\n📎 [글 제목](URL) ↗`
-      : systemPrompt;
+    // Get social media activity
+    let githubActivity = '';
+    let stravaActivity = '';
+    let youtubeActivity = '';
 
-    // Call Gemini API with enhanced prompt
-    const geminiResponse = await callGeminiAPI(env, body.message, body.history || [], enhancedPrompt);
+    try {
+      [githubActivity, stravaActivity, youtubeActivity] = await Promise.all([
+        getGitHubActivity(env),
+        getStravaActivity(env),
+        getYouTubeActivity(env),
+      ]);
+    } catch (e) {
+      console.error('Social activity error:', e);
+    }
 
-    if (geminiResponse.error) {
-      return jsonResponse({ error: geminiResponse.error }, 500);
+    // Combine system prompt with RAG context and social activity
+    let enhancedPrompt = systemPrompt;
+
+    if (githubActivity) {
+      enhancedPrompt += `\n\n${githubActivity}`;
+    }
+
+    if (stravaActivity) {
+      enhancedPrompt += `\n\n${stravaActivity}`;
+    }
+
+    if (youtubeActivity) {
+      enhancedPrompt += `\n\n${youtubeActivity}`;
+    }
+
+    if (ragContext) {
+      enhancedPrompt += `\n\n## 참고할 수 있는 블로그 정보:\n${ragContext}\n\n위 정보가 질문과 관련있다면 참고해서 답변하고, 📎로 표시된 관련 글이 있으면 답변 마지막에 빈 줄을 넣고 별도 문단으로 포함해주세요.\n예시:\n답변 내용...\n\n📎 [글 제목](URL) ↗`;
+    }
+
+    // Call Groq API with enhanced prompt
+    const groqResponse = await callGeminiAPI(env, body.message, body.history || [], enhancedPrompt);
+
+    if (groqResponse.error) {
+      return jsonResponse({ error: groqResponse.error }, 500);
     }
 
     // Save AI response to DB
-    await saveMessage(env, sessionId, 'ai', geminiResponse.response, Date.now(), userIp, userAgent);
+    await saveMessage(env, sessionId, 'ai', groqResponse.response, Date.now(), userIp, userAgent);
 
     return jsonResponse({
-      response: geminiResponse.response,
+      response: groqResponse.response,
       sessionId,
     });
   } catch (error) {
@@ -759,7 +835,7 @@ async function analyzeSessionSentiment(env: Env, sessionId: string): Promise<{
       `${m.role === 'user' ? '사용자' : 'AI'}: ${m.content}`
     ).join('\n\n');
 
-    // Call Gemini for sentiment analysis
+    // Call Groq for sentiment analysis
     const prompt = `다음 대화를 분석해서 JSON 형식으로 응답해주세요.
 
 대화:
@@ -986,8 +1062,6 @@ async function callGeminiAPI(
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gemini API error:', response.status, errorText);
-      console.error('System prompt length:', systemPrompt.length);
-      console.error('Contents count:', contents.length);
       throw new Error(`Gemini API error: ${response.status} - ${errorText.substring(0, 200)}`);
     }
 
@@ -1442,4 +1516,473 @@ interface VectorizeVector {
   id: string;
   values: number[];
   metadata?: Record<string, any>;
+}
+
+// ============================================
+// Social Media Integration - GitHub
+// ============================================
+
+const GITHUB_USERNAME = 'kimtoma';
+const GITHUB_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+// YouTube config
+const YOUTUBE_CHANNEL_ID = 'UCJqcDKuaF5Swqzb3d6YnJIA';
+const YOUTUBE_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+interface GitHubCommit {
+  sha: string;
+  html_url: string;
+  commit: {
+    message: string;
+    author: {
+      date: string;
+    };
+  };
+  repo_name?: string;
+  repo_url?: string;
+}
+
+/**
+ * Get GitHub activity with caching
+ */
+async function getGitHubActivity(env: Env): Promise<string> {
+  try {
+    // Check cache
+    const cached = await env.DB.prepare(
+      'SELECT value, updated_at FROM settings WHERE key = ?'
+    ).bind('github_activity').first() as any;
+
+    const now = Date.now();
+    if (cached && (now - cached.updated_at) < GITHUB_CACHE_TTL) {
+      return cached.value;
+    }
+
+    // Fetch from GitHub API with authentication
+    const headers: Record<string, string> = {
+      'User-Agent': 'kimtoma-chat-bot',
+      'Accept': 'application/vnd.github.v3+json',
+    };
+    if (env.GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
+    }
+
+    // Get recent commits from main repos
+    const reposResponse = await fetch(
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=pushed&per_page=3`,
+      { headers }
+    );
+
+    if (!reposResponse.ok) {
+      console.error('GitHub repos API error:', reposResponse.status);
+      return cached?.value || '';
+    }
+
+    const repos = await reposResponse.json() as Array<{ name: string; full_name: string; html_url: string }>;
+
+    // Get commits from each repo
+    const allCommits: GitHubCommit[] = [];
+    for (const repo of repos.slice(0, 2)) {
+      const commitsResponse = await fetch(
+        `https://api.github.com/repos/${repo.full_name}/commits?per_page=3`,
+        { headers }
+      );
+      if (commitsResponse.ok) {
+        const commits = await commitsResponse.json() as GitHubCommit[];
+        commits.forEach(c => {
+          c.repo_name = repo.name;
+          c.repo_url = repo.html_url;
+        });
+        allCommits.push(...commits);
+      }
+    }
+
+    // Sort by date and take top 5
+    allCommits.sort((a, b) =>
+      new Date(b.commit.author.date).getTime() - new Date(a.commit.author.date).getTime()
+    );
+
+    const activity = formatGitHubCommits(allCommits.slice(0, 5));
+
+    // Save to cache
+    await env.DB.prepare(`
+      INSERT INTO settings (key, value, updated_at)
+      VALUES ('github_activity', ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        value = excluded.value,
+        updated_at = excluded.updated_at
+    `).bind(activity, now).run();
+
+    return activity;
+  } catch (error) {
+    console.error('GitHub activity error:', error);
+    return '';
+  }
+}
+
+/**
+ * Format GitHub commits into readable text with links (blog post style)
+ */
+function formatGitHubCommits(commits: GitHubCommit[]): string {
+  if (!commits || commits.length === 0) return '';
+
+  const formatted = commits.map(commit => {
+    const date = new Date(commit.commit.author.date).toLocaleDateString('ko-KR', {
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'Asia/Seoul',
+    });
+    const message = commit.commit.message.split('\n')[0]; // First line only
+    const repoName = commit.repo_name || '';
+
+    return `- ${date} (${repoName}): 📎 [${message}](${commit.html_url}) ↗`;
+  });
+
+  const profileUrl = `https://github.com/${GITHUB_USERNAME}`;
+  return `## GitHub 최근 커밋\n프로필: [github.com/${GITHUB_USERNAME}](${profileUrl})\n\n${formatted.join('\n')}`;
+}
+
+// ============================================
+// Social Media Integration - Strava
+// ============================================
+
+const STRAVA_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+/**
+ * Handle Strava OAuth - redirect to Strava
+ */
+function handleStravaAuth(request: Request, env: Env): Response {
+  const url = new URL(request.url);
+  const redirectUri = `${url.origin}/strava/callback`;
+
+  const stravaAuthUrl = new URL('https://www.strava.com/oauth/authorize');
+  stravaAuthUrl.searchParams.set('client_id', env.STRAVA_CLIENT_ID);
+  stravaAuthUrl.searchParams.set('redirect_uri', redirectUri);
+  stravaAuthUrl.searchParams.set('response_type', 'code');
+  stravaAuthUrl.searchParams.set('scope', 'activity:read_all');
+
+  return Response.redirect(stravaAuthUrl.toString(), 302);
+}
+
+/**
+ * Handle Strava OAuth callback
+ */
+async function handleStravaCallback(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+
+  if (error) {
+    return new Response(`Strava 인증 실패: ${error}`, { status: 400 });
+  }
+
+  if (!code) {
+    return new Response('인증 코드가 없습니다', { status: 400 });
+  }
+
+  try {
+    // Exchange code for tokens
+    const tokenResponse = await fetch('https://www.strava.com/oauth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: env.STRAVA_CLIENT_ID,
+        client_secret: env.STRAVA_CLIENT_SECRET,
+        code,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('Strava token error:', errorText);
+      return new Response(`토큰 교환 실패: ${errorText}`, { status: 500 });
+    }
+
+    const tokens = await tokenResponse.json() as {
+      access_token: string;
+      refresh_token: string;
+      expires_at: number;
+      athlete: { id: number; firstname: string; lastname: string };
+    };
+
+    // Save tokens to DB (including athlete ID for profile link)
+    const now = Date.now();
+    await env.DB.prepare(`
+      INSERT INTO settings (key, value, updated_at)
+      VALUES ('strava_tokens', ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        value = excluded.value,
+        updated_at = excluded.updated_at
+    `).bind(JSON.stringify({
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      expires_at: tokens.expires_at,
+      athlete_id: tokens.athlete.id,
+    }), now).run();
+
+    return new Response(`
+      <html>
+        <head><meta charset="utf-8"><title>Strava 연동 완료</title></head>
+        <body style="font-family: -apple-system, sans-serif; text-align: center; padding: 50px;">
+          <h1>✅ Strava 연동 완료!</h1>
+          <p>${tokens.athlete.firstname} ${tokens.athlete.lastname}님의 계정이 연동되었습니다.</p>
+          <p>이제 채팅에서 운동 기록을 물어볼 수 있어요.</p>
+          <a href="https://chat.kimtoma.com">채팅으로 돌아가기</a>
+        </body>
+      </html>
+    `, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
+  } catch (error) {
+    console.error('Strava callback error:', error);
+    return new Response(`오류: ${(error as Error).message}`, { status: 500 });
+  }
+}
+
+/**
+ * Refresh Strava access token
+ */
+async function refreshStravaToken(env: Env, refreshToken: string): Promise<string | null> {
+  try {
+    const response = await fetch('https://www.strava.com/oauth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        client_id: env.STRAVA_CLIENT_ID,
+        client_secret: env.STRAVA_CLIENT_SECRET,
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token',
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Strava refresh error:', await response.text());
+      return null;
+    }
+
+    const tokens = await response.json() as {
+      access_token: string;
+      refresh_token: string;
+      expires_at: number;
+    };
+
+    // Update tokens in DB
+    await env.DB.prepare(`
+      UPDATE settings SET value = ?, updated_at = ?
+      WHERE key = 'strava_tokens'
+    `).bind(JSON.stringify({
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      expires_at: tokens.expires_at,
+    }), Date.now()).run();
+
+    return tokens.access_token;
+  } catch (error) {
+    console.error('Strava refresh error:', error);
+    return null;
+  }
+}
+
+/**
+ * Get Strava activity with caching
+ */
+async function getStravaActivity(env: Env): Promise<string> {
+  try {
+    // Check activity cache first
+    const cached = await env.DB.prepare(
+      'SELECT value, updated_at FROM settings WHERE key = ?'
+    ).bind('strava_activity').first() as any;
+
+    const now = Date.now();
+    if (cached && (now - cached.updated_at) < STRAVA_CACHE_TTL) {
+      return cached.value;
+    }
+
+    // Get tokens
+    const tokensRow = await env.DB.prepare(
+      'SELECT value FROM settings WHERE key = ?'
+    ).bind('strava_tokens').first() as any;
+
+    if (!tokensRow) {
+      return ''; // Not authenticated
+    }
+
+    let tokens = JSON.parse(tokensRow.value);
+
+    // Check if token needs refresh
+    if (tokens.expires_at * 1000 < now) {
+      const newAccessToken = await refreshStravaToken(env, tokens.refresh_token);
+      if (!newAccessToken) {
+        return cached?.value || '';
+      }
+      tokens.access_token = newAccessToken;
+    }
+
+    // Fetch recent activities
+    const response = await fetch(
+      'https://www.strava.com/api/v3/athlete/activities?per_page=5',
+      {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.error('Strava API error:', response.status);
+      return cached?.value || '';
+    }
+
+    const activities = await response.json() as StravaActivity[];
+    const activity = formatStravaActivity(activities, tokens.athlete_id);
+
+    // Save to cache
+    await env.DB.prepare(`
+      INSERT INTO settings (key, value, updated_at)
+      VALUES ('strava_activity', ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        value = excluded.value,
+        updated_at = excluded.updated_at
+    `).bind(activity, now).run();
+
+    return activity;
+  } catch (error) {
+    console.error('Strava activity error:', error);
+    return '';
+  }
+}
+
+interface StravaActivity {
+  id: number;
+  name: string;
+  type: string;
+  sport_type: string;
+  distance: number;
+  moving_time: number;
+  elapsed_time: number;
+  total_elevation_gain: number;
+  start_date_local: string;
+  average_speed: number;
+  max_speed: number;
+}
+
+/**
+ * Format Strava activities into readable text with links (blog post style)
+ */
+function formatStravaActivity(activities: StravaActivity[], athleteId?: number): string {
+  if (!activities || activities.length === 0) return '';
+
+  const formatted = activities.map(activity => {
+    const date = new Date(activity.start_date_local).toLocaleDateString('ko-KR', {
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'Asia/Seoul',
+    });
+
+    const distance = (activity.distance / 1000).toFixed(1);
+    const duration = Math.floor(activity.moving_time / 60);
+    const elevation = Math.round(activity.total_elevation_gain);
+    const activityUrl = `https://www.strava.com/activities/${activity.id}`;
+
+    const typeKo: Record<string, string> = {
+      'Run': '🏃 러닝',
+      'Ride': '🚴 라이딩',
+      'Swim': '🏊 수영',
+      'Walk': '🚶 걷기',
+      'Hike': '🥾 하이킹',
+      'WeightTraining': '🏋️ 웨이트',
+      'Yoga': '🧘 요가',
+    };
+
+    const type = typeKo[activity.sport_type] || activity.sport_type;
+    const details = `${distance}km, ${duration}분${elevation > 0 ? `, 고도 ${elevation}m` : ''}`;
+
+    return `- ${date}: ${type} 📎 [${activity.name}](${activityUrl}) ↗ (${details})`;
+  });
+
+  const profileUrl = athleteId ? `https://www.strava.com/athletes/${athleteId}` : 'https://www.strava.com';
+  return `## Strava 최근 운동 기록\n프로필: [Strava 프로필](${profileUrl})\n\n${formatted.join('\n')}`;
+}
+
+// ============================================
+// Social Media Integration - YouTube
+// ============================================
+
+interface YouTubeVideo {
+  id: { videoId: string };
+  snippet: {
+    title: string;
+    description: string;
+    publishedAt: string;
+    thumbnails: { default: { url: string } };
+  };
+}
+
+/**
+ * Get YouTube activity with caching
+ */
+async function getYouTubeActivity(env: Env): Promise<string> {
+  if (!env.YOUTUBE_API_KEY) return '';
+
+  try {
+    // Check cache
+    const cached = await env.DB.prepare(
+      'SELECT value, updated_at FROM settings WHERE key = ?'
+    ).bind('youtube_activity').first() as any;
+
+    const now = Date.now();
+    if (cached && (now - cached.updated_at) < YOUTUBE_CACHE_TTL) {
+      return cached.value;
+    }
+
+    // Fetch recent videos from YouTube API
+    const response = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?key=${env.YOUTUBE_API_KEY}&channelId=${YOUTUBE_CHANNEL_ID}&part=snippet&order=date&maxResults=5&type=video`
+    );
+
+    if (!response.ok) {
+      console.error('YouTube API error:', response.status);
+      return cached?.value || '';
+    }
+
+    const data = await response.json() as { items: YouTubeVideo[] };
+    const activity = formatYouTubeActivity(data.items);
+
+    // Save to cache
+    await env.DB.prepare(`
+      INSERT INTO settings (key, value, updated_at)
+      VALUES ('youtube_activity', ?, ?)
+      ON CONFLICT(key) DO UPDATE SET
+        value = excluded.value,
+        updated_at = excluded.updated_at
+    `).bind(activity, now).run();
+
+    return activity;
+  } catch (error) {
+    console.error('YouTube activity error:', error);
+    return '';
+  }
+}
+
+/**
+ * Format YouTube videos into readable text with links (blog post style)
+ */
+function formatYouTubeActivity(videos: YouTubeVideo[]): string {
+  if (!videos || videos.length === 0) return '';
+
+  const formatted = videos.map(video => {
+    const date = new Date(video.snippet.publishedAt).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'Asia/Seoul',
+    });
+    const videoUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+    const title = video.snippet.title;
+
+    return `- ${date}: 🎬 📎 [${title}](${videoUrl}) ↗`;
+  });
+
+  const channelUrl = `https://www.youtube.com/channel/${YOUTUBE_CHANNEL_ID}`;
+  return `## YouTube 최근 영상\n채널: [YouTube 채널](${channelUrl})\n\n${formatted.join('\n')}`;
 }
