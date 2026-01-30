@@ -103,11 +103,49 @@
           updateIcon('dark');
         }
 
-        // Toggle handler
-        toggle.addEventListener('click', function() {
+        // Toggle handler with View Transition API
+        toggle.addEventListener('click', function(event) {
           const current = html.getAttribute('data-theme');
           const next = current === 'dark' ? 'light' : 'dark';
-          setTheme(next);
+
+          // Fallback for browsers without View Transition API
+          if (!document.startViewTransition) {
+            setTheme(next);
+            return;
+          }
+
+          // Get click position for circular animation
+          const x = event.clientX;
+          const y = event.clientY;
+          // Calculate max radius to cover entire screen
+          const maxRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+          );
+
+          // Start view transition with circular reveal
+          const transition = document.startViewTransition(function() {
+            setTheme(next);
+          });
+
+          transition.ready.then(function() {
+            const clipPath = [
+              'circle(0px at ' + x + 'px ' + y + 'px)',
+              'circle(' + maxRadius + 'px at ' + x + 'px ' + y + 'px)'
+            ];
+
+            // Animate based on theme direction
+            document.documentElement.animate(
+              { clipPath: next === 'dark' ? clipPath.reverse() : clipPath },
+              {
+                duration: 500,
+                easing: 'ease-out',
+                pseudoElement: next === 'dark'
+                  ? '::view-transition-old(root)'
+                  : '::view-transition-new(root)'
+              }
+            );
+          });
         });
       })();
     </script>
