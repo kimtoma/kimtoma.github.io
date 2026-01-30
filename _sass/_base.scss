@@ -1,4 +1,4 @@
-// Body resets - matching chat.kimtoma.com style
+// Body resets - Unified Design System
 
 * {
   box-sizing: border-box;
@@ -53,6 +53,7 @@ body {
 a {
   color: var(--link-color);
   text-decoration: none;
+  text-underline-offset: 0.2em;
   transition: color 0.15s ease;
 
   &:hover,
@@ -119,10 +120,30 @@ blockquote {
   font-style: italic;
 }
 
-// Selection
+// Selection - using primary color
 ::selection {
   background-color: var(--primary);
   color: white;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-color);
+  border-radius: 4px;
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.5;
 }
 
 // Floating Chat Button

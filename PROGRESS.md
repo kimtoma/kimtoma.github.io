@@ -1,5 +1,45 @@
 # Development Progress
 
+## 2026-01-30: Unified Design System
+
+### ✅ Completed
+
+#### 1. Unified Color Palette (wabi.ai inspired)
+- **Warmer tones**: Pure grays → Warm-tinted grays (hue: 40)
+- **Primary**: `hsl(211, 100%, 50%)` → `hsl(215, 85%, 55%)` (warmer blue)
+- **Dark BG**: `hsl(0, 0%, 7%)` → `hsl(230, 15%, 8%)` (night sky tint)
+- **Light BG**: `hsl(0, 0%, 100%)` → `hsl(40, 30%, 99%)` (warm cream)
+- **Accent Coral**: `hsl(12, 85%, 62%)` for special moments
+
+#### 2. Typography Updates
+- **Font size**: 18px → 16px (cleaner look)
+- **Heading letter-spacing**: `-0.025em` (tighter)
+- **Heading weight**: 700 → 600 (semibold)
+
+#### 3. Unified Border Radius
+- **All components**: 12px (`--radius-lg`)
+- **Chat bubbles**: 24px (kept for messaging feel)
+
+#### 4. Unified Interactions
+- **Nav links**: Padding + border-radius + hover background
+- **Hover effect**: Secondary background + primary text color
+- **Active effect**: `scale(0.98)` on click
+- **Focus**: `outline: 2px solid primary`
+
+#### 5. Files Modified
+**Jekyll (kimtoma.com)**:
+- `_sass/_variables.scss` - Color palette, typography tokens
+- `_sass/_base.scss` - Link styles, scrollbar, selection
+- `_sass/_type.scss` - Heading letter-spacing
+- `_sass/_masthead.scss` - Nav hover effects
+
+**Chat App (chat.kimtoma.com)**:
+- `src/index.css` - CSS variables, hover states
+- `src/components/ui/button.tsx` - Ghost button hover, active states
+- `tailwind.config.js` - Color tokens, spacing scale
+
+---
+
 ## 2026-01-30: Social Media Integration
 
 ### ✅ Completed

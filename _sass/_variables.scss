@@ -1,21 +1,26 @@
-// Colors - matching chat.kimtoma.com
-:root {
-  // Gray scale
-  --gray-000: #f8f9fa;
-  --gray-100: #f1f3f5;
-  --gray-200: #e9ecef;
-  --gray-300: #dee2e6;
-  --gray-400: #ced4da;
-  --gray-500: #adb5bd;
-  --gray-600: #868e96;
-  --gray-700: #495057;
-  --gray-800: #343a40;
-  --gray-900: #212529;
+// Colors - Unified Design System (kimtoma.com + chat.kimtoma.com)
+// Inspired by wabi.ai: warm, personal, approachable
 
-  // Brand colors
-  --primary: #0080ff;
-  --primary-hover: #0066cc;
-  --primary-light: #4dabf7;
+:root {
+  // Gray scale - warm tones (hue: 40)
+  --gray-000: hsl(40, 20%, 98%);
+  --gray-100: hsl(40, 15%, 96%);
+  --gray-200: hsl(40, 10%, 92%);
+  --gray-300: hsl(40, 8%, 87%);
+  --gray-400: hsl(40, 5%, 80%);
+  --gray-500: hsl(40, 4%, 68%);
+  --gray-600: hsl(40, 3%, 53%);
+  --gray-700: hsl(40, 4%, 35%);
+  --gray-800: hsl(40, 5%, 22%);
+  --gray-900: hsl(40, 6%, 15%);
+
+  // Brand colors - warmer primary
+  --primary: hsl(215, 85%, 55%);
+  --primary-hover: hsl(215, 85%, 45%);
+  --primary-light: hsl(215, 85%, 65%);
+
+  // Accent color (coral) - for special moments
+  --accent-coral: hsl(12, 85%, 62%);
 
   // Semantic colors
   --red: #fa5252;
@@ -37,67 +42,85 @@
   // Typography
   --body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --body-font-size: 18px;
+  --body-font-size: 16px;
   --body-line-height: 1.6;
+  --heading-letter-spacing: -0.025em;
+  --heading-font-weight: 600;
 
-  // Spacing
+  // Spacing (Tailwind compatible, 4px base)
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
   --spacer: 1rem;
   --spacer-2: calc(var(--spacer) * 1.5);
   --spacer-3: calc(var(--spacer) * 3);
-  --border-radius: 0.5rem;
+
+  // Border radius - unified
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --border-radius: var(--radius-lg);
 
   // Code
   --code-font: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
 }
 
-// Light theme (default)
+// Light theme - warm cream background
 [data-theme="light"] {
-  --body-color: hsl(0, 0%, 9%);
-  --body-bg: hsl(0, 0%, 100%);
-  --heading-color: hsl(0, 0%, 3.9%);
+  --body-color: hsl(40, 10%, 15%);
+  --body-bg: hsl(40, 30%, 99%);
+  --heading-color: hsl(40, 15%, 8%);
 
   --link-color: var(--primary);
   --link-hover-color: var(--primary-hover);
 
-  --border-color: hsl(0, 0%, 89.8%);
+  --border-color: hsl(40, 15%, 88%);
 
   --code-color: var(--grape);
-  --code-bg: hsl(0, 0%, 96.1%);
+  --code-bg: hsl(40, 20%, 96%);
 
-  --muted-color: hsl(0, 0%, 45.1%);
-  --card-bg: hsl(0, 0%, 96.1%);
+  --muted-color: hsl(40, 5%, 45%);
+  --card-bg: hsl(40, 20%, 96%);
 }
 
-// Dark theme - matching chat.kimtoma.com
+// Dark theme - night sky tint (blue undertone)
 [data-theme="dark"] {
-  --body-color: hsl(0, 0%, 98%);
-  --body-bg: hsl(0, 0%, 7%);
-  --heading-color: hsl(0, 0%, 98%);
+  --body-color: hsl(230, 10%, 95%);
+  --body-bg: hsl(230, 15%, 8%);
+  --heading-color: hsl(230, 10%, 98%);
 
   --link-color: var(--primary);
   --link-hover-color: var(--primary-light);
 
-  --border-color: hsl(0, 0%, 20%);
+  --border-color: hsl(230, 10%, 20%);
 
   --code-color: var(--blue-300);
-  --code-bg: hsl(0, 0%, 14.9%);
+  --code-bg: hsl(230, 12%, 15%);
 
-  --muted-color: hsl(0, 0%, 63.9%);
-  --card-bg: hsl(0, 0%, 14.9%);
+  --muted-color: hsl(230, 8%, 60%);
+  --card-bg: hsl(230, 12%, 15%);
 }
 
 // System preference fallback
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --body-color: hsl(0, 0%, 98%);
-    --body-bg: hsl(0, 0%, 7%);
-    --heading-color: hsl(0, 0%, 98%);
+    --body-color: hsl(230, 10%, 95%);
+    --body-bg: hsl(230, 15%, 8%);
+    --heading-color: hsl(230, 10%, 98%);
     --link-color: var(--primary);
     --link-hover-color: var(--primary-light);
-    --border-color: hsl(0, 0%, 20%);
-    --code-bg: hsl(0, 0%, 14.9%);
-    --muted-color: hsl(0, 0%, 63.9%);
-    --card-bg: hsl(0, 0%, 14.9%);
+    --border-color: hsl(230, 10%, 20%);
+    --code-bg: hsl(230, 12%, 15%);
+    --muted-color: hsl(230, 8%, 60%);
+    --card-bg: hsl(230, 12%, 15%);
   }
 }

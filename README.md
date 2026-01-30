@@ -32,12 +32,14 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 **블로그 (kimtoma.com)**
 - Jekyll 4.1 + Poole 테마
 - SCSS + CSS Variables
-- Dark/Light 테마 지원
+- Dark/Light 테마 지원 (원형 reveal 애니메이션)
+- 통합 디자인 시스템 (따뜻한 컬러 팔레트)
 - GitHub Pages + Cloudflare CDN
 
 **AI 챗봇 (chat.kimtoma.com)**
 - React + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
+- 통합 디자인 시스템 (kimtoma.com과 동일)
 - Cloudflare Workers (Gemini API 프록시)
 - Cloudflare D1 (대화 로그 저장)
 - Cloudflare Vectorize + Workers AI (블로그 RAG)
@@ -101,12 +103,14 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 **Blog (kimtoma.com)**
 - Jekyll 4.1 + Poole theme
 - SCSS + CSS Variables
-- Dark/Light theme support
+- Dark/Light theme support (circular reveal animation)
+- Unified Design System (warm color palette)
 - GitHub Pages + Cloudflare CDN
 
 **AI Chatbot (chat.kimtoma.com)**
 - React + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
+- Unified Design System (matching kimtoma.com)
 - Cloudflare Workers (Gemini API proxy)
 - Cloudflare D1 (conversation logging)
 - Cloudflare Vectorize + Workers AI (Blog RAG)
