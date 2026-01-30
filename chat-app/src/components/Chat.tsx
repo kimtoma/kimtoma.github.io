@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Trash2, Moon, Sun, ThumbsUp, ThumbsDown, Copy, Check } from 'lucide-react'
+import { Send, Trash2, Moon, Sun, ThumbsUp, ThumbsDown, Copy, Check, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { marked } from 'marked'
@@ -297,6 +297,15 @@ export function Chat() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <a href="https://kimtoma.com" title="홈으로">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground"
+            >
+              <Home className="h-5 w-5" />
+            </Button>
+          </a>
           <Button
             variant="ghost"
             size="icon"
