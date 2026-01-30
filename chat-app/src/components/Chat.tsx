@@ -300,7 +300,46 @@ export function Chat() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsDark(!isDark)}
+            onClick={(event) => {
+              const next = !isDark
+
+              // Fallback for browsers without View Transition API
+              if (!document.startViewTransition) {
+                setIsDark(next)
+                return
+              }
+
+              // Get click position for circular animation
+              const x = event.clientX
+              const y = event.clientY
+              const maxRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+              )
+
+              // Start view transition with circular reveal
+              const transition = document.startViewTransition(() => {
+                setIsDark(next)
+              })
+
+              transition.ready.then(() => {
+                const clipPath = [
+                  `circle(0px at ${x}px ${y}px)`,
+                  `circle(${maxRadius}px at ${x}px ${y}px)`
+                ]
+
+                document.documentElement.animate(
+                  { clipPath: next ? [...clipPath].reverse() : clipPath },
+                  {
+                    duration: 500,
+                    easing: 'ease-out',
+                    pseudoElement: next
+                      ? '::view-transition-old(root)'
+                      : '::view-transition-new(root)'
+                  }
+                )
+              })
+            }}
             className="text-muted-foreground"
           >
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
