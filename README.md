@@ -33,7 +33,9 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 - React 19 + TypeScript + Vite
 - Tailwind CSS 4 (CDN) + Framer Motion
 - "Her" 영화 영감 3D 플로팅 카드 UI
-- Dark/Light 테마 (원형 reveal 애니메이션)
+- Dark/Light 테마 (전체 위젯/뷰 지원)
+- Apple Liquid Glass 스타일 네비게이션
+- 자연광 애니메이션 효과
 - Cloudflare Pages
 
 **AI 챗봇 (chat.kimtoma.com)**
@@ -105,7 +107,9 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 - React 19 + TypeScript + Vite
 - Tailwind CSS 4 (CDN) + Framer Motion
 - "Her" movie inspired 3D floating card UI
-- Dark/Light theme (circular reveal animation)
+- Full Dark/Light theme (all widgets & views)
+- Apple Liquid Glass style navigation
+- Natural light animation effects
 - Cloudflare Pages
 
 **AI Chatbot (chat.kimtoma.com)**

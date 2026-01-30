@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Terminal, Maximize2 } from 'lucide-react';
 
 interface ExperimentsViewProps {
+    isDark?: boolean;
     isFocused?: boolean;
     onFocusChange?: (focused: boolean) => void;
 }

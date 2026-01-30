@@ -15,12 +15,21 @@ const RECENT_POSTS: BlogPost[] = [
   { title: "UI를 여행하는 디자이너를 위한 안내서 - 버튼", date: "2021.02", link: "https://blog.kimtoma.com/2021/02/10/the-designers-guide-to-the-ui-button/" },
 ];
 
-const BlogListWidget: React.FC = () => {
+interface BlogListWidgetProps {
+  isDark?: boolean;
+}
+
+const BlogListWidget: React.FC<BlogListWidgetProps> = ({ isDark = false }) => {
+  const borderColor = isDark ? 'border-gray-700' : 'border-gray-200';
+  const textColor = isDark ? 'text-gray-200' : 'text-gray-700';
+  const mutedColor = isDark ? 'text-gray-500' : 'text-gray-400';
+  const hoverBg = isDark ? 'hover:bg-white/5' : 'hover:bg-white/50';
+
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
+      <div className={`flex items-center gap-2 mb-3 pb-2 border-b ${borderColor}`}>
         <FileText size={14} className="text-[#e86b58]" />
-        <span className="font-cutive text-xs text-gray-500 uppercase tracking-wider">Recent Posts</span>
+        <span className={`font-cutive text-xs ${mutedColor} uppercase tracking-wider`}>Recent Posts</span>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-2">
@@ -30,20 +39,20 @@ const BlogListWidget: React.FC = () => {
             href={post.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="block p-2 rounded hover:bg-white/50 transition-colors group"
+            className={`block p-2 rounded ${hoverBg} transition-colors group`}
           >
             <div className="flex items-start justify-between gap-2">
-              <span className="font-inter text-sm text-gray-700 group-hover:text-[#e86b58] transition-colors line-clamp-1">
+              <span className={`font-inter text-sm ${textColor} group-hover:text-[#e86b58] transition-colors line-clamp-1`}>
                 {post.title}
               </span>
-              <ExternalLink size={12} className="text-gray-400 group-hover:text-[#e86b58] shrink-0 mt-1" />
+              <ExternalLink size={12} className={`${mutedColor} group-hover:text-[#e86b58] shrink-0 mt-1`} />
             </div>
-            <span className="font-cutive text-[10px] text-gray-400">{post.date}</span>
+            <span className={`font-cutive text-[10px] ${mutedColor}`}>{post.date}</span>
           </a>
         ))}
       </div>
 
-      <div className="pt-2 mt-2 border-t border-gray-200">
+      <div className={`pt-2 mt-2 border-t ${borderColor}`}>
         <a
           href="https://blog.kimtoma.com/archive"
           target="_blank"

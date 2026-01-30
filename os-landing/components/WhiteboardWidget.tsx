@@ -3,18 +3,21 @@ import { Trash2, PenLine, Undo, Redo, Download, Save } from 'lucide-react';
 
 interface WhiteboardWidgetProps {
     isFocused?: boolean;
+    isDark?: boolean;
 }
 
 const COLORS = ['#3e3e3e', '#e86b58', '#5fa8aa', '#f0c419', '#8e44ad'];
+const COLORS_DARK = ['#e0e0e0', '#e86b58', '#5fa8aa', '#f0c419', '#8e44ad'];
 const SIZES = [2, 4, 8, 12];
 
-const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false }) => {
+const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false, isDark = false }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  
+
   // Tool State
-  const [currentColor, setCurrentColor] = useState('#3e3e3e');
+  const colors = isDark ? COLORS_DARK : COLORS;
+  const [currentColor, setCurrentColor] = useState(isDark ? '#e0e0e0' : '#3e3e3e');
   const [currentSize, setCurrentSize] = useState(2);
 
   // History State
@@ -173,23 +176,29 @@ const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false }
     saveToHistory();
   };
 
+  const bgColor = isDark ? 'bg-[#1a1512]' : 'bg-[#fffdf9]';
+  const toolbarBg = isDark ? 'bg-[#2a2420]/90 border-gray-700' : 'bg-white/90 border-gray-200';
+  const headerBg = isDark ? 'bg-[#2a2420] border-[#3a3430]' : 'bg-[#f0eee9] border-[#e5e0d8]';
+  const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
+  const borderColor = isDark ? 'border-gray-600' : 'border-gray-200';
+
   return (
-    <div className={`w-full h-full flex flex-col bg-[#fffdf9] relative group overflow-hidden ${isFocused ? 'items-center' : ''}`}>
+    <div className={`w-full h-full flex flex-col ${bgColor} relative group overflow-hidden ${isFocused ? 'items-center' : ''}`}>
       {/* Toolbar - Now Visible in Widget Mode too, with responsive styling */}
-      <div 
-        className={`absolute left-1/2 -translate-x-1/2 z-20 flex items-center bg-white/90 backdrop-blur shadow-[0_5px_20px_rgba(0,0,0,0.1)] rounded-full border border-gray-200 transition-all hover:scale-105 max-w-[95%] overflow-x-auto
-        ${isFocused 
-            ? 'bottom-28 md:bottom-8 gap-4 md:gap-6 px-6 md:px-8 py-3 md:py-4' 
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 z-20 flex items-center ${toolbarBg} backdrop-blur shadow-[0_5px_20px_rgba(0,0,0,0.1)] rounded-full border transition-all hover:scale-105 max-w-[95%] overflow-x-auto
+        ${isFocused
+            ? 'bottom-28 md:bottom-8 gap-4 md:gap-6 px-6 md:px-8 py-3 md:py-4'
             : 'bottom-3 gap-2 px-3 py-1.5 scale-90 origin-bottom'
         }`}
       >
-          
+
           {/* Colors */}
-          <div className={`flex items-center border-r border-gray-200 shrink-0 ${isFocused ? 'gap-2 md:gap-3 pr-4 md:pr-6' : 'gap-1.5 pr-3'}`}>
-              {COLORS.map(c => (
-                  <button 
+          <div className={`flex items-center border-r ${borderColor} shrink-0 ${isFocused ? 'gap-2 md:gap-3 pr-4 md:pr-6' : 'gap-1.5 pr-3'}`}>
+              {colors.map(c => (
+                  <button
                     key={c}
-                    className={`rounded-full border border-gray-100 transition-transform ${currentColor === c ? 'scale-125 ring-2 ring-offset-1 ring-gray-300' : 'hover:scale-110'} ${isFocused ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4'}`}
+                    className={`rounded-full border ${isDark ? 'border-gray-600' : 'border-gray-100'} transition-transform ${currentColor === c ? 'scale-125 ring-2 ring-offset-1 ring-gray-300' : 'hover:scale-110'} ${isFocused ? 'w-5 h-5 md:w-6 md:h-6' : 'w-4 h-4'}`}
                     style={{ backgroundColor: c }}
                     onClick={(e) => { e.stopPropagation(); setCurrentColor(c); }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -198,11 +207,11 @@ const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false }
           </div>
 
           {/* Sizes */}
-          <div className={`flex items-center border-r border-gray-200 shrink-0 ${isFocused ? 'gap-2 md:gap-3 pr-4 md:pr-6' : 'gap-1.5 pr-3'}`}>
+          <div className={`flex items-center border-r ${borderColor} shrink-0 ${isFocused ? 'gap-2 md:gap-3 pr-4 md:pr-6' : 'gap-1.5 pr-3'}`}>
               {SIZES.map(s => (
-                  <button 
+                  <button
                     key={s}
-                    className={`bg-gray-800 rounded-full transition-all ${currentSize === s ? 'bg-[#e86b58]' : 'bg-gray-300 hover:bg-gray-400'}`}
+                    className={`rounded-full transition-all ${currentSize === s ? 'bg-[#e86b58]' : isDark ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-300 hover:bg-gray-400'}`}
                     style={{ width: isFocused ? s * 1.5 : s * 1.2, height: isFocused ? s * 1.5 : s * 1.2 }}
                     onClick={(e) => { e.stopPropagation(); setCurrentSize(s); }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -211,7 +220,7 @@ const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false }
           </div>
 
           {/* Actions */}
-          <div className={`flex items-center shrink-0 text-gray-500 ${isFocused ? 'gap-2 md:gap-4' : 'gap-2'}`}>
+          <div className={`flex items-center shrink-0 ${textMuted} ${isFocused ? 'gap-2 md:gap-4' : 'gap-2'}`}>
               <button 
                 onClick={(e) => { e.stopPropagation(); handleUndo(); }} 
                 onMouseDown={(e) => e.stopPropagation()}
@@ -254,12 +263,11 @@ const WhiteboardWidget: React.FC<WhiteboardWidgetProps> = ({ isFocused = false }
 
       {/* Paper Header (Small Widget Only) */}
       {!isFocused && (
-        <div className="absolute top-0 left-0 w-full h-6 bg-[#f0eee9] border-b border-[#e5e0d8] flex items-center px-2 justify-between z-10">
+        <div className={`absolute top-0 left-0 w-full h-6 ${headerBg} border-b flex items-center px-2 justify-between z-10`}>
             <div className="flex items-center gap-1.5 opacity-60">
-                <PenLine size={10} className="text-gray-600" />
-                <span className="font-cutive text-[9px] text-gray-500 tracking-widest">CANVAS</span>
+                <PenLine size={10} className={isDark ? 'text-gray-400' : 'text-gray-600'} />
+                <span className={`font-cutive text-[9px] ${textMuted} tracking-widest`}>CANVAS</span>
             </div>
-            {/* Clear button is now in the bottom toolbar for consistency, removed from header */}
         </div>
       )}
 

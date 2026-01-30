@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
@@ -17,6 +18,15 @@
           }
         }
       }
+    </script>
+    <script>
+      // Initialize theme from localStorage
+      (function() {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,11 +40,38 @@
         font-display: swap;
       }
 
+      :root {
+        --bg-primary: #d9bba9;
+        --bg-secondary: #e5c6b3;
+        --bg-tertiary: #d4b49e;
+        --text-primary: #1f1a17;
+        --text-secondary: #4a4340;
+        --text-muted: #7a7270;
+        --card-bg: #ffefe5;
+        --card-bg-alt: #f4f7f6;
+        --accent: #e86b58;
+        --accent-teal: #5fa8aa;
+      }
+
+      .dark {
+        --bg-primary: #1a1512;
+        --bg-secondary: #241e1a;
+        --bg-tertiary: #1f1915;
+        --text-primary: #f5efe6;
+        --text-secondary: #c9c0b8;
+        --text-muted: #8a827a;
+        --card-bg: #2a2420;
+        --card-bg-alt: #1f1c1a;
+        --accent: #e86b58;
+        --accent-teal: #5fa8aa;
+      }
+
       body {
         margin: 0;
         overflow: hidden;
-        background-color: #dcbfa6; /* Base warm tone */
+        background-color: var(--bg-primary);
         font-family: 'Inter', 'SimGyeongha', sans-serif;
+        transition: background-color 0.5s ease;
       }
       
       /* Animation for gentle floating */
@@ -69,19 +106,6 @@
       ::-webkit-scrollbar {
         width: 0px;
         background: transparent;
-      }
-
-      /* Noise Texture Class */
-      .grain-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 0.05;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
       }
     </style>
 </head>

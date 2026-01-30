@@ -1,5 +1,59 @@
 # Development Progress
 
+## 2026-01-31: Dark Mode & UX Improvements
+
+### ✅ Completed
+
+#### 1. Full Dark Mode Support
+- **All Widgets**: Clock, About, Blog List, Music, Whiteboard
+- **All Views**: About, Archive (Blog), Projects, Experiments
+- **Theme Toggle**: Sun/Moon icon in navigation dock
+- **Persistence**: localStorage for theme preference
+- **Color Palette**: Warm brown tones (`#2a2420`, `#1f1c1a`)
+
+#### 2. Navigation Redesign (Apple Liquid Glass)
+- **Glassmorphism**: Transparent blur effect with soft shadows
+- **Hover Effects**: Scale + background change per item
+- **Active Indicator**: Coral dot below active menu
+- **Theme Adaptive**: Different opacity for dark/light modes
+
+#### 3. Natural Light Animation
+- **Replaced**: Grain texture overlay
+- **New Effect**: 3 animated light orbs with smooth movement
+- **Keyframes**: `naturalLight1`, `naturalLight2`, `naturalLight3`
+- **Theme Aware**: Different colors for dark/light modes
+
+#### 4. Widget Improvements
+- **Chat Widget Merged**: Added "Chat with me" button to About widget
+- **Removed**: Separate Chat widget (6 → 5 widgets)
+- **Collision Avoidance**: Widgets don't overlap when randomly placed
+- **Mobile Order**: Clock → About → Blog → Whiteboard → Music → Logo
+
+#### 5. View Improvements
+- **About View**: Removed tilt (rotate-1), full dark mode support
+- **Archive/Projects**: Unified color palette matching Home dark mode
+- **Profile Image**: Updated to github.com/kimtoma.png
+
+#### 6. Files Modified
+- `App.tsx` - Theme state, card templates factory, natural light animation
+- `Dock.tsx` - Liquid glass style, hover effects, theme toggle
+- `AboutWidget.tsx` - Chat button, dark mode colors
+- `AboutView.tsx` - Dark mode, removed tilt
+- `BlogView.tsx` - Dark mode colors
+- `ProjectsView.tsx` - Dark mode colors
+- `ClockWidget.tsx` - Dark mode clock face
+- `BlogListWidget.tsx` - Dark mode text/borders
+- `MusicWidget.tsx` - Dark mode player
+- `WhiteboardWidget.tsx` - Dark mode canvas/toolbar
+- `index.html` - Removed grain overlay CSS
+
+#### 7. Removed Files
+- `ChatWidget.tsx` - Merged into AboutWidget
+- `GrainOverlay.tsx` - Replaced with natural light animation
+- `LampWidget.tsx` - Replaced with simple theme toggle
+
+---
+
 ## 2026-01-30: kimtoma O/S - Interactive Portfolio
 
 ### ✅ Completed

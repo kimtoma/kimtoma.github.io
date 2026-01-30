@@ -87,18 +87,26 @@ const PROJECT_SECTIONS: ProjectSection[] = [
 ];
 
 interface ProjectsViewProps {
+  isDark?: boolean;
   isFocused?: boolean;
   onFocusChange?: (focused: boolean) => void;
 }
 
-const ProjectsView: React.FC<ProjectsViewProps> = () => {
+const ProjectsView: React.FC<ProjectsViewProps> = ({ isDark = false }) => {
+  // Dark mode colors
+  const textPrimary = isDark ? 'text-gray-100' : 'text-gray-800';
+  const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
+  const textLight = isDark ? 'text-gray-500' : 'text-gray-400';
+  const hoverBg = isDark ? 'hover:bg-white/5' : 'hover:bg-white/30';
+  const borderColor = isDark ? 'border-gray-700' : 'border-gray-200';
+
   return (
     <div className="w-full h-full flex items-start justify-center overflow-y-auto pb-24 md:pb-16">
       <div className="w-full max-w-2xl px-6 py-12 md:py-16">
         {/* Header */}
         <div className="mb-12 md:mb-16">
-          <h1 className="font-cutive text-3xl md:text-4xl text-gray-800 mb-3">Projects</h1>
-          <p className="font-inter text-sm text-gray-500 font-light">
+          <h1 className={`font-cutive text-3xl md:text-4xl ${textPrimary} mb-3`}>Projects</h1>
+          <p className={`font-inter text-sm ${textMuted} font-light`}>
             Project lists that I made with love. &lt;3
           </p>
         </div>
@@ -120,17 +128,17 @@ const ProjectsView: React.FC<ProjectsViewProps> = () => {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block py-3 hover:bg-white/30 -mx-3 px-3 rounded transition-colors"
+                      className={`block py-3 ${hoverBg} -mx-3 px-3 rounded transition-colors`}
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-inter font-medium text-gray-800 group-hover:text-[#e86b58] transition-colors">
+                            <span className={`font-inter font-medium ${textPrimary} group-hover:text-[#e86b58] transition-colors`}>
                               {project.title}
                             </span>
-                            <ExternalLink size={12} className="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <ExternalLink size={12} className={`${textLight} opacity-0 group-hover:opacity-100 transition-opacity`} />
                           </div>
-                          <p className="font-inter text-sm text-gray-500 font-light">
+                          <p className={`font-inter text-sm ${textMuted} font-light`}>
                             {project.description}
                           </p>
                           {project.award && (
@@ -156,8 +164,8 @@ const ProjectsView: React.FC<ProjectsViewProps> = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-gray-200 text-center">
-          <span className="font-cutive text-xs text-gray-400 tracking-[0.2em]">
+        <div className={`mt-16 pt-8 border-t ${borderColor} text-center`}>
+          <span className={`font-cutive text-xs ${textLight} tracking-[0.2em]`}>
             END_OF_PROJECTS
           </span>
         </div>

@@ -3,9 +3,10 @@ import { Radio, ListMusic, ExternalLink } from 'lucide-react';
 
 interface MusicWidgetProps {
     isFocused?: boolean;
+    isDark?: boolean;
 }
 
-const MusicWidget: React.FC<MusicWidgetProps> = ({ isFocused = false }) => {
+const MusicWidget: React.FC<MusicWidgetProps> = ({ isFocused = false, isDark = false }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMotorOn, setIsMotorOn] = useState(false); // Controls the "Spin" and Tone Arm
 
@@ -140,14 +141,19 @@ const MusicWidget: React.FC<MusicWidgetProps> = ({ isFocused = false }) => {
   }
 
   // Small Widget View (Minimalist Card Style)
+  const textColor = isDark ? 'text-gray-200' : 'text-gray-800';
+  const mutedColor = isDark ? 'text-gray-400' : 'text-gray-500';
+  const progressBg = isDark ? 'bg-gray-700' : 'bg-gray-200';
+  const badgeBg = isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100';
+
   return (
-    <div 
+    <div
         className="w-full h-full flex items-center gap-4 relative group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative shrink-0">
-          <div 
+          <div
             className="w-14 h-14 rounded-full bg-[#1a1a1a] flex items-center justify-center shadow-inner relative overflow-hidden"
           >
               {/* Simple Vinyl Icon */}
@@ -157,8 +163,8 @@ const MusicWidget: React.FC<MusicWidgetProps> = ({ isFocused = false }) => {
               </div>
               <div className="absolute inset-0 rounded-full border border-white/10 scale-75 pointer-events-none"></div>
           </div>
-          
-          <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-sm border border-gray-100 z-20">
+
+          <div className={`absolute -bottom-1 -right-1 ${badgeBg} rounded-full p-1 shadow-sm border z-20`}>
                <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify" className="w-3 h-3" />
           </div>
       </div>
@@ -172,23 +178,23 @@ const MusicWidget: React.FC<MusicWidgetProps> = ({ isFocused = false }) => {
         </div>
 
         <div className="relative overflow-hidden">
-            <div className="font-bold text-sm text-gray-800 truncate leading-tight">
+            <div className={`font-bold text-sm ${textColor} truncate leading-tight`}>
                 Vibe Collection
             </div>
-            <div className="text-xs text-gray-500 truncate font-inter">
+            <div className={`text-xs ${mutedColor} truncate font-inter`}>
                 Click to open deck
             </div>
         </div>
 
         <div className="flex items-center gap-2 w-full mt-1 opacity-50">
-            <div className="h-1 flex-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className={`h-1 flex-1 ${progressBg} rounded-full overflow-hidden`}>
                 <div className="h-full bg-[#1ed760] w-2/3"></div>
             </div>
         </div>
       </div>
 
-      <div className={`flex items-center justify-center text-gray-400 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-          <ListMusic size={16} className="text-gray-400" />
+      <div className={`flex items-center justify-center ${mutedColor} transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <ListMusic size={16} />
       </div>
     </div>
   );

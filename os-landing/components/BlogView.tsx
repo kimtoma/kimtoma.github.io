@@ -51,18 +51,26 @@ const groupedPosts = BLOG_POSTS.reduce((acc, post) => {
 const years = Object.keys(groupedPosts).sort((a, b) => parseInt(b) - parseInt(a));
 
 interface BlogViewProps {
+  isDark?: boolean;
   isFocused?: boolean;
   onFocusChange?: (focused: boolean) => void;
 }
 
-const BlogView: React.FC<BlogViewProps> = () => {
+const BlogView: React.FC<BlogViewProps> = ({ isDark = false }) => {
+  // Dark mode colors
+  const textPrimary = isDark ? 'text-gray-100' : 'text-gray-800';
+  const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
+  const textLight = isDark ? 'text-gray-500' : 'text-gray-400';
+  const hoverBg = isDark ? 'hover:bg-white/5' : 'hover:bg-white/30';
+  const borderColor = isDark ? 'border-gray-700' : 'border-gray-200';
+
   return (
     <div className="w-full h-full flex items-start justify-center overflow-y-auto pb-24 md:pb-16">
       <div className="w-full max-w-2xl px-6 py-12 md:py-16">
         {/* Header */}
         <div className="mb-12 md:mb-16">
-          <h1 className="font-cutive text-3xl md:text-4xl text-gray-800 mb-3">Archive</h1>
-          <p className="font-inter text-sm text-gray-500 font-light">
+          <h1 className={`font-cutive text-3xl md:text-4xl ${textPrimary} mb-3`}>Archive</h1>
+          <p className={`font-inter text-sm ${textMuted} font-light`}>
             {BLOG_POSTS.length} posts from {years[years.length - 1]} to {years[0]}
           </p>
         </div>
@@ -84,12 +92,12 @@ const BlogView: React.FC<BlogViewProps> = () => {
                       href={post.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-baseline justify-between gap-4 py-2 hover:bg-white/30 -mx-3 px-3 rounded transition-colors"
+                      className={`group flex items-baseline justify-between gap-4 py-2 ${hoverBg} -mx-3 px-3 rounded transition-colors`}
                     >
-                      <span className="font-inter text-gray-800 group-hover:text-[#e86b58] transition-colors text-sm md:text-base">
+                      <span className={`font-inter ${textPrimary} group-hover:text-[#e86b58] transition-colors text-sm md:text-base`}>
                         {post.title}
                       </span>
-                      <span className="font-cutive text-xs text-gray-400 shrink-0 flex items-center gap-1">
+                      <span className={`font-cutive text-xs ${textLight} shrink-0 flex items-center gap-1`}>
                         {post.date}
                         <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
@@ -102,8 +110,8 @@ const BlogView: React.FC<BlogViewProps> = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-gray-200 text-center">
-          <span className="font-cutive text-xs text-gray-400 tracking-[0.2em]">
+        <div className={`mt-16 pt-8 border-t ${borderColor} text-center`}>
+          <span className={`font-cutive text-xs ${textLight} tracking-[0.2em]`}>
             END_OF_ARCHIVE
           </span>
         </div>
