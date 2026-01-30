@@ -16,7 +16,7 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 
 | URL | 설명 |
 |-----|------|
-| [kimtoma.com](https://kimtoma.com) | 개인 블로그 |
+| [kimtoma.com](https://kimtoma.com) | 인터랙티브 포트폴리오 ("Her" 영화 영감) |
 | [chat.kimtoma.com](https://chat.kimtoma.com) | AI 챗봇 (Gemini 기반) |
 | [chat.kimtoma.com/admin.html](https://chat.kimtoma.com/admin.html) | 챗봇 관리자 대시보드 |
 
@@ -29,12 +29,12 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 
 ### 기술 스택
 
-**블로그 (kimtoma.com)**
-- Jekyll 4.1 + Poole 테마
-- SCSS + CSS Variables
-- Dark/Light 테마 지원 (원형 reveal 애니메이션)
-- 통합 디자인 시스템 (따뜻한 컬러 팔레트)
-- GitHub Pages + Cloudflare CDN
+**포트폴리오 (kimtoma.com)**
+- React 19 + TypeScript + Vite
+- Tailwind CSS 4 (CDN) + Framer Motion
+- "Her" 영화 영감 3D 플로팅 카드 UI
+- Dark/Light 테마 (원형 reveal 애니메이션)
+- Cloudflare Pages
 
 **AI 챗봇 (chat.kimtoma.com)**
 - React + TypeScript + Vite
@@ -59,9 +59,10 @@ UX/UI 디자인, 서비스 기획, AI, 그리고 기술 트렌드에 대한 생�
 ### 로컬 실행
 
 ```bash
-# 블로그 실행 (http://localhost:4000)
-bundle install
-bundle exec jekyll serve
+# 포트폴리오 실행 (http://localhost:3000)
+cd os-landing
+npm install
+npm run dev
 
 # 챗봇 실행 (http://localhost:5173)
 cd chat-app
@@ -87,7 +88,7 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 
 | URL | Description |
 |-----|-------------|
-| [kimtoma.com](https://kimtoma.com) | Personal blog |
+| [kimtoma.com](https://kimtoma.com) | Interactive Portfolio ("Her" movie inspired) |
 | [chat.kimtoma.com](https://chat.kimtoma.com) | AI Chatbot (Gemini-powered) |
 | [chat.kimtoma.com/admin.html](https://chat.kimtoma.com/admin.html) | Chatbot admin dashboard |
 
@@ -100,12 +101,12 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 
 ### Tech Stack
 
-**Blog (kimtoma.com)**
-- Jekyll 4.1 + Poole theme
-- SCSS + CSS Variables
-- Dark/Light theme support (circular reveal animation)
-- Unified Design System (warm color palette)
-- GitHub Pages + Cloudflare CDN
+**Portfolio (kimtoma.com)**
+- React 19 + TypeScript + Vite
+- Tailwind CSS 4 (CDN) + Framer Motion
+- "Her" movie inspired 3D floating card UI
+- Dark/Light theme (circular reveal animation)
+- Cloudflare Pages
 
 **AI Chatbot (chat.kimtoma.com)**
 - React + TypeScript + Vite
@@ -130,9 +131,10 @@ Writing about UX/UI design, service planning, AI, and technology trends.
 ### Local Development
 
 ```bash
-# Run blog (http://localhost:4000)
-bundle install
-bundle exec jekyll serve
+# Run portfolio (http://localhost:3000)
+cd os-landing
+npm install
+npm run dev
 
 # Run chatbot (http://localhost:5173)
 cd chat-app

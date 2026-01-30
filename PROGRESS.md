@@ -6,7 +6,8 @@
 
 #### 1. "Her" Movie-Inspired Interactive Portfolio
 - **Location**: `/os-landing/`
-- **URL**: https://kimtoma-os.pages.dev (Cloudflare Pages)
+- **URL**: https://kimtoma.com (Cloudflare Pages)
+- **Replaced**: Jekyll static site → React interactive portfolio
 - **Features**:
   - 3D floating card UI with parallax effects
   - Drag-and-drop widget cards
