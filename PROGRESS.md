@@ -45,6 +45,13 @@ New secrets added to Cloudflare Worker:
 - `STRAVA_CLIENT_SECRET` - Strava OAuth App Client Secret
 - `YOUTUBE_API_KEY` - YouTube Data API Key
 
+#### 5. Theme Toggle Animation (kimtoma.com)
+- **Effect**: Circular reveal animation when switching dark/light mode
+- **Technology**: View Transition API
+- **Animation**: Circle expands from toggle button position
+- **Fallback**: Instant switch for browsers without API support
+- **Reference**: paulstamatiou.com style
+
 ---
 
 ## 2026-01-29: Chat UX Improvements & Smart Features
