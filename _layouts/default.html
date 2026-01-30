@@ -41,6 +41,12 @@
       </footer>
     </div>
 
+    <!-- Floating Chat Button -->
+    <button class="chat-fab" id="chat-fab" aria-label="Chat with kimtoma">
+      <img src="https://github.com/kimtoma.png" alt="kimtoma" />
+    </button>
+    <div class="chat-transition-overlay" id="chat-overlay"></div>
+
     {% if site.ga_analytics %}
     <script>
       (function (i, s, o, g, r, a, m) {
@@ -146,6 +152,28 @@
               }
             );
           });
+        });
+      })();
+    </script>
+
+    <script data-cfasync="false">
+      (function() {
+        var chatFab = document.getElementById('chat-fab');
+        var overlay = document.getElementById('chat-overlay');
+
+        chatFab.addEventListener('click', function(event) {
+          var rect = chatFab.getBoundingClientRect();
+          var x = rect.left + rect.width / 2;
+          var y = rect.top + rect.height / 2;
+
+          overlay.style.setProperty('--x', x + 'px');
+          overlay.style.setProperty('--y', y + 'px');
+          overlay.classList.add('active');
+
+          // Navigate after animation
+          setTimeout(function() {
+            window.location.href = 'https://chat.kimtoma.com';
+          }, 500);
         });
       })();
     </script>
