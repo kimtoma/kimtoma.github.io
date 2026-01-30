@@ -33,31 +33,31 @@
 @layer base {
   :root {
     /* Unified Design System - Light theme */
-    /* Warm cream background */
-    --background: 40 30% 99%;
-    --foreground: 40 10% 15%;
+    /* Warm beige background (matching kimtoma.com) */
+    --background: 30 35% 92%;
+    --foreground: 30 15% 15%;
 
-    /* Warmer primary blue */
-    --primary: 215 85% 55%;
+    /* Coral primary (matching kimtoma.com) */
+    --primary: 8 77% 58%;
     --primary-foreground: 0 0% 100%;
 
-    /* Warm gray secondary */
-    --secondary: 40 20% 96%;
-    --secondary-foreground: 40 10% 15%;
+    /* Warm cream secondary */
+    --secondary: 30 30% 96%;
+    --secondary-foreground: 30 15% 15%;
 
-    --muted: 40 20% 96%;
-    --muted-foreground: 40 5% 45%;
+    --muted: 30 30% 96%;
+    --muted-foreground: 30 10% 45%;
 
     /* Accent matches secondary for consistent hover */
-    --accent: 40 20% 96%;
-    --accent-foreground: 40 10% 15%;
+    --accent: 30 30% 96%;
+    --accent-foreground: 30 15% 15%;
 
-    /* Coral for special moments (use accent-coral in tailwind) */
-    --accent-coral: 12 85% 62%;
+    /* Teal for secondary highlights */
+    --accent-teal: 175 35% 52%;
 
-    --border: 40 15% 88%;
-    --input: 40 15% 88%;
-    --ring: 215 85% 55%;
+    --border: 30 20% 82%;
+    --input: 30 20% 82%;
+    --ring: 8 77% 58%;
 
     /* Unified border radius */
     --radius: 0.75rem;
@@ -72,29 +72,29 @@
   }
 
   .dark {
-    /* Night sky dark theme (blue undertone) */
-    --background: 230 15% 8%;
-    --foreground: 230 10% 95%;
+    /* Warm dark brown theme (matching kimtoma.com mood) */
+    --background: 25 20% 10%;
+    --foreground: 30 20% 92%;
 
-    --primary: 215 85% 55%;
+    --primary: 8 77% 62%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 230 12% 15%;
-    --secondary-foreground: 230 10% 95%;
+    --secondary: 25 15% 15%;
+    --secondary-foreground: 30 20% 92%;
 
-    --muted: 230 12% 15%;
-    --muted-foreground: 230 8% 60%;
+    --muted: 25 15% 15%;
+    --muted-foreground: 25 10% 55%;
 
     /* Accent matches secondary for consistent hover */
-    --accent: 230 12% 15%;
-    --accent-foreground: 230 10% 95%;
+    --accent: 25 15% 15%;
+    --accent-foreground: 30 20% 92%;
 
-    /* Coral for special moments */
-    --accent-coral: 12 85% 62%;
+    /* Teal for secondary highlights */
+    --accent-teal: 175 35% 55%;
 
-    --border: 230 10% 20%;
-    --input: 230 10% 20%;
-    --ring: 215 85% 55%;
+    --border: 25 15% 20%;
+    --input: 25 15% 20%;
+    --ring: 8 77% 62%;
   }
 }
 

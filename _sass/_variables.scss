@@ -1,26 +1,26 @@
-// Colors - Unified Design System (kimtoma.com + chat.kimtoma.com)
-// Inspired by wabi.ai: warm, personal, approachable
+// Colors - Unified Design System (kimtoma.com + blog + chat)
+// Inspired by "Her" movie: warm, personal, approachable
 
 :root {
-  // Gray scale - warm tones (hue: 40)
-  --gray-000: hsl(40, 20%, 98%);
-  --gray-100: hsl(40, 15%, 96%);
-  --gray-200: hsl(40, 10%, 92%);
-  --gray-300: hsl(40, 8%, 87%);
-  --gray-400: hsl(40, 5%, 80%);
-  --gray-500: hsl(40, 4%, 68%);
-  --gray-600: hsl(40, 3%, 53%);
-  --gray-700: hsl(40, 4%, 35%);
-  --gray-800: hsl(40, 5%, 22%);
-  --gray-900: hsl(40, 6%, 15%);
+  // Gray scale - warm beige tones (hue: 30)
+  --gray-000: hsl(30, 30%, 98%);
+  --gray-100: hsl(30, 25%, 96%);
+  --gray-200: hsl(30, 20%, 92%);
+  --gray-300: hsl(30, 15%, 87%);
+  --gray-400: hsl(30, 10%, 75%);
+  --gray-500: hsl(30, 8%, 60%);
+  --gray-600: hsl(30, 6%, 45%);
+  --gray-700: hsl(30, 8%, 30%);
+  --gray-800: hsl(30, 10%, 20%);
+  --gray-900: hsl(30, 12%, 12%);
 
-  // Brand colors - warmer primary
-  --primary: hsl(215, 85%, 55%);
-  --primary-hover: hsl(215, 85%, 45%);
-  --primary-light: hsl(215, 85%, 65%);
+  // Brand colors - coral primary (matching kimtoma.com)
+  --primary: hsl(8, 77%, 58%);
+  --primary-hover: hsl(8, 77%, 48%);
+  --primary-light: hsl(8, 77%, 68%);
 
-  // Accent color (coral) - for special moments
-  --accent-coral: hsl(12, 85%, 62%);
+  // Accent color (teal) - for secondary highlights
+  --accent-teal: hsl(175, 35%, 52%);
 
   // Semantic colors
   --red: #fa5252;
@@ -74,53 +74,53 @@
     'Courier New', monospace;
 }
 
-// Light theme - warm cream background
+// Light theme - warm beige background (matching kimtoma.com)
 [data-theme="light"] {
-  --body-color: hsl(40, 10%, 15%);
-  --body-bg: hsl(40, 30%, 99%);
-  --heading-color: hsl(40, 15%, 8%);
+  --body-color: hsl(30, 15%, 15%);
+  --body-bg: hsl(30, 35%, 92%);
+  --heading-color: hsl(30, 20%, 10%);
 
   --link-color: var(--primary);
   --link-hover-color: var(--primary-hover);
 
-  --border-color: hsl(40, 15%, 88%);
+  --border-color: hsl(30, 20%, 82%);
 
-  --code-color: var(--grape);
-  --code-bg: hsl(40, 20%, 96%);
+  --code-color: hsl(8, 60%, 45%);
+  --code-bg: hsl(30, 30%, 96%);
 
-  --muted-color: hsl(40, 5%, 45%);
-  --card-bg: hsl(40, 20%, 96%);
+  --muted-color: hsl(30, 10%, 45%);
+  --card-bg: hsl(30, 30%, 96%);
 }
 
-// Dark theme - night sky tint (blue undertone)
+// Dark theme - warm dark brown (not blue)
 [data-theme="dark"] {
-  --body-color: hsl(230, 10%, 95%);
-  --body-bg: hsl(230, 15%, 8%);
-  --heading-color: hsl(230, 10%, 98%);
+  --body-color: hsl(30, 20%, 92%);
+  --body-bg: hsl(25, 20%, 10%);
+  --heading-color: hsl(30, 25%, 96%);
 
-  --link-color: var(--primary);
-  --link-hover-color: var(--primary-light);
+  --link-color: var(--primary-light);
+  --link-hover-color: var(--primary);
 
-  --border-color: hsl(230, 10%, 20%);
+  --border-color: hsl(25, 15%, 20%);
 
-  --code-color: var(--blue-300);
-  --code-bg: hsl(230, 12%, 15%);
+  --code-color: hsl(8, 70%, 70%);
+  --code-bg: hsl(25, 15%, 15%);
 
-  --muted-color: hsl(230, 8%, 60%);
-  --card-bg: hsl(230, 12%, 15%);
+  --muted-color: hsl(25, 10%, 55%);
+  --card-bg: hsl(25, 15%, 15%);
 }
 
 // System preference fallback
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --body-color: hsl(230, 10%, 95%);
-    --body-bg: hsl(230, 15%, 8%);
-    --heading-color: hsl(230, 10%, 98%);
-    --link-color: var(--primary);
-    --link-hover-color: var(--primary-light);
-    --border-color: hsl(230, 10%, 20%);
-    --code-bg: hsl(230, 12%, 15%);
-    --muted-color: hsl(230, 8%, 60%);
-    --card-bg: hsl(230, 12%, 15%);
+    --body-color: hsl(30, 20%, 92%);
+    --body-bg: hsl(25, 20%, 10%);
+    --heading-color: hsl(30, 25%, 96%);
+    --link-color: var(--primary-light);
+    --link-hover-color: var(--primary);
+    --border-color: hsl(25, 15%, 20%);
+    --code-bg: hsl(25, 15%, 15%);
+    --muted-color: hsl(25, 10%, 55%);
+    --card-bg: hsl(25, 15%, 15%);
   }
 }

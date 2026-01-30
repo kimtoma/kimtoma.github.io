@@ -28,7 +28,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
-          coral: "hsl(12, 85%, 62%)",
+          teal: "hsl(var(--accent-teal))",
         },
       },
       borderRadius: {
