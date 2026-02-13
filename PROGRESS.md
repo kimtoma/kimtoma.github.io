@@ -1,5 +1,25 @@
 # Development Progress
 
+## 2026-02-13: Gemini API Region Fix & Model Upgrade
+
+### ✅ Completed
+
+#### 1. Smart Placement (Region 차단 해결)
+- **문제**: Cloudflare Worker가 한국 edge에서 실행되어 Gemini API가 한국 IP 차단 (400 에러)
+- **해결**: `wrangler.toml`에 `[placement] mode = "smart"` 추가
+- **효과**: Worker가 Google API 서버 근처(미국)에서 실행되어 리전 차단 회피
+
+#### 2. Gemini 2.5 Flash 업그레이드
+- **변경**: `gemini-2.0-flash` → `gemini-2.5-flash`
+- **위치**: `index.ts` 853행 (`analyzeSessionSentiment`), 1045행 (`callGeminiAPI`)
+- **효과**: 추론 능력 향상, 비용 차이 미미 (Input $0.10→$0.15, Output $0.40→$0.60 per 1M tokens)
+
+#### 3. Files Modified
+- `cloudflare-worker/wrangler.toml` - Smart Placement 설정 추가
+- `cloudflare-worker/src/index.ts` - 모델명 gemini-2.5-flash로 변경 (2곳)
+
+---
+
 ## 2026-01-31: Dark Mode & UX Improvements
 
 ### ✅ Completed
@@ -330,7 +350,7 @@ New secrets added to Cloudflare Worker:
 - **Location**: `/cloudflare-worker/`
 - **URL**: `https://gemini-proxy-with-logging.kimtoma.workers.dev`
 - **Features**:
-  - Gemini API proxy (gemini-2.0-flash model)
+  - Gemini API proxy (gemini-2.5-flash model)
   - kimtoma persona via System Prompt
   - D1 SQLite database integration
   - Session management (track conversations by user)
@@ -444,5 +464,5 @@ message_feedback (id, message_id INTEGER, session_id TEXT, feedback TEXT, commen
 
 ---
 
-**Last Updated**: 2026-01-30
+**Last Updated**: 2026-02-13
 **Status**: Active

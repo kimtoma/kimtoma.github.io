@@ -25,3 +25,7 @@ binding = "AI"
 # routes = [
 #   { pattern = "gemini-proxy.kimtoma.workers.dev/*", zone_name = "kimtoma.com" }
 # ]
+
+# Smart Placement: Worker를 Google API 서버 근처(미국)에서 실행하여 리전 차단 회피
+[placement]
+mode = "smart"
