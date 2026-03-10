@@ -5,3 +5,5 @@ _site
 .bundle
 vendor
 media/2021/.DS_Store
+.DS_Store
+cloudflare-worker/
